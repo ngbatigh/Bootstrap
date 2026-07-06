@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparateur de Langages Pédagogique (Pivot C++)</title>
+
+    <!-- Feuille de style CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Libs tierces - Coloration Syntaxique -->
+    <script src="libs/prism/prism-dark.js"></script>
+    <!-- Thème SOMBRE local par défaut pour Prism -->
+    <link rel="stylesheet" href="libs/prism/prism-dark.css" id="prism-theme-dark">
+    <!-- Thème CLAIR local pour Prism (Désactivé au démarrage) -->
+    <link rel="stylesheet" href="libs/prism/prism.css" id="prism-theme-light" disabled>
+    
+
+
+    
+</head>
+<body>
+
+<!-- Barre d'outils globale -->
+    <header class="toolbar">
+        <strong style="color: var(--accent-color)">COMP_IDE //</strong>
+        <div>
+            <label for="search-box">Recherche : </label>
+            <input type="search" id="search-box" placeholder="Ex: boucle, pointeur..." style="background: var(--bg-input); color: var(--text-main); border: 1px solid var(--panel-border); padding: 4px 8px; border-radius: 4px;">
+        </div>
+        <div style="display: flex; align-items: center; gap: 5px; margin-left: 15px;">
+            <span style="font-size: 12px; color: var(--text-muted);">Code :</span>
+            <button class="btn" style="padding: 2px 8px;" onclick="changeCodeZoom(1)">A+</button>
+            <button class="btn" style="padding: 2px 8px;" onclick="changeCodeZoom(-1)">A-</button>
+        </div>
+        <div style="margin-left: auto;">
+            <button class="btn" onclick="toggleDarkMode()">🌓 Mode</button>
+        </div>
+    </header>
+
+    <!-- Zone principale de l'IDE -->
+    <div class="ide-container">
+        <!-- Sidebar Gauche : Arbre des concepts -->
+        <aside class="sidebar">
+            <div id="concepts-tree"></div>
+        </aside>
+
+        <!-- Centre : Grille de comparaison de code -->
+        <main class="center-panel" id="center-panel">
+            <div style="margin-bottom: 15px; display:flex; justify-content: space-between; align-items:center;">
+                <div>
+                    <h2 id="concept-title" style="margin:0; display:inline-block; vertical-align:middle;">Sélectionnez un concept</h2>
+                    <span id="concept-category" style="font-size:12px; background: var(--bg-badge); color: var(--text-main); padding:2px 6px; border-radius:3px; margin-left:10px;"></span>
+                </div>
+                <div style="background: var(--bg-toggle); padding: 2px; border-radius: 4px; display: flex; gap: 2px;">
+                    <button id="btn-scope-minimal" class="btn" style="padding: 4px 12px;" onclick="setCodeScope('minimal')">Minimal</button>
+                    <button id="btn-scope-complete" class="btn" style="padding: 4px 12px;" onclick="setCodeScope('complete')">Complet</button>
+                </div>
+            </div>
+
+            <div class="comparison-area">
+                <!-- Colonne 1 : C++ (Fixe) -->
+                <div class="code-column">
+                    <div class="column-header">
+                        <span>C++ (Référence)</span>
+                        <button class="copy-btn" onclick="CompIde.Compare.copy('code-cpp', event)">Copier</button>
+                    </div>
+                    <pre id="code-cpp" class="code-block"></pre>
+                </div>
+
+                <!-- Colonne 2 : Langage Alternatif 1 -->
+                <div class="code-column">
+                    <div class="column-header">
+                        <select id="select-lang-2" onchange="CompIde.Compare.update()">
+                            <option value="csharp" selected>C#</option>
+                            <option value="python">Python</option>
+                        </select>
+                        <button class="copy-btn" onclick="CompIde.Compare.copy('code-lang-2', event)">Copier</button>
+                    </div>
+                    <pre id="code-lang-2" class="code-block"></pre>
+                </div>
+
+                <!-- Colonne 3 : Langage Alternatif 2 -->
+                <div class="code-column">
+                    <div class="column-header">
+                        <select id="select-lang-3" onchange="CompIde.Compare.update()">
+                            <option value="python" selected>Python</option>
+                            <option value="csharp">C#</option>
+                        </select>
+                        <button class="copy-btn" onclick="CompIde.Compare.copy('code-lang-3', event)">Copier</button>
+                    </div>
+                    <pre id="code-lang-3" class="code-block"></pre>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sidebar Droite : Documentation & Remarques (Prend toute la hauteur restante) -->
+        <aside class="doc-panel">
+            <div class="panel-header">DOCUMENTATION & REPERES</div>
+            <div id="doc-content" class="panel-content"></div>
+        </aside>
+    </div>
+
+    <!-- CHARGEMENT DE L'ARCHITECTURE MODULAIRE HORS-LIGNE -->
+    <!-- 1. La donnée brute en premier -->
+    <script src="data/concepts.js"></script>
+    
+    <!-- 2. Les modules outils (sans dépendance entre eux) -->
+    <script src="js/ui.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/compare.js"></script>
+    
+    <!-- 3. L'orchestrateur en dernier, qui utilise tout le monde -->
+    <script src="js/app.js"></script>
+</body>
+</html>

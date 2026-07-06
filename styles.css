@@ -1,0 +1,198 @@
+:root {
+    /* ==========================================
+       MODE SOMBRE (Harmonisé avec Prism Okaidia)
+       ========================================== */
+    --bg-main: #1e1e1e;
+    --bg-sidebar: #252526;
+    
+    /* ÉTAPE CLÉ : On utilise EXACTEMENT la couleur de fond officielle de Prism Okaidia (#272822) 
+       pour que les jetons colorés de Prism ne fassent pas de tâches ou de rectangles gris */
+    --bg-code: #272822; 
+    
+    --bg-input: #2d2d2d;
+    --bg-toggle: #2d2d2d;
+    --bg-badge: #3c3c3c;
+    --text-main: #f4f4f4;
+    --text-muted: #aaaaaa;
+    --panel-border: #3c3c3c;
+    --accent-color: #66d9ef; /* Un bleu-cyan typique des thèmes d'IDE sombres */
+    
+    /* Repères textuels (Fonds sombres mais colorés, textes clairs) */
+    --bg-note: #203a4a;      --text-note: #9cdcfe;      --border-note: #4fc1ff;
+    --bg-practice: #1b3a24;  --text-practice: #b5cea8;  --border-practice: #4caf50;
+    --bg-pitfall: #4a1e1e;   --text-pitfall: #ce9178;   --border-pitfall: #f44336;
+}
+
+body.light-mode {
+    /* ==========================================
+       MODE CLAIR (Harmonisé avec Prism par défaut)
+       ========================================== */
+    --bg-main: #ffffff;
+    --bg-sidebar: #f5f5f5;
+    
+    /* ÉTAPE CLÉ : Le fond par défaut utilisé par Prism clair (#f6f8fa) 
+       pour une transition douce sans flash */
+    --bg-code: #f6f8fa; 
+    
+    --bg-input: #ffffff;
+    --bg-toggle: #e1e4e5;
+    --bg-badge: #e1e4e5;
+    --text-main: #24292e;
+    --text-muted: #586069;
+    --panel-border: #d1d5da;
+    --accent-color: #005cc5; /* Bleu royal pour une excellente lisibilité */
+    
+    /* Repères textuels (Fonds pastels très doux, textes foncés) */
+    --bg-note: #f1f7fc;      --text-note: #0366d6;      --border-note: #005cc5;
+    --bg-practice: #f2f9f2;  --text-practice: #22863a;  --border-practice: #28a745;
+    --bg-pitfall: #ffeef0;   --text-pitfall: #cb2431;   --border-pitfall: #d73a49;
+}
+
+* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+body {
+    margin: 0; padding: 0;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    height: 100vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* BARRE D'OUTILS */
+.toolbar {
+    height: 45px; background: var(--bg-sidebar);
+    border-bottom: 1px solid var(--panel-border);
+    display: flex; align-items: center; padding: 0 15px; gap: 15px;
+}
+
+/* LAYOUT PRINCIPAL HORS FLUX */
+.ide-container {
+    display: flex; flex: 1; height: calc(100vh - 45px); overflow: hidden;
+}
+
+.sidebar {
+    width: 260px; background: var(--bg-sidebar);
+    border-right: 1px solid var(--panel-border);
+    overflow-y: auto; padding: 10px;
+}
+
+.center-panel {
+    flex: 1; display: flex; flex-direction: column;
+    padding: 15px; overflow: hidden; background: var(--bg-main);
+}
+
+.doc-panel {
+    width: 320px; background: var(--bg-sidebar);
+    border-left: 1px solid var(--panel-border);
+    display: flex; flex-direction: column; overflow: hidden;
+}
+
+/* BOUTONS ET COMPOSANTS */
+.btn {
+    background: var(--bg-input); color: var(--text-main);
+    border: 1px solid var(--panel-border); padding: 5px 10px;
+    cursor: pointer; border-radius: 4px; font-size: 12px;
+}
+.btn:hover { background: var(--panel-border); }
+
+.panel-header {
+    background: var(--bg-input); padding: 10px 15px;
+    font-size: 11px; font-weight: bold; letter-spacing: 1px;
+    border-bottom: 1px solid var(--panel-border); color: var(--text-muted);
+}
+.panel-content { padding: 15px; overflow-y: auto; flex: 1; }
+
+/* GRILLE DE CODE */
+.comparison-area {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; flex: 1; overflow: hidden;
+}
+.code-column {
+    display: flex; flex-direction: column; height: 100%; overflow: hidden;
+}
+.column-header {
+    background: var(--bg-sidebar); border: 1px solid var(--panel-border);
+    border-bottom: none; padding: 6px 10px; font-size: 12px;
+    font-weight: bold; display: flex; justify-content: space-between; align-items: center;
+    border-top-left-radius: 4px; border-top-right-radius: 4px;
+}
+.column-header select {
+    background: transparent; color: var(--text-main); border: none;
+    font-weight: bold; outline: none; cursor: pointer;
+}
+.copy-btn {
+    background: transparent; border: none; color: var(--accent-color);
+    cursor: pointer; font-size: 11px;
+}
+.copy-btn:hover { text-decoration: underline; }
+
+/* Le conteneur <pre> de votre colonne de code */
+.code-block {
+    margin: 0 !important; /* On écrase les marges par défaut que Prism tente d'imposer */
+    flex: 1;              /* Permet au bloc de prendre toute la hauteur de sa colonne */
+    background: var(--bg-code) !important; /* On applique dynamiquement le fond synchronisé */
+    border: 1px solid var(--panel-border);
+    overflow: auto;       /* Active les barres de défilement si le code est trop long */
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    padding: 12px !important;
+}
+
+/* La balise <code> interne où Prism injecte ses tokens (mots-clés, chaînes...) */
+.code-block code {
+    /* On force une police d'écriture d'IDE propre */
+    font-family: 'Consolas', 'Monaco', 'Andale Mono', monospace !important; 
+    /* TRÈS IMPORTANT : On force le fond de la balise code à être transparent, 
+       ce qui supprime les vilains rectangles gris autour des opérateurs comme << */
+    background: transparent !important; 
+    padding: 0 !important;
+}
+
+/* ARBRE DE CONCEPTS */
+.tree-chapter { font-weight: bold; margin-top: 10px; color: var(--accent-color); font-size: 13px; }
+.tree-item { padding: 5px 10px 5px 15px; cursor: pointer; font-size: 12px; border-radius: 3px; color: var(--text-muted); }
+.tree-item:hover { background: var(--bg-input); color: var(--text-main); }
+.tree-item.active { background: var(--accent-color); color: #fff !important; font-weight: bold; }
+
+/* REGLAGE DIRECT DES CONTRASTES PRISM EN MODE SOMBRE */
+body:not(.light-mode) .token.keyword { color: #569cd6 !important; font-weight: bold; }
+body:not(.light-mode) .token.string { color: #ce9178 !important; }
+body:not(.light-mode) .token.number { color: #b5cea8 !important; }
+body:not(.light-mode) .token.comment { color: #6a9955 !important; font-style: italic; }
+body:not(.light-mode) .token.function { color: #dcdcaa !important; }
+body:not(.light-mode) .token.class-name { color: #4ec9b0 !important; }
+body:not(.light-mode) .token.operator { color: #d4d4d4 !important; }
+
+/* ==========================================================================
+   BLOCS DE REPERES ACCESSIBLES (PANNEAU DROIT)
+   ========================================================================== */
+.alert-box {
+    padding: 12px; 
+    margin-top: 15px; 
+    border-radius: 4px; 
+    font-size: 13px; 
+    line-height: 1.4;
+}
+
+/* Boîte des remarques */
+.alert-note { 
+    background: var(--bg-note); 
+    color: var(--text-note); 
+    border-left: 4px solid var(--border-note); 
+}
+
+/* Boîte des bonnes pratiques */
+.alert-practice { 
+    background: var(--bg-practice); 
+    color: var(--text-practice); 
+    border-left: 4px solid var(--border-practice); 
+}
+
+/* Boîte des pièges fréquents */
+.alert-pitfall { 
+    background: var(--bg-pitfall); 
+    color: var(--text-pitfall); 
+    border-left: 4px solid var(--border-pitfall); 
+}

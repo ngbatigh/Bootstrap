@@ -1,0 +1,16 @@
+{
+  "base_hello_world": {
+    "minimal": "int main() {\n    std::cout << \"Hello World!\";\n}",
+    "complete": "#include <iostream>\n\nint main() {\n    std::cout << \"Hello World!\\n\";\n    return 0;\n}",
+    "best_practices": "Toujours retourner 0 pour indiquer une exécution réussie au système.",
+    "pitfalls": "Oublier d'inclure <iostream> provoquera une erreur de compilation sur std::cout.",
+    "notes": "Le point d'entrée doit obligatoirement s'appeler main."
+  },
+  "types_references_02": {
+    "minimal": "int val = 42;\nint* ptr = &val;",
+    "complete": "#include <iostream>\n// ... reste du code complet C++",
+    "best_practices": "Préférer les références (const T&) pour éviter les copies inutiles.",
+    "pitfalls": "Créer un pointeur suspendu (dangling pointer).",
+    "notes": "Une référence C++ ne peut pas être nulle."
+  }
+}
