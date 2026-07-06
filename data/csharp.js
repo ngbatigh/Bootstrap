@@ -1,4 +1,7 @@
-export const csharpData = {
+// Assure que l'espace de nom existe
+window.CompIde = window.CompIde || {};
+
+CompIde.csharpData = {
   "base_hello_world": {
     "minimal": "Console.WriteLine(\"Hello World!\");",
     "complete": "using System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine(\"Hello World!\");\n    }\n}",

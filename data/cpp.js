@@ -1,4 +1,7 @@
-export const cppData = {
+// Assure que l'espace de nom existe
+window.CompIde = window.CompIde || {};
+
+CompIde.cppData = {
   "base_hello_world": {
     "minimal": "int main() {\n    std::cout << \"Hello World!\";\n}",
     "complete": "#include <iostream>\n\nint main() {\n    std::cout << \"Hello World!\\n\";\n    return 0;\n}",

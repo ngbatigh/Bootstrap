@@ -1,4 +1,7 @@
-export const metadata = [
+// Assure que l'espace de nom existe
+window.CompIde = window.CompIde || {};
+
+CompIde.metadata = [
   {
     "id": "base_hello_world",
     "level": 1,

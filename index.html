@@ -102,15 +102,24 @@
     </div>
 
     <!-- CHARGEMENT DE L'ARCHITECTURE MODULAIRE HORS-LIGNE -->
-    <!-- 1. La donnée brute en premier -->
-    <script src="data/concepts.js"></script>
+    <!-- 1. La donnée brute en premier
+    <script src="data/concepts.js"></script> -->
     
-    <!-- 2. Les modules outils (sans dépendance entre eux) -->
-    <script src="js/ui.js"></script>
+    <!-- 1. On crée d'abord l'objet vide global -->
+    <script>window.CompIde = {};</script>
+
+    <!-- 2. On charge les données qui vont se greffer dessus -->
+    <script src="data/metadata.js"></script>
+    <script src="data/cpp.js"></script>
+    <script src="data/csharp.js"></script>
+    <script src="data/python.js"></script>
+
+    <!-- 3. On charge vos scripts logiques (UI, Search, Compare...) -->
     <script src="js/search.js"></script>
     <script src="js/compare.js"></script>
-    
-    <!-- 3. L'orchestrateur en dernier, qui utilise tout le monde -->
+    <script src="js/ui.js"></script>
+
+    <!-- 4. On charge l'application principale en dernier -->
     <script src="js/app.js"></script>
 </body>
 </html>

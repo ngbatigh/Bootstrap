@@ -1,4 +1,7 @@
-export const pythonData = {
+// Assure que l'espace de nom existe
+window.CompIde = window.CompIde || {};
+
+CompIde.pythonData = {
   "base_hello_world": {
     "minimal": "print(\"Hello World!\")",
     "complete": "def main():\n    print(\"Hello World!\")\n\nif __name__ == \"__main__\":\n    main()",
