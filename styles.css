@@ -104,13 +104,13 @@ body {
 }
 .panel-content { padding: 15px; overflow-y: auto; flex: 1; }
 
-/* GRILLE DE CODE */
+/* GRILLE DE CODE - DISPOSITION VERTICALE */
 .comparison-area {
-    display: grid; grid-template-columns: repeat(3, 1fr);
+    display: flex; flex-direction: column;
     gap: 12px; flex: 1; overflow: hidden;
 }
 .code-column {
-    display: flex; flex-direction: column; height: 100%; overflow: hidden;
+    display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;
 }
 .column-header {
     background: var(--bg-sidebar); border: 1px solid var(--panel-border);
