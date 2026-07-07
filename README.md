@@ -4,7 +4,7 @@
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
 
-COMP_IDE // est un comparateur interactif de code pour l'apprentissage des langages C++, C# et Python. L'application présente côte à côte des implémentations d'un même concept pour faciliter la compréhension des différences syntaxiques et sémantiques.
+COMP_IDE // est un comparateur interactif de code pour l'apprentissage des langages de programmation. L'application présente côte à côte des implémentations d'un même concept (C++ en référence fixe + 2 langages au choix) avec une documentation dédiée par langage.
 
 ![Demo](https://img.shields.io/badge/Statut-Fonctionnel-success)
 
@@ -17,7 +17,7 @@ Permettre aux étudiants et développeurs de :
 - Comprendre comment un même concept algorithmique s'exprime dans différents langages
 - Identifier les bonnes pratiques spécifiques à chaque écosystème
 - Éviter les pièges courants grâce aux avertissements intégrés
-- Passer progressivement d'un langage à un autre (C++ → C# → Python)
+- Passer progressivement d'un langage à un autre
 
 ---
 
@@ -25,27 +25,42 @@ Permettre aux étudiants et développeurs de :
 
 ### Interface IDE moderne
 
-- **3 colonnes de code** : C++ (référence fixe) + 2 langages au choix (C# / Python)
+- **3 colonnes de code et documentation** : C++ (référence fixe) + 2 langages au choix
 - **Arbre des concepts** : Navigation par chapitre et catégorie
 - **Recherche temps réel** : Filtrage instantané par nom ou description
 - **Mode sombre/clair** : Bascule avec thèmes synchronisés (dont PrismJS)
 - **Zoom de code** : Ajustement de la taille de police (10px à 24px)
 - **Scope minimal/complet** : Version courte ou code complet avec contexte
 
-### Panneau de documentation
+### Documentation par langage
 
-Pour chaque concept :
+Chaque colonne affiche sa propre documentation :
 
 - 📝 **Description** du concept
-- 💡 **Remarques** spécifiques au langage C++
+- 💡 **Remarques** spécifiques au langage
 - ✅ **Bonnes pratiques**
 - ⚠️ **Pièges fréquents** à éviter
 - 🔗 **Concepts liés** pour navigation croisée
 
+### Langages supportés
+
+| Langage | Données JSON |
+|---------|-------------|
+| C | `data/c.json` |
+| C++ (référence) | `data/cpp.json` |
+| C# | `data/csharp.json` |
+| Java | `data/java.json` |
+| JavaScript | `data/javascript.json` |
+| PHP | `data/php.json` |
+| Python | `data/python.json` |
+| TypeScript | `data/typescript.json` |
+| VB.NET | `data/vb.json` |
+| VBA | `data/vba.json` |
+
 ### Coloration syntaxique
 
 - PrismJS 1.30.0 avec thèmes multiples
-- Support natif de C++, C#, Python
+- Support natif de C, C++, C#, Python, JavaScript, TypeScript, Java, PHP, VB
 - Bascule automatique selon le mode sombre/clair
 
 ---
@@ -57,14 +72,27 @@ Bootstrap/
 ├── index.html              # SPA - interface unique
 ├── styles.css              # Styles et variables thème
 ├── data/
-│   ├── concepts.js         # 6 concepts complets (source de vérité)
-│   ├── metadata.json       # Métadonnées arbre
-│   ├── cpp.json           # Exemples C++
-│   ├── csharp.json        # Exemples C#
-│   └── python.json        # Exemples Python
+│   ├── concepts.js         # 17 concepts complets (source de vérité)
+│   ├── metadata.json       # Métadonnées pour l'arbre des concepts
+│   ├── cpp.json            # Exemples C++
+│   ├── csharp.json         # Exemples C#
+│   ├── python.json         # Exemples Python
+│   ├── c.json              # Exemples C
+│   ├── java.json           # Exemples Java
+│   ├── javascript.json     # Exemples JavaScript
+│   ├── php.json            # Exemples PHP
+│   ├── typescript.json     # Exemples TypeScript
+│   ├── vb.json             # Exemples VB.NET
+│   └── vba.json            # Exemples VBA
+├── docs/
+│   ├── architecture.md     # Documentation technique
+│   ├── app-loaddata.md     # Explication de loadData()
+│   ├── sidebar-loading.md  # Chargement du sidebar
+│   ├── code-loading.md     # Chargement des codes
+│   └── doc-lang-loading.md # Chargement des documentations
 ├── js/
 │   ├── app.js             # Initialisation et chargement
-│   ├── compare.js         # Rendu comparatif
+│   ├── compare.js         # Rendu comparatif (code + doc par langage)
 │   ├── search.js          # Filtre et arbre
 │   └── ui.js              # Thème, zoom, scope
 └── libs/prism/            # PrismJS (thèmes + langages)
@@ -100,16 +128,16 @@ Bootstrap/
 | 5   | Transtypage et Conversions          | Opérateurs                  |
 | 6   | Du Switch au Pattern Matching       | Conditionnelles             |
 | 7   | Boucles et Itérateurs               | Boucles                     |
-| 8   | Signatures et Paramètres            | Fonctions                   |
+| 8   | Signatures et Paramètres            | Signatures                  |
 | 9   | Fonctions Anonymes et Lambdas       | Programmation Fonctionnelle |
 | 10  | Levée et Capture d'Exceptions       | Exceptions                  |
 | 11  | Libération des Ressources           | Gestion Mémoire             |
-| 12  | Classes et Encapsulation            | POO                         |
-| 13  | Héritage, Polymorphisme             | POO                         |
+| 12  | Classes et Encapsulation            | Classes                     |
+| 13  | Héritage, Polymorphisme             | Polymorphisme               |
 | 14  | Programmation Générique             | Généricité                  |
-| 15  | Asynchronisme                       | Concurrence                 |
-| 16  | Tables Clés-Valeurs                 | Collections                 |
-| 17  | Manipulation de Chaînes             | Algorithmes                 |
+| 15  | Asynchronisme (Async / Await)       | Concurrence                 |
+| 16  | Tables Clés-Valeurs (Maps & Dicts)  | Collections                 |
+| 17  | Manipulation et Formatage de Chaînes | Algorithmes                |
 
 ---
 
@@ -148,7 +176,7 @@ npx serve .
 
 1. **Sélectionner un concept** dans l'arbre gauche
 2. **Choisir les langages** à comparer via les menus déroulants
-3. **Consulter la documentation** dans le panneau droit
+3. **Consulter la documentation** sous chaque colonne (notes, bonnes pratiques, pièges)
 4. **Copier le code** avec le bouton "Copier" sous chaque colonne
 5. **Filtrer** via la barre de recherche en haut
 6. **Ajuster le zoom** avec A+ / A-
@@ -161,55 +189,16 @@ npx serve .
 
 ### Ajouter un nouveau concept
 
-**Option 1** : Dans `data/concepts.js` (source principale)
-
-```javascript
-{
-  "id": "mon_concept",
-  "level": 1,
-  "chapter": "1. Syntaxe de base",
-  "category": "Ma Catégorie",
-  "name": "Mon Nouveau Concept",
-  "description": "Description du concept.",
-  "mermaid_diagram": "flowchart LR...",
-  "related_concepts": [],
-  "languages": {
-    "cpp": {
-      "minimal": "code minimal...",
-      "complete": "code complet...",
-      "best_practices": "...",
-      "pitfalls": "...",
-      "notes": "..."
-    },
-    "csharp": { ... },
-    "python": { ... }
-  }
-}
-```
-
-**Option 2** : Dans les fichiers JSON dispersés
-
-1. Ajouter l'entrée dans `data/cpp.json`, `data/csharp.json`, `data/python.json`
-2. Ajouter la métadonnée dans `data/metadata.json`
-3. S'assurer que les IDs correspondent
+1. Ajouter l'entrée dans `data/metadata.json`
+2. Ajouter les données dans les fichiers JSON des langages (`data/cpp.json`, etc.)
+3. Optionnel : ajouter également dans `data/concepts.js` (source de vérité complète)
 
 ### Ajouter un langage
 
-1. Ajouter une colonne dans `index.html` (modèle colonne 2)
-2. Étendre `CompIde.Compare.fillCode()` dans `js/compare.js`
-3. Enrichir `CompIde.UI.updateDocumentation()` dans `js/ui.js`
-4. Ajouter données JSON pour le nouveau langage
-5. Inclure la grammaire PrismJS si nécessaire
-
----
-
-## 🎓 Cas d'usage pédagogiques
-
-- **Cours magistraux** : Projection pour démonstrations en direct
-- **TravauxDirigés** : Exploration autonome par les étudiants
-- **Révision** : Comparaison rapide de syntaxe avant entretien technique
-- **Transition linguistique** : Pour un développeur C++ voulant apprendre C# ou Python
-- **Auto-formation** : Consultation des bonnes pratiques et pièges
+1. Ajouter une colonne dans `index.html`
+2. Créer le fichier JSON dans `data/`
+3. Modifier `CompIde.Compare.fillCode()` pour accepter la nouvelle clé
+4. Ajouter la grammaire PrismJS si nécessaire
 
 ---
 
@@ -218,25 +207,15 @@ npx serve .
 ### Manuel
 
 - [ ] Ouvrir `index.html` dans Chrome/Firefox/Edge
-- [ ] Vérifier chargement des 3 colonnes de code
+- [ ] Vérifier chargement des 3 colonnes de code + documentation
 - [ ] Tester la recherche (ex: "pointeur", "boucle")
 - [ ] Basculer thème sombre/clair
 - [ ] Modifier zoom A+ / A-
 - [ ] Cliquer sur "Copier" pour chaque colonne
-- [ ] Vérifier panneau documentation (notes, pratiques, pièges)
+- [ ] Vérifier documentation par langage (notes, pratiques, pièges)
 - [ ] Tester lien "concepts liés"
 - [ ] Changer langages via menus déroulants
 - [ ] Basculer scope Minimal/Complet
-
-### Automatisés (à venir)
-
-```bash
-# Tests unitaires JavaScript
-npm test
-
-# Tests E2E avec Playwright
-npm run test:e2e
-```
 
 ---
 
@@ -247,27 +226,19 @@ npm run test:e2e
 ```javascript
 window.CompIde = window.CompIde || {};
 
-CompIde.App = {
-  /* ... */
-};
-CompIde.Compare = {
-  /* ... */
-};
-CompIde.Search = {
-  /* ... */
-};
-CompIde.UI = {
-  /* ... */
-};
+CompIde.App = { /* ... */ };
+CompIde.Compare = { /* ... */ };
+CompIde.Search = { /* ... */ };
+CompIde.UI = { /* ... */ };
 ```
 
 ### Flux de données
 
 ```
-concepts.js (+ JSONs)
-  → fetch() parallèle
+JSON files (metadata.json + cpp.json + ...)
+  → fetch() parallèle via App.loadData()
   → Fusion dans CompIde.data
-  → renderTree() / fillCode()
+  → renderTree() / fillCode() / fillDocumentation()
   → DOM
 ```
 
@@ -285,8 +256,6 @@ DOMContentLoaded
 ---
 
 ## 🤝 Contribution
-
-Les contributions sont les bienvenues !
 
 ### Workflow
 

@@ -1,0 +1,100 @@
+{
+  "base_hello_world": {
+    "minimal": "MsgBox \"Hello World!\"",
+    "complete": "Public Sub SayHello()\n    MsgBox \"Hello World!\"\nEnd Sub",
+    "best_practices": "Placer le code dans un Module standard (et non dans le code d'une feuille) pour qu'il soit accessible globalement.",
+    "pitfalls": "Confondre MsgBox (qui affiche une boîte de dialogue) et Debug.Print (qui écrit dans la fenêtre Immédiat).",
+    "notes": "VBA est un langage événementiel et de script embarqué. Il n'existe pas de 'main()' obligatoire."
+  },
+  "base_variables_02": {
+    "minimal": "Dim x As Integer\nx = 42",
+    "complete": "Public Sub GererVariables()\n    Dim pseudo As String\n    Dim score As Integer\n    Dim estActif As Boolean\n    pseudo = \"ExcelMaster\"\n    score = 250\n    estActif = True\n    Debug.Print pseudo & \" - Score: \" & score\nEnd Sub",
+    "best_practices": "Toujours inscrire 'Option Explicit' tout en haut du module pour forcer la déclaration obligatoire de toutes les variables.",
+    "pitfalls": "Oublier de déclarer le type (ex: 'Dim x'). Sans type, VBA transforme la variable en type 'Variant'.",
+    "notes": "VBA utilise le symbole '&' pour la concaténation. Le mot-clé 'Set' est obligatoire pour assigner des objets."
+  },
+  "ctrl_conditions_03": {
+    "minimal": "If x > 10 Then\n    MsgBox \"Grand\"\nEnd If",
+    "complete": "Dim score As Integer\nscore = 85\nIf score >= 90 Then\n    Debug.Print \"Excellent\"\nElseIf score >= 70 Then\n    Debug.Print \"Bien\"\nElse\n    Debug.Print \"Passable\"\nEnd If\nDim commande As String\ncommande = \"OUI\"\nSelect Case UCase(commande)\n    Case \"OUI\", \"OK\"\n        Debug.Print \"Validé\"\n    Case Else\n        Debug.Print \"Refusé\"\nEnd Select",
+    "best_practices": "Toujours formater les chaînes textuelles avec UCase() ou LCase() avant de les évaluer dans un Select Case.",
+    "pitfalls": "Écrire un If sur une seule ligne sans 'End If', puis tenter de rajouter des lignes en dessous.",
+    "notes": "Le `Select Case` supporte l'instruction `Is` pour tester des opérateurs logiques : `Case Is >= 18`."
+  },
+  "ctrl_boucles_04": {
+    "minimal": "For i = 1 To 5\n    Debug.Print i\nNext i",
+    "complete": "Dim i As Integer\nFor i = 1 To 3\n    Debug.Print \"Ligne: \" & i\nNext i\nDim cellule As Range\nFor Each cellule In Range(\"A1:A3\")\n    If cellule.Value <> \"\" Then\n        Debug.Print cellule.Value\n    End If\nNext cellule",
+    "best_practices": "Lors de l'utilisation de 'For Each' sur des objets, toujours s'assurer que la collection n'est pas vide.",
+    "pitfalls": "Utiliser `Dim i As Integer` puis faire une boucle `For i = 1 To 40000`. Le type Integer est limité à 32767.",
+    "notes": "Pour interrompre prématurément une boucle en VBA, on utilise `Exit For` ou `Exit Do`."
+  },
+  "func_declaration_05": {
+    "minimal": "Function Somme(a As Integer, b As Integer) As Integer\n    Somme = a + b\nEnd Function",
+    "complete": "Public Sub AfficherAlerte(texte As String)\n    MsgBox \"ALERTE : \" & texte\nEnd Sub\nPublic Function GetTVA(montant As Double) As Double\n    GetTVA = montant * 0.2\nEnd Function",
+    "best_practices": "Déclarer explicitement le type de retour des fonctions (`As String`, `As Long`, etc.).",
+    "pitfalls": "Utiliser le mot-clé `Return` dans une fonction VBA. Ce mot-clé n'existe pas pour renvoyer une valeur.",
+    "notes": "Les `Function` peuvent être utilisées directement comme formules dans les cellules Excel."
+  },
+  "func_arguments_06": {
+    "minimal": "Sub Check(Optional v As Variant)",
+    "complete": "Public Sub CalculerSolde(\n    ByVal capital As Double, \n    ByRef totalSorties As Double, \n    Optional ByVal taux As Double = 0.05\n)\n    totalSorties = totalSorties + (capital * taux)\nEnd Sub",
+    "best_practices": "Écrire explicitement `ByVal` pour vos arguments. En VBA, le défaut masqué est `ByRef`.",
+    "pitfalls": "Déclarer un paramètre Optionnel d'un type primitif sans lui assigner de valeur par défaut.",
+    "notes": "Appel nommé disponible en VBA via la syntaxe `:=`."
+  },
+  "data_structures_07": {
+    "minimal": "Dim arr(0 To 2) As String\narr(0) = \"A\"",
+    "complete": "Public Sub GererTableau()\n    Dim codes() As String\n    ReDim codes(0 To 1)\n    codes(0) = \"TXT\"\n    codes(1) = \"XLS\"\n    ReDim Preserve codes(0 To 2)\n    codes(2) = \"PDF\"\n    Debug.Print \"Borne max : \" & UBound(codes)\nEnd Sub",
+    "best_practices": "Toujours expliciter les deux bornes lors du dimensionnement d'un tableau (`0 To 4`).",
+    "pitfalls": "Oublier le mot-clé `Preserve` lors d'un `ReDim`. Sans lui, votre tableau est remis à zéro.",
+    "notes": "Pour simuler une liste dynamique, les développeurs VBA utilisent parfois l'objet `CreateObject(\"System.Collections.ArrayList\")`."
+  },
+  "data_structures_08": {
+    "minimal": "Dim dict As Object\nSet dict = CreateObject(\"Scripting.Dictionary\")",
+    "complete": "Public Sub TesterDico()\n    Dim client As Object\n    Set client = CreateObject(\"Scripting.Dictionary\")\n    client.CompareMode = 1\n    client.Add \"Nom\", \"Dupont\"\n    client(\"Solde\") = 450.75\n    If client.Exists(\"Nom\") Then\n        Debug.Print client(\"Nom\")\n    End If\nEnd Sub",
+    "best_practices": "Configurer `.CompareMode = 1` après la création du dictionnaire pour éviter les doublons de clés par casse.",
+    "pitfalls": "Tenter d'accéder à une clé inexistante. Le dictionnaire va créer silencieusement la clé avec une valeur vide.",
+    "notes": "L'objet `Scripting.Dictionary` requiert la bibliothèque Runtime Microsoft Scripting."
+  },
+  "oop_classes_09": {
+    "minimal": "' Dans un Module de Classe nommé 'User'\nPrivate m_Nom As String",
+    "complete": "' MODULE DE CLASSE : clsClient\nPrivate m_Nom As String\nPublic Property Get Nom() As String\n    Nom = m_Nom\nEnd Property\nPublic Property Let Nom(ByVal nvNom As String)\n    If nvNom <> \"\" Then m_Nom = nvNom\nEnd Property",
+    "best_practices": "Renommer le module de classe via la fenêtre Propriétés (ex: `clsFacture`).",
+    "pitfalls": "Confondre `Property Let` (variables classiques) et `Property Set` (objets).",
+    "notes": "L'héritage de classes n'existe pas en VBA (seule l'implémentation d'interfaces via `Implements`)."
+  },
+  "oop_methods_10": {
+    "minimal": "Dim c As clsClient\nSet c = New clsClient",
+    "complete": "' MODULE DE CLASSE\nPrivate Sub Class_Initialize()\n    Debug.Print \"Objet créé\"\nEnd Sub\n' MODULE STANDARD\nPublic Sub Demarrer()\n    Dim instance As clsClient\n    Set instance = New clsClient\n    instance.Nom = \"Marc\"\nEnd Sub",
+    "best_practices": "Créer une méthode publique d'initialisation pour compenser l'impossibilité de passer des paramètres à `Class_Initialize`.",
+    "pitfalls": "Oublier le mot-clé `Set` lors de l'instanciation (`instance = New clsClient`).",
+    "notes": "VBA détruit automatiquement l'objet dès que plus aucune variable ne pointe dessus."
+  },
+  "errors_try_catch_11": {
+    "minimal": "On Error GoTo GestionErreur\n' code...\nExit Sub\nGestionErreur:\nMsgBox Err.Description",
+    "complete": "Public Sub ImporterDonnees()\n    On Error GoTo ErreurHandler\n    Dim x As Integer\n    x = 1 / 0\n    Exit Sub\nErreurHandler:\n    MsgBox \"Erreur #\" & Err.Number & \" : \" & Err.Description\n    Resume FinProcedure\nFinProcedure:\n    Debug.Print \"Nettoyage final effectué\"\nEnd Sub",
+    "best_practices": "Placer `Exit Sub` ou `Exit Function` immédiatement au-dessus du gestionnaire d'erreur.",
+    "pitfalls": "Oublier de réinitialiser le gestionnaire d'erreur avec `On Error GoTo 0` après `On Error Resume Next`.",
+    "notes": "L'objet global `Err` contient toutes les informations de la dernière anomalie."
+  },
+  "errors_throw_12": {
+    "minimal": "Err.Raise 513, \"MaSource\", \"Erreur survenue\"",
+    "complete": "Public Sub GenererRapport(ByVal idClient As Long)\n    If idClient <= 0 Then\n        Err.Raise vbObjectError + 1001, \"GenererRapport\", \"L'identifiant client doit être positif.\"\n    End If\nEnd Sub",
+    "best_practices": "Utiliser `vbObjectError` comme point de départ pour vos numéros d'erreurs applicatives.",
+    "pitfalls": "Appeler `Err.Raise` sans spécifier le paramètre `Source`.",
+    "notes": "`Err.Raise` interrompt le flux et transfère le contrôle au premier `On Error GoTo` actif."
+  },
+  "async_await_13": {
+    "minimal": "' Pas d'asynchronisme. Exécution purement synchrone.\nApplication.Wait (Now + TimeValue(\"00:00:02\"))",
+    "complete": "Public Sub SimulerAttente()\n    Debug.Print \"Début de l'attente...\"\n    Application.Wait (Now + TimeValue(\"00:00:02\"))\n    Debug.Print \"Fin de l'attente\"\nEnd Sub\nPublic Sub LancerTacheDifferee()\n    Application.OnTime Now + TimeValue(\"00:00:05\"), \"MaMacroCible\"\nEnd Sub",
+    "best_practices": "Éviter l'utilisation abusive de `Application.Wait` car cela fige l'interface utilisateur.",
+    "pitfalls": "Croire qu'on peut faire du multi-threading natif en VBA.",
+    "notes": "`Application.OnTime` permet d'enregistrer une macro en différé pour simuler une tâche de fond."
+  },
+  "file_io_14": {
+    "minimal": "Open \"C:\\t.txt\" For Output As #1\nPrint #1, \"Texte\"\nClose #1",
+    "complete": "Public Sub GererFichierTexte()\n    Dim chemin As String\n    chemin = Application.DefaultFilePath & \"\\vba_test.txt\"\n    Dim numFichier As Integer\n    numFichier = FreeFile\n    Open chemin For Output As #numFichier\n    Print #numFichier, \"Première ligne VBA\"\n    Print #numFichier, \"Deuxième ligne VBA\"\n    Close #numFichier\n    Dim ligne As String\n    Open chemin For Input As #numFichier\n    Do While Not EOF(numFichier)\n        Line Input #numFichier, ligne\n        Debug.Print \"Lu : \" & ligne\n    Loop\n    Close #numFichier\nEnd Sub",
+    "best_practices": "Toujours appeler `FreeFile` pour obtenir un numéro de canal de fichier libre.",
+    "pitfalls": "Oublier de fermer un fichier si une erreur survient. Mettez un gestionnaire d'erreur.",
+    "notes": "Il est possible d'utiliser `Scripting.FileSystemObject` (FSO) comme alternative orientée objet."
+  }
+}

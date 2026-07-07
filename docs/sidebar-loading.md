@@ -1,0 +1,145 @@
+# Chargement du Sidebar (Arbre des Concepts)
+
+Ce document décrit précisément comment la barre latérale gauche (`<aside class="sidebar">`) est peuplée dans COMP_IDE //.
+
+## 1. Structure HTML statique
+
+Dans `index.html`, le sidebar est déclaré une seule fois avec un conteneur vide :
+
+```html
+<aside class="sidebar">
+    <div id="concepts-tree"></div>
+</aside>
+```
+
+Le contenu réel est injecté dynamiquement par JavaScript. Le conteneur cible est `#concepts-tree`.
+
+## 2. Source des données
+
+Le sidebar s'appuie sur `CompIde.data`, le tableau unifié produit par `App.loadData()` dans `js/app.js`.
+
+Ce tableau est obtenu par fusion (dans `loadData()`) de plusieurs fichiers :
+
+| Fichier | Rôle |
+|---------|------|
+| `data/metadata.json` | Métadonnées légères (id, chapter, name, description, related_concepts) |
+| `data/cpp.json` | Exemples et notes C++ |
+| `data/csharp.json` | Exemples et notes C# |
+| `data/python.json` | Exemples et notes Python |
+
+Les fichiers sont récupérés en parallèle via `Promise.all([fetch(...), ...])` puis fusionnés :
+
+```javascript
+CompIde.data = metadata.map(concept => ({
+    ...concept,
+    languages: {
+        cpp: cppData[concept.id] || {},
+        csharp: csharpData[concept.id] || {},
+        python: pythonData[concept.id] || {}
+    }
+}));
+```
+
+> Remarque : `data/concepts.js` contient également un jeu de données complet (utilisé en remplacement de la fusion JSON si le fetch échoue), mais le pipeline principal de production utilise les fichiers JSON.
+
+## 3. Flux d'initialisation
+
+```
+DOMContentLoaded
+  └─ CompIde.App.init()
+       ├─ CompIde.UI.init()                     // boutons, zoom, thème
+       ├─ searchBox.addEventListener('input')   // filtrage temps réel
+       ├─ await this.loadData()                 // remplit CompIde.data
+       └─ this.selectConcept(premierId)
+            └─ CompIde.Search.renderTree(filtre) // 🌳 PEUPLE LE SIDEBAR
+```
+
+`App.init()` se trouve dans `js/app.js` :
+
+```javascript
+async init() {
+    CompIde.UI.init();
+
+    const searchBox = document.getElementById('search-box');
+    if (searchBox) {
+        searchBox.addEventListener('input', (e) => {
+            CompIde.Search.renderTree(e.target.value);
+        });
+    }
+
+    await this.loadData();
+
+    if (CompIde.data && CompIde.data.length > 0) {
+        this.selectConcept(CompIde.data[0].id);
+    } else {
+        CompIde.Search.renderTree();
+    }
+}
+```
+
+## 4. Rendu de l'arbre (`Search.renderTree`)
+
+La fonction `renderTree(searchQuery = '')` dans `js/search.js` est responsable de la génération du DOM du sidebar.
+
+### Étapes
+
+1. **Réinitialisation** : `treeContainer.innerHTML = ''` vide le conteneur `#concepts-tree`.
+2. **Filtrage** : Chaque concept de `CompIde.data` est comparé (en minuscules) au `searchQuery`. Si le nom OU la description ne contient pas la requête, le concept est ignoré.
+3. **Groupement par chapitre** : Les concepts filtrés sont regroupés dans un objet `chapters` indexé par `concept.chapter`.
+4. **Construction du DOM** :
+   - Pour chaque chapitre → un `<div>` avec un titre `📂 {chapter}`
+   - Pour chaque concept du chapitre → un `<li class="concept-item">` affichant `📄 {concept.name}`
+   - Le concept actif (`concept.id === CompIde.currentConceptId`) est mis en gras et coloré avec `var(--accent-color)`.
+   - Chaque `<li>` reçoit un `onclick = () => CompIde.App.selectConcept(concept.id)`.
+5. **État vide** : Si aucun concept ne correspond, affiche « Aucun résultat trouvé. »
+
+### Extrait clé
+
+```javascript
+CompIde.Search = {
+    renderTree(searchQuery = '') {
+        const treeContainer = document.getElementById('concepts-tree');
+        treeContainer.innerHTML = '';
+        const chapters = {};
+        const q = searchQuery.toLowerCase();
+
+        CompIde.data.forEach(concept => {
+            if (q && !concept.name.toLowerCase().includes(q)
+                  && !concept.description.toLowerCase().includes(q)) {
+                return;
+            }
+            if (!chapters[concept.chapter]) chapters[concept.chapter] = [];
+            chapters[concept.chapter].push(concept);
+        });
+
+        for (const [chapter, concepts] of Object.entries(chapters)) {
+            // ... création des <div>, <ul>, <li> ...
+            itemLi.onclick = () => CompIde.App.selectConcept(concept.id);
+        }
+    }
+};
+```
+
+## 5. Rafraîchissement du sidebar
+
+Le sidebar est re-dessiné dans deux situations :
+
+| Déclencheur | Code |
+|-------------|------|
+| Frappe dans la barre de recherche | `searchBox` → `input` event → `renderTree(value)` |
+| Changement de concept sélectionné | `App.selectConcept()` → `Search.renderTree(filtreActuel)` |
+
+Cela garantit que le surlignage du concept actif suit toujours la sélection de l'utilisateur, et que la recherche filtre l'arbre en temps réel.
+
+## 6. Styles associés (`styles.css`)
+
+| Sélecteur | Effet |
+|-----------|-------|
+| `.sidebar` | Largeur fixe 260px, fond `--bg-sidebar`, bordure droite, défilement vertical |
+| `.tree-chapter` | Titre de chapitre en gras, couleur accent |
+| `.tree-item` / `.concept-item` | Élément cliquable, padding, curseur pointer |
+| `.tree-item.active` | Fond accent, texte blanc, gras (concept courant) |
+
+## Résumé
+
+Le sidebar n'a aucun contenu statique. Il est entièrement généré par `CompIde.Search.renderTree()` à partir de `CompIde.data`, lui-même issu de la fusion des fichiers JSON opérée dans `CompIde.App.loadData()`. L'interaction se fait via la recherche textuelle et le clic sur un concept, qui déclenchent tous deux un re-rendu de l'arbre.
