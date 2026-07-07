@@ -104,13 +104,13 @@ body {
 }
 .panel-content { padding: 15px; overflow-y: auto; flex: 1; }
 
-/* GRILLE DE CODE */
+/* GRILLE DE CODE - DISPOSITION VERTICALE */
 .comparison-area {
-    display: grid; grid-template-columns: repeat(3, 1fr);
+    display: flex; flex-direction: column;
     gap: 12px; flex: 1; overflow: hidden;
 }
 .code-column {
-    display: flex; flex-direction: column; height: 100%; overflow: hidden;
+    display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;
 }
 .column-header {
     background: var(--bg-sidebar); border: 1px solid var(--panel-border);
@@ -195,4 +195,20 @@ body:not(.light-mode) .token.operator { color: #d4d4d4 !important; }
     background: var(--bg-pitfall); 
     color: var(--text-pitfall); 
     border-left: 4px solid var(--border-pitfall); 
+}
+
+/* Documentation par langage sous chaque colonne de code */
+.lang-doc {
+    padding: 12px;
+    overflow-y: auto;
+    max-height: 400px;
+    background: var(--bg-sidebar);
+    border-top: 1px solid var(--panel-border);
+    font-size: 12px;
+}
+
+.lang-doc .alert-box {
+    margin-top: 10px;
+    font-size: 12px;
+    padding: 10px;
 }
