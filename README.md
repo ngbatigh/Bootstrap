@@ -6,7 +6,7 @@
 
 COMP_IDE // est un comparateur interactif de code pour l'apprentissage des langages C++, C# et Python. L'application présente côte à côte des implémentations d'un même concept pour faciliter la compréhension des différences syntaxiques et sémantiques.
 
-![Demo](https://img.shields.io/badge/Statut-Fonctionnel-success)
+![Statut](https://img.shields.io/badge/Statut-Fonctionnel-success)
 
 **Branche actuelle** : `base-js` - Architecture avec données dispersées en fichiers `.js` globaux (sans fetch asynchrone)
 
@@ -92,26 +92,25 @@ Bootstrap/
 
 ---
 
-## 📚 Concepts couverts (14 concepts)
+## 📚 Concepts couverts (15 concepts)
 
 | #   | Concept                              | Catégorie                   |
 | --- | ------------------------------------ | --------------------------- |
 | 1   | Point d'entrée et Hello World        | Structure globale           |
 | 2   | Déclaration et Initialisation        | Variables                   |
-| 3   | Types Primitifs et Taille Mémoire    | Types                       |
-| 4   | Pointeurs, Références                | Gestion Mémoire / Pointeurs |
-| 5   | Expressions Conditionnelles          | Conditions                  |
-| 6   | Itérations et Collections            | Boucles                     |
-| 7   | Déclaration et Passage de Paramètres | Fonctions                   |
-| 8   | Fonctions Anonymes et Fermetures     | Lambda                      |
-| 9   | Allocation Pile vs Tas               | Mémoire                     |
-| 10  | Classes et Encapsulation             | POO                         |
-| 11  | Héritage et Polymorphisme            | Polymorphisme               |
-| 12  | Le bloc Try-Catch-Finally            | Exceptions                  |
-| 13  | Programmation Générique              | Généricité                  |
-| 14  | Asynchronisme (Async/Await)          | Concurrence                 |
-| 15  | Tables Clés-Valeurs                  | Collections                 |
-| 16  | Manipulation et Formatage            | Algorithmes                 |
+| 3   | Expressions Conditionnelles          | Conditions                  |
+| 4   | Itérations et Collections            | Boucles                     |
+| 5   | Déclaration et Passage de Paramètres | Fonctions                   |
+| 6   | Fonctions Anonymes et Fermetures     | Lambda                      |
+| 7   | Allocation Pile vs Tas               | Mémoire                     |
+| 8   | Pointeurs et Références              | Gestion Mémoire / Pointeurs |
+| 9   | Classes et Encapsulation             | POO                         |
+| 10  | Héritage et Polymorphisme            | Polymorphisme               |
+| 11  | Le bloc Try-Catch-Finally            | Exceptions                  |
+| 12  | Programmation Générique              | Généricité                  |
+| 13  | Asynchronisme (Async/Await)          | Concurrence                 |
+| 14  | Tables Clés-Valeurs                  | Collections                 |
+| 15  | Manipulation et Formatage            | Algorithmes                 |
 
 ---
 
