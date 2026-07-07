@@ -63,9 +63,10 @@
                 <div class="code-column">
                     <div class="column-header">
                         <span>C++ (Référence)</span>
-                        <button class="copy-btn" onclick="CompIde.Compare.copy('code-cpp', event)">Copier</button>
+                        <button class="copy-btn" onclick="CompIde.Compare.copy('code-lang-1', event)">Copier</button>
                     </div>
-                    <pre id="code-cpp" class="code-block"></pre>
+                    <pre id="code-lang-1" class="code-block"></pre>
+                    <div id="doc-lang-1" class="lang-doc"></div>
                 </div>
 
                 <!-- Colonne 2 : Langage Alternatif 1 -->
@@ -78,6 +79,7 @@
                         <button class="copy-btn" onclick="CompIde.Compare.copy('code-lang-2', event)">Copier</button>
                     </div>
                     <pre id="code-lang-2" class="code-block"></pre>
+                    <div id="doc-lang-2" class="lang-doc"></div>
                 </div>
 
                 <!-- Colonne 3 : Langage Alternatif 2 -->
@@ -90,15 +92,11 @@
                         <button class="copy-btn" onclick="CompIde.Compare.copy('code-lang-3', event)">Copier</button>
                     </div>
                     <pre id="code-lang-3" class="code-block"></pre>
+                    <div id="doc-lang-3" class="lang-doc"></div>
                 </div>
             </div>
         </main>
 
-        <!-- Sidebar Droite : Documentation & Remarques (Prend toute la hauteur restante) -->
-        <aside class="doc-panel">
-            <div class="panel-header">DOCUMENTATION & REPERES</div>
-            <div id="doc-content" class="panel-content"></div>
-        </aside>
     </div>
 
     <!-- CHARGEMENT DE L'ARCHITECTURE MODULAIRE HORS-LIGNE -->
