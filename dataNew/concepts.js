@@ -533,4 +533,21 @@ CompIde.data = [
         "pitfalls": "Concaténer des littéraux de chaîne bruts avec l'opérateur `+` comme `\"A\" + \"B\"`. En C++, ce sont des tableaux de caractères `const char*` bruts (style C), l'addition de pointeurs y est interdite et provoquera une erreur de compilation.",
         "notes": "Depuis C++17, le type léger `std::string_view` permet de manipuler des portions ou des sous-chaînes sans allouer ni copier la moindre donnée en mémoire."
       },
+      "csharp": {
+        "minimal": "string s = $\"Hello {nom}\"; // Interpolation\n// Immuable : toute modification crée un nouvel objet",
+        "complete": "using System;\nusing System.Text;\n\nclass Program {\n    static void Main() {\n        string nom = \"Alice\";\n        int age = 28;\n        \n        // Interpolation moderne, lisible et performante\n        string message = $\"Bonjour {nom}, vous avez {age} ans.\";\n\n        // Utilisation obligatoire de StringBuilder pour les boucles massives\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < 1000; i++) {\n            sb.Append(i).Append(\" \");\n        }\n        string chaineLongue = sb.ToString();\n    }\n}",
+        "best_practices": "Bannir les concaténations avec l'opérateur `+` à l'intérieur d'une boucle (`for`/`foreach`). Utilisez impérativement la classe `StringBuilder` pour ne pas fragmenter la mémoire et surcharger le Garbage Collector.",
+        "pitfalls": "Penser qu'appeler `texte.ToUpper()` modifie la chaîne `texte`. Les strings étant immuables, la méthode génère et retourne une *nouvelle* chaîne sans toucher à l'originale (`texte = texte.ToUpper()`).",
+        "notes": "L'interpolation de chaînes (préfixée par `$`) est convertie lors de la compilation en appels optimisés vers `string.Format` ou des structures de création de chaînes."
+      },
+      "python": {
+        "minimal": "s = f\"Hello {nom}\" # F-String\n# Immuable comme en C#",
+        "complete": "def formater_chaines():\n    nom = \"Alice\"\n    # F-string (Lisible, puissante et la plus rapide en Python)\n    message = f\"Nom : {nom.upper()}\"\n\n    # Découpage et assemblage optimisé de listes de chaînes\n    mots = [\"Python\", \"est\", \"génial\"]\n    phrase = \" \".join(mots) # Recommandé pour la concaténation\n    print(phrase)\n\nif __name__ == \"__main__\":\n    formater_chaines()",
+        "best_practices": "Utiliser l'idiome `' '.join(liste_de_chaines)` pour fusionner des collections de mots. C'est l'équivalent ultra-rapide et optimisé du `StringBuilder` de C# en Python.",
+        "pitfalls": "Utiliser l'opérateur `+=` pour accumuler du texte dans une boucle. Comme en C#, cela détruit et réalloue une chaîne de caractères à chaque itération, effondrant dramatiquement la vitesse d'exécution.",
+        "notes": "Les chaînes Python sont des instances d'objets immuables. Deux chaînes identiques courtes partagent souvent le même espace mémoire via un mécanisme interne appelé l'interne de chaînes (String Interning)."
+      }
+    }
+  },
   
+];
