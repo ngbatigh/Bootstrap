@@ -4,10 +4,12 @@ window.CompIde = window.CompIde || {};
 CompIde.data = [
   {
     "id": "base_hello_world",
+    "level": 1,
     "chapter": "1. Bases du langage",
     "category": "Structure globale",
     "name": "Point d'entrée et Hello World",
     "description": "Anatomie d'un programme minimal. Analyse de la fonction principale (main), de l'inclusion des bibliothèques standards et de l'affichage sur la sortie standard.",
+    "mermaid_diagram": "flowchart LR\nA[Inclusion Header] --> B[Fonction principale main] --> C[Flux de sortie stdout] --> D[Code de retour 0]",
     "related_concepts": ["base_variables_01", "func_syntax_01"],
     "languages": {
       "cpp": {
@@ -35,10 +37,12 @@ CompIde.data = [
   },
   {
     "id": "base_variables_01",
+    "level": 1,
     "chapter": "1. Bases du langage",
     "category": "Variables",
     "name": "Déclaration et Initialisation",
     "description": "Comparaison entre les langages à typage statique (C++, C#) et dynamique (Python) concernant la réservation de mémoire pour une variable.",
+    "mermaid_diagram": "flowchart TD\nA[Nom Variable] --> B{Type déterminé à ?}\nB -- Compilation --> C[Typage Statique: C++, C#]\nB -- Exécution --> D[Typage Dynamique: Python]",
     "related_concepts": ["base_hello_world", "types_primitives_01"],
     "languages": {
       "cpp": {
@@ -66,10 +70,12 @@ CompIde.data = [
   },
   {
     "id": "types_primitives_01",
+    "level": 2,
     "chapter": "2. Types et opérateurs",
     "category": "Types",
     "name": "Types Primitifs et Taille Mémoire",
     "description": "Analyse de la représentation machine des types entiers, flottants et booléens. Le langage pivot (C++) se distingue par des tailles de types qui dépendent de l'architecture cible.",
+    "mermaid_diagram": "flowchart TD\nA[Types Primitifs] --> B[Entiers: int, long]\nA --> C[Flottants: float, double]\nA --> D[Booléens: bool]",
     "related_concepts": ["base_variables_01"],
     "languages": {
       "cpp": {
@@ -97,6 +103,7 @@ CompIde.data = [
   },
   {
     "id": "types_references_02",
+    "level": 2,
     "chapter": "2. Types et opérateurs",
     "category": "Gestion Mémoire",
     "name": "Pointeurs, Références et Sémantique",
@@ -128,10 +135,12 @@ CompIde.data = [
   },
   {
     "id": "types_casting_02",
+    "level": 2,
     "chapter": "2. Types et opérateurs",
     "category": "Opérateurs",
     "name": "Transtypage et Conversions (Casting)",
     "description": "Comparaison des mécanismes de conversion de types. Analyse de la sécurité des casts (statiques vs dynamiques) pour éviter les pertes de données ou les crashs à l'exécution.",
+    "mermaid_diagram": "",
     "related_concepts": ["types_primitives_01"],
     "languages": {
       "cpp": {
@@ -159,6 +168,7 @@ CompIde.data = [
   },
   {
     "id": "ctrl_conditional_01",
+    "level": 3,
     "chapter": "3. Structures de contrôle",
     "category": "Conditionnelles",
     "name": "Du Switch au Pattern Matching",
@@ -190,6 +200,7 @@ CompIde.data = [
   },
   {
     "id": "ctrl_loops_01",
+    "level": 3,
     "chapter": "3. Structures de contrôle",
     "category": "Boucles",
     "name": "Boucles et Itérateurs",
@@ -220,6 +231,7 @@ CompIde.data = [
   },
   {
     "id": "func_syntax_01",
+    "level": 4,
     "chapter": "4. Fonctions et Modularité",
     "category": "Signatures",
     "name": "Signatures et Paramètres",
@@ -251,6 +263,7 @@ CompIde.data = [
   },
   {
     "id": "func_lambdas_02",
+    "level": 4,
     "chapter": "4. Fonctions et Modularité",
     "category": "Programmation Fonctionnelle",
     "name": "Fonctions Anonymes et Lambdas",
@@ -282,6 +295,7 @@ CompIde.data = [
   },
   {
     "id": "err_exceptions_01",
+    "level": 5,
     "chapter": "5. Gestion des erreurs",
     "category": "Exceptions",
     "name": "Levée et Capture d'Exceptions",
@@ -313,6 +327,7 @@ CompIde.data = [
   },
   {
     "id": "err_raii_02",
+    "level": 5,
     "chapter": "5. Gestion des erreurs",
     "category": "Gestion Mémoire",
     "name": "Libération des Ressources (RAII, Using, With)",
@@ -344,6 +359,7 @@ CompIde.data = [
   },
   {
     "id": "poo_encapsulation_01",
+    "level": 6,
     "chapter": "6. Programmation Orientée Objet",
     "category": "Classes",
     "name": "Classes et Encapsulation",
@@ -375,6 +391,7 @@ CompIde.data = [
   },
   {
     "id": "poo_polymorphism_02",
+    "level": 6,
     "chapter": "6. Programmation Orientée Objet",
     "category": "Polymorphisme",
     "name": "Héritage, Polymorphisme et Contrats",
@@ -406,6 +423,7 @@ CompIde.data = [
   },
   {
     "id": "gen_generics_01",
+    "level": 7,
     "chapter": "7. Généricité et Concurrence",
     "category": "Généricité",
     "name": "Programmation Générique",
@@ -437,6 +455,7 @@ CompIde.data = [
   },
   {
     "id": "conc_async_02",
+    "level": 7,
     "chapter": "7. Généricité et Concurrence",
     "category": "Concurrence",
     "name": "Asynchronisme (Async / Await)",
@@ -468,6 +487,7 @@ CompIde.data = [
   },
   {
     "id": "struct_maps_01",
+    "level": 8,
     "chapter": "8. Structures avancées",
     "category": "Collections",
     "name": "Tables Clés-Valeurs (Maps & Dicts)",
@@ -499,6 +519,7 @@ CompIde.data = [
   },
   {
     "id": "struct_strings_02",
+    "level": 8,
     "chapter": "8. Structures avancées",
     "category": "Algorithmes",
     "name": "Manipulation et Formatage de Chaînes",
@@ -512,21 +533,4 @@ CompIde.data = [
         "pitfalls": "Concaténer des littéraux de chaîne bruts avec l'opérateur `+` comme `\"A\" + \"B\"`. En C++, ce sont des tableaux de caractères `const char*` bruts (style C), l'addition de pointeurs y est interdite et provoquera une erreur de compilation.",
         "notes": "Depuis C++17, le type léger `std::string_view` permet de manipuler des portions ou des sous-chaînes sans allouer ni copier la moindre donnée en mémoire."
       },
-      "csharp": {
-        "minimal": "string s = $\"Hello {nom}\"; // Interpolation\n// Immuable : toute modification crée un nouvel objet",
-        "complete": "using System;\nusing System.Text;\n\nclass Program {\n    static void Main() {\n        string nom = \"Alice\";\n        int age = 28;\n        \n        // Interpolation moderne, lisible et performante\n        string message = $\"Bonjour {nom}, vous avez {age} ans.\";\n\n        // Utilisation obligatoire de StringBuilder pour les boucles massives\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < 1000; i++) {\n            sb.Append(i).Append(\" \");\n        }\n        string chaineLongue = sb.ToString();\n    }\n}",
-        "best_practices": "Bannir les concaténations avec l'opérateur `+` à l'intérieur d'une boucle (`for`/`foreach`). Utilisez impérativement la classe `StringBuilder` pour ne pas fragmenter la mémoire et surcharger le Garbage Collector.",
-        "pitfalls": "Penser qu'appeler `texte.ToUpper()` modifie la chaîne `texte`. Les strings étant immuables, la méthode génère et retourne une *nouvelle* chaîne sans toucher à l'originale (`texte = texte.ToUpper()`).",
-        "notes": "L'interpolation de chaînes (préfixée par `$`) est convertie lors de la compilation en appels optimisés vers `string.Format` ou des structures de création de chaînes."
-      },
-      "python": {
-        "minimal": "s = f\"Hello {nom}\" # F-String\n# Immuable comme en C#",
-        "complete": "def formater_chaines():\n    nom = \"Alice\"\n    # F-string (Lisible, puissante et la plus rapide en Python)\n    message = f\"Nom : {nom.upper()}\"\n\n    # Découpage et assemblage optimisé de listes de chaînes\n    mots = [\"Python\", \"est\", \"génial\"]\n    phrase = \" \".join(mots) # Recommandé pour la concaténation\n    print(phrase)\n\nif __name__ == \"__main__\":\n    formater_chaines()",
-        "best_practices": "Utiliser l'idiome `' '.join(liste_de_chaines)` pour fusionner des collections de mots. C'est l'équivalent ultra-rapide et optimisé du `StringBuilder` de C# en Python.",
-        "pitfalls": "Utiliser l'opérateur `+=` pour accumuler du texte dans une boucle. Comme en C#, cela détruit et réalloue une chaîne de caractères à chaque itération, effondrant dramatiquement la vitesse d'exécution.",
-        "notes": "Les chaînes Python sont des instances d'objets immuables. Deux chaînes identiques courtes partagent souvent le même espace mémoire via un mécanisme interne appelé l'interne de chaînes (String Interning)."
-      }
-    }
-  },
   
-];
