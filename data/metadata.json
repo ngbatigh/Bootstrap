@@ -1,7 +1,6 @@
 [
   {
     "id": "base_hello_world",
-    "level": 1,
     "chapter": "1. Syntaxe de base",
     "category": "Initialisation",
     "name": "Point d'entrée et Hello World",
@@ -10,7 +9,6 @@
   },
   {
     "id": "types_references_02",
-    "level": 2,
     "chapter": "2. Types et opérateurs",
     "category": "Gestion Mémoire",
     "name": "Pointers et Références",

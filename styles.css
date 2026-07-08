@@ -131,7 +131,7 @@ body {
 /* Le conteneur <pre> de votre colonne de code */
 .code-block {
     margin: 0 !important; /* On écrase les marges par défaut que Prism tente d'imposer */
-    flex: 0.25;           /* Le code occupe 25% de la hauteur de la colonne */
+    flex: 0.4;            /* Le code occupe 40% de la hauteur de la colonne */
     background: var(--bg-code) !important; /* On applique dynamiquement le fond synchronisé */
     border: 1px solid var(--panel-border);
     overflow: auto;       /* Active les barres de défilement si le code est trop long */
@@ -142,7 +142,7 @@ body {
 
 /* Documentation par langage sous chaque colonne de code */
 .lang-doc {
-    flex: 0.75;           /* La documentation occupe 75% de la hauteur de la colonne */
+    flex: 0.6;            /* La documentation occupe 60% de la hauteur de la colonne */
     padding: 12px;
     overflow-y: auto;
     background: var(--bg-sidebar);

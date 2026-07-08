@@ -4,7 +4,6 @@ window.CompIde = window.CompIde || {};
 CompIde.data = [
   {
     "id": "base_hello_world",
-    "level": 1,
     "chapter": "1. Bases du langage",
     "category": "Structure globale",
     "name": "Point d'entrée et Hello World",
@@ -37,7 +36,6 @@ CompIde.data = [
   },
   {
     "id": "base_variables_01",
-    "level": 1,
     "chapter": "1. Bases du langage",
     "category": "Variables",
     "name": "Déclaration et Initialisation",
@@ -70,7 +68,6 @@ CompIde.data = [
   },
   {
     "id": "types_primitives_01",
-    "level": 2,
     "chapter": "2. Types et opérateurs",
     "category": "Types",
     "name": "Types Primitifs et Taille Mémoire",
@@ -103,7 +100,6 @@ CompIde.data = [
   },
   {
     "id": "types_references_02",
-    "level": 2,
     "chapter": "2. Types et opérateurs",
     "category": "Gestion Mémoire",
     "name": "Pointeurs, Références et Sémantique",
@@ -135,7 +131,6 @@ CompIde.data = [
   },
   {
     "id": "types_casting_02",
-    "level": 2,
     "chapter": "2. Types et opérateurs",
     "category": "Opérateurs",
     "name": "Transtypage et Conversions (Casting)",
@@ -168,7 +163,6 @@ CompIde.data = [
   },
   {
     "id": "ctrl_conditional_01",
-    "level": 3,
     "chapter": "3. Structures de contrôle",
     "category": "Conditionnelles",
     "name": "Du Switch au Pattern Matching",
@@ -200,7 +194,6 @@ CompIde.data = [
   },
   {
     "id": "ctrl_loops_01",
-    "level": 3,
     "chapter": "3. Structures de contrôle",
     "category": "Boucles",
     "name": "Boucles et Itérateurs",
@@ -231,7 +224,6 @@ CompIde.data = [
   },
   {
     "id": "func_syntax_01",
-    "level": 4,
     "chapter": "4. Fonctions et Modularité",
     "category": "Signatures",
     "name": "Signatures et Paramètres",
@@ -263,7 +255,6 @@ CompIde.data = [
   },
   {
     "id": "func_lambdas_02",
-    "level": 4,
     "chapter": "4. Fonctions et Modularité",
     "category": "Programmation Fonctionnelle",
     "name": "Fonctions Anonymes et Lambdas",
@@ -295,7 +286,6 @@ CompIde.data = [
   },
   {
     "id": "err_exceptions_01",
-    "level": 5,
     "chapter": "5. Gestion des erreurs",
     "category": "Exceptions",
     "name": "Levée et Capture d'Exceptions",
@@ -327,7 +317,6 @@ CompIde.data = [
   },
   {
     "id": "err_raii_02",
-    "level": 5,
     "chapter": "5. Gestion des erreurs",
     "category": "Gestion Mémoire",
     "name": "Libération des Ressources (RAII, Using, With)",
@@ -359,7 +348,6 @@ CompIde.data = [
   },
   {
     "id": "poo_encapsulation_01",
-    "level": 6,
     "chapter": "6. Programmation Orientée Objet",
     "category": "Classes",
     "name": "Classes et Encapsulation",
@@ -391,7 +379,6 @@ CompIde.data = [
   },
   {
     "id": "poo_polymorphism_02",
-    "level": 6,
     "chapter": "6. Programmation Orientée Objet",
     "category": "Polymorphisme",
     "name": "Héritage, Polymorphisme et Contrats",
@@ -423,7 +410,6 @@ CompIde.data = [
   },
   {
     "id": "gen_generics_01",
-    "level": 7,
     "chapter": "7. Généricité et Concurrence",
     "category": "Généricité",
     "name": "Programmation Générique",
@@ -455,7 +441,6 @@ CompIde.data = [
   },
   {
     "id": "conc_async_02",
-    "level": 7,
     "chapter": "7. Généricité et Concurrence",
     "category": "Concurrence",
     "name": "Asynchronisme (Async / Await)",
@@ -487,7 +472,6 @@ CompIde.data = [
   },
   {
     "id": "struct_maps_01",
-    "level": 8,
     "chapter": "8. Structures avancées",
     "category": "Collections",
     "name": "Tables Clés-Valeurs (Maps & Dicts)",
@@ -519,7 +503,6 @@ CompIde.data = [
   },
   {
     "id": "struct_strings_02",
-    "level": 8,
     "chapter": "8. Structures avancées",
     "category": "Algorithmes",
     "name": "Manipulation et Formatage de Chaînes",
