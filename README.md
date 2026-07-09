@@ -44,18 +44,18 @@ Chaque colonne affiche sa propre documentation :
 
 ### Langages supportés
 
-| Langage | Données JSON |
+| Langage | Données JS |
 |---------|-------------|
-| C | `data/c.json` |
-| C++ (référence) | `data/cpp.json` |
-| C# | `data/csharp.json` |
-| Java | `data/java.json` |
-| JavaScript | `data/javascript.json` |
-| PHP | `data/php.json` |
-| Python | `data/python.json` |
-| TypeScript | `data/typescript.json` |
-| VB.NET | `data/vb.json` |
-| VBA | `data/vba.json` |
+| C | `data/c.js` |
+| C++ (référence) | `data/cpp.js` |
+| C# | `data/csharp.js` |
+| Java | `data/java.js` |
+| JavaScript | `data/javascript.js` |
+| PHP | `data/php.js` |
+| Python | `data/python.js` |
+| TypeScript | `data/typescript.js` |
+| VB.NET | `data/vb.js` |
+| VBA | `data/vba.js` |
 
 ### Coloration syntaxique
 
@@ -72,18 +72,18 @@ Bootstrap/
 ├── index.html              # SPA - interface unique
 ├── styles.css              # Styles et variables thème
 ├── data/
-│   ├── concepts.js         # 17 concepts complets (source de vérité)
-│   ├── metadata.json       # Métadonnées pour l'arbre des concepts
-│   ├── cpp.json            # Exemples C++
-│   ├── csharp.json         # Exemples C#
-│   ├── python.json         # Exemples Python
-│   ├── c.json              # Exemples C
-│   ├── java.json           # Exemples Java
-│   ├── javascript.json     # Exemples JavaScript
-│   ├── php.json            # Exemples PHP
-│   ├── typescript.json     # Exemples TypeScript
-│   ├── vb.json             # Exemples VB.NET
-│   └── vba.json            # Exemples VBA
+│   ├── concepts.js         # Données fusionnées de tous les concepts (source de vérité)
+│   ├── metadata.js         # Métadonnées pour l'arbre des concepts
+│   ├── cpp.js              # Exemples C++
+│   ├── csharp.js           # Exemples C#
+│   ├── python.js           # Exemples Python
+│   ├── c.js                # Exemples C
+│   ├── java.js             # Exemples Java
+│   ├── javascript.js       # Exemples JavaScript
+│   ├── php.js              # Exemples PHP
+│   ├── typescript.js       # Exemples TypeScript
+│   ├── vb.js               # Exemples VB.NET
+│   └── vba.js              # Exemples VBA
 ├── docs/
 │   ├── architecture.md     # Documentation technique
 │   ├── app-loaddata.md     # Explication de loadData()
@@ -189,15 +189,15 @@ npx serve .
 
 ### Ajouter un nouveau concept
 
-1. Ajouter l'entrée dans `data/metadata.json`
-2. Ajouter les données dans les fichiers JSON des langages (`data/cpp.json`, etc.)
+1. Ajouter l'entrée dans `data/metadata.js`
+2. Ajouter les données dans les fichiers JS des langages (`data/cpp.js`, etc.)
 3. Optionnel : ajouter également dans `data/concepts.js` (source de vérité complète)
 
 ### Ajouter un langage
 
-1. Ajouter une colonne dans `index.html`
-2. Créer le fichier JSON dans `data/`
-3. Modifier `CompIde.Compare.fillCode()` pour accepter la nouvelle clé
+1. Ajouter l'option dans les `<select>` de `index.html`
+2. Créer le fichier JS dans `data/` (ex: `data/nouveau.js`) et l'importer via `<script>` dans `index.html`
+3. Ajouter le label du langage dans la fonction `getLangLabel()` de `js/compare.js`
 4. Ajouter la grammaire PrismJS si nécessaire
 
 ---
@@ -235,9 +235,9 @@ CompIde.UI = { /* ... */ };
 ### Flux de données
 
 ```
-JSON files (metadata.json + cpp.json + ...)
-  → fetch() parallèle via App.loadData()
-  → Fusion dans CompIde.data
+Fichiers JS (metadata.js + cpp.js + concepts.js...) chargés via balises <script>
+  → CompIde.data est instantanément disponible en mémoire
+  → App.init() (synchrone)
   → renderTree() / fillCode() / fillDocumentation()
   → DOM
 ```
@@ -249,7 +249,7 @@ DOMContentLoaded
   → CompIde.App.init()
     → UI.init()
     → Search listener
-    → loadData()
+    → Vérification loadData() (synchrone)
     → selectConcept()
 ```
 

@@ -22,7 +22,9 @@ Ce document indique où chaque clé des objets du fichier `data/concepts.js` est
       "notes": "..."
     },
     "csharp": { ... },
-    "python": { ... }
+    "python": { ... },
+    "java": { ... }
+    // ... (10 langages)
   }
 }
 ```
@@ -49,7 +51,7 @@ Ce document indique où chaque clé des objets du fichier `data/concepts.js` est
 │  │ et Init.          │    │ │ minimal/ │ minimal/ │ minimal/ │             │     │
 │  │ ← name            │    │ │ complete │ complete │ complete │             │     │
 │  │                   │    │ │← languages│← lang.  │← lang.  │             │     │
-│  │ 📂 2. Types       │    │ │ .cpp     │ .csharp  │ .python  │            │     │
+│  │ 📂 2. Types       │    │ │ .cpp     │ .csharp  │ .[choix] │            │     │
 │  │ ← chapter         │    │ ├──────────┼──────────┼──────────┤             │     │
 │  │                   │    │ │ Desc.    │ Desc.    │ Desc.    │ ← description│   │
 │  │ ...               │    │ │ ℹ️ ...   │ ℹ️ ...   │ ℹ️ ...   │ ← languages│   │
@@ -78,7 +80,6 @@ Ce document indique où chaque clé des objets du fichier `data/concepts.js` est
 | Utilisation | Fichier JS | Ligne(s) |
 |-------------|-----------|----------|
 | Stocké dans `CompIde.currentConceptId` pour suivre le concept actif | `app.js` | `currentConceptId`, `selectConcept(id)` |
-| Clé de jointure avec les données des langages (`cppData[concept.id]`) | `app.js` | `loadData()` (fusion) |
 | Recherche du concept dans `CompIde.data` : `CompIde.data.find(c => c.id === ...)` | `compare.js`, `app.js` | `update()`, `selectConcept()` |
 | Création des liens concepts liés : `onclick="CompIde.App.selectConcept('${concept.id}')"` | `compare.js` | `fillDocumentation()` |
 | Comparaison au concept courant dans le sidebar : `concept.id === CompIde.currentConceptId` | `search.js` | `renderTree()` |
@@ -203,7 +204,7 @@ Cette clé est un **objet** contenant les données par langage. Voir le document
 
 | Utilisation | Fichier JS | Ligne(s) |
 |-------------|-----------|----------|
-| **Fusion des données** : chaque langage est rattaché à son concept via `languages.cpp`, `languages.csharp`, etc. | `app.js` | `loadData()` |
+| **Définition globale** : défini dans `data/concepts.js` directement avec les 10 langages | - | - |
 | **Rendu du code** : `concept.languages[langKey][scope]` | `compare.js` | `fillCode()` |
 | **Rendu de la documentation** : `concept.languages[langKey].notes`, `.best_practices`, `.pitfalls` | `compare.js` | `fillDocumentation()` |
 

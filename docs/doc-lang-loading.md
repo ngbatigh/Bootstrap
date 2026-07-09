@@ -35,15 +35,17 @@ Ce conteneur remplace l'ancien `doc-panel` (sidebar droite unique) : la document
 
 ## 2. Source des données
 
-Les données proviennent de `CompIde.data`, le tableau unifié produit par `App.loadData()` dans `js/app.js`.
+Les données proviennent de `CompIde.data`, le tableau global défini dans `data/concepts.js`.
 
-Chaque concept possède une propriété `languages` structurée ainsi :
+Chaque concept possède une propriété `languages` structurée ainsi (pour les 10 langages) :
 
 ```javascript
 languages: {
     cpp:    { minimal: "...", complete: "...", best_practices: "...", pitfalls: "...", notes: "..." },
     csharp: { minimal: "...", complete: "...", best_practices: "...", pitfalls: "...", notes: "..." },
-    python: { minimal: "...", complete: "...", best_practices: "...", pitfalls: "...", notes: "..." }
+    python: { minimal: "...", complete: "...", best_practices: "...", pitfalls: "...", notes: "..." },
+    java:   { minimal: "...", complete: "...", best_practices: "...", pitfalls: "...", notes: "..." },
+    // ...
 }
 ```
 
@@ -141,7 +143,11 @@ La méthode utilitaire `getLangLabel(langKey)` retourne le nom affichable :
 
 ```javascript
 getLangLabel(langKey) {
-    const labels = { cpp: 'C++', csharp: 'C#', python: 'Python' };
+    const labels = {
+        c: 'C', cpp: 'C++', csharp: 'C#', java: 'Java',
+        javascript: 'JavaScript', typescript: 'TypeScript',
+        php: 'PHP', python: 'Python', vb: 'VB.NET', vba: 'VBA'
+    };
     return labels[langKey] || langKey;
 }
 ```
@@ -172,7 +178,7 @@ Changer le `<select>` d'une colonne relance `Compare.update()`, qui rejoue `fill
 
 Les panneaux `.lang-doc` ne sont pas statiques. Ils sont :
 
-1. Chargés depuis `CompIde.data` (fusion JSON dans `App.loadData`)
+1. Chargés statiquement via `data/concepts.js` qui initialise `CompIde.data`
 2. Remplis par `Compare.fillDocumentation()` avec description + alert-box (notes, bonnes pratiques, pièges) propres au langage de la colonne
 3. Re-rendus à chaque changement de concept ou de langage sélectionné
 4. Mis en forme par les classes `.alert-box` et `.lang-doc` de `styles.css`

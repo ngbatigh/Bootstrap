@@ -5,13 +5,13 @@ CompIde.App = {
     currentConceptId: null,
 
     // Vérification du chargement des données (effectué de manière synchrone via les balises script)
-    async loadData() {
+    loadData() {
         if (!CompIde.data || CompIde.data.length === 0) {
             console.error("Aucune donnée conceptuelle chargée.");
         }
     },
 
-    async init() {
+    init() {
         // 1. Initialiser l'interface utilisateur (boutons, zoom)
         CompIde.UI.init();
 
@@ -23,8 +23,8 @@ CompIde.App = {
             });
         }
 
-        // 3. Charger les fichiers JSON avant d'afficher quoi que ce soit
-        await this.loadData();
+        // 3. Vérifier que les données sont bien chargées
+        this.loadData();
 
         // 4. Sélectionner le premier concept et dessiner l'arbre
         if (CompIde.data && CompIde.data.length > 0) {

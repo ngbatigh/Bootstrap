@@ -11,18 +11,18 @@ Bootstrap/
 ├── index.html              # Point d'entrée HTML unique
 ├── styles.css              # Styles CSS avec thèmes sombre/clair
 ├── data/
-│   ├── concepts.js         # Données conceptuelles complètes (17 concepts)
-│   ├── metadata.json       # Métadonnées des concepts pour l'arbre
-│   ├── cpp.json            # Exemples C++ (référence)
-│   ├── c.json              # Exemples C
-│   ├── csharp.json         # Exemples C#
-│   ├── java.json           # Exemples Java
-│   ├── javascript.json     # Exemples JavaScript
-│   ├── php.json            # Exemples PHP
-│   ├── python.json         # Exemples Python
-│   ├── typescript.json     # Exemples TypeScript
-│   ├── vb.json             # Exemples VB.NET
-│   └── vba.json            # Exemples VBA
+│   ├── concepts.js         # Données conceptuelles unifiées
+│   ├── metadata.js         # Métadonnées des concepts pour l'arbre
+│   ├── cpp.js              # Exemples C++ (référence)
+│   ├── c.js                # Exemples C
+│   ├── csharp.js           # Exemples C#
+│   ├── java.js             # Exemples Java
+│   ├── javascript.js       # Exemples JavaScript
+│   ├── php.js              # Exemples PHP
+│   ├── python.js           # Exemples Python
+│   ├── typescript.js       # Exemples TypeScript
+│   ├── vb.js               # Exemples VB.NET
+│   └── vba.js              # Exemples VBA
 ├── docs/
 │   ├── architecture.md     # Ce fichier
 │   ├── app-loaddata.md     # Explication de App.loadData()
@@ -43,7 +43,7 @@ Bootstrap/
 
 ### concepts.js
 
-Contient le dataset maître sous forme de tableau d'objets. 17 concepts au total. Chaque concept possède :
+Contient le dataset maître sous forme de tableau d'objets (historiquement unifié, contenant ~30 concepts). Chaque concept possède :
 
 - `id` : Identifiant unique
 - `level` : Niveau de difficulté (1-8)
@@ -54,9 +54,9 @@ Contient le dataset maître sous forme de tableau d'objets. 17 concepts au total
 - `related_concepts` : Tableau d'IDs de concepts liés
 - `languages` : Objet contenant les exemples par langage (cpp, csharp, python...)
 
-### Fichiers JSON (cpp.json, csharp.json, python.json, ...)
+### Fichiers JS par langage (cpp.js, csharp.js, python.js, ...)
 
-Structure alternative pour séparation des préoccupations. Chaque fichier est un objet indexé par `id` de concept. Chaque entrée contient :
+Structure locale chargeant un objet `CompIde.<lang>Data` (ex: `CompIde.cppData`). Chaque fichier est un objet indexé par `id` de concept. Chaque entrée contient :
 
 - `minimal` : Version courte du code
 - `complete` : Version complète du code
@@ -64,9 +64,9 @@ Structure alternative pour séparation des préoccupations. Chaque fichier est u
 - `pitfalls` : Erreurs courantes
 - `notes` : Remarques contextuelles
 
-### metadata.json
+### metadata.js
 
-Métadonnées légères pour l'Arbre des concepts. Contient id, level, chapter, category, name, description, related_concepts. Synchronisé avec `data/concepts.js`.
+Charge l'objet `CompIde.metadata` (métadonnées légères pour l'Arbre des concepts). Contient id, chapter, category, name, description, related_concepts.
 
 ## Modules JavaScript
 
@@ -76,9 +76,8 @@ Métadonnées légères pour l'Arbre des concepts. Contient id, level, chapter, 
 
 **Responsabilités** :
 
-- Chargement asynchrone des données JSON via `Promise.all`
-- Fusion des données en structure unifiée `CompIde.data`
-- Initialisation séquentielle : UI → Recherche → Chargement données → Sélection concept
+- Vérification synchrone du chargement des données (déjà chargées via balises `<script>`)
+- Initialisation séquentielle : UI → Recherche → Vérification données → Sélection concept
 - Gestion du concept actif via `currentConceptId`
 
 **Flux d'initialisation** :
@@ -86,9 +85,9 @@ Métadonnées légères pour l'Arbre des concepts. Contient id, level, chapter, 
 ```javascript
 DOMContentLoaded → CompIde.App.init()
   → CompIde.UI.init()
-  → Chargement fetch() parallèle
-  → Fusion données
-  → selectConcept(premier)
+  → Setup Search Listener
+  → this.loadData() (vérification synchrone)
+  → selectConcept(premier_id)
 ```
 
 ### Compare (js/compare.js)
@@ -150,9 +149,9 @@ DOMContentLoaded → CompIde.App.init()
   - Thèmes inclus : prism (dark), prism-dark, prism-funky, prism-okaidia
   - Langages supportés : markup, clike, javascript, c, csharp, cpp, python, typescript, visual-basic, java, php
 
-## Modèle de données unifié
+## Modèle de données unifié (`CompIde.data`)
 
-Après fusion par `App.loadData()` :
+Défini statiquement dans `data/concepts.js` :
 
 ```javascript
 CompIde.data = [{
@@ -189,22 +188,22 @@ CompIde.data = [{
 
 ### Ajout d'un concept
 
-1. Ajouter l'entrée dans `data/metadata.json` et `data/concepts.js`
-2. Ajouter les clés dans les fichiers JSON des langages (`data/cpp.json`, etc.)
+1. Ajouter l'entrée dans `data/metadata.js` et `data/concepts.js`
+2. Ajouter les clés dans les fichiers JS des langages (`data/cpp.js`, etc.)
 3. Respecter la structure `languages[langKey].minimal` / `.complete`
 
 ### Ajout d'un langage
 
-1. Créer le fichier `data/nouveaulangage.json` (structure indexée par id de concept)
-2. Ajouter une colonne dans `index.html` (copier bloc colonne 2)
-3. Ajuster `CompIde.Compare.fillCode()` dans `js/compare.js` si nécessaire
+1. Créer le fichier `data/nouveau.js` (structure indexée par id de concept)
+2. L'ajouter via `<script>` dans `index.html`
+3. Ajouter une option `<option value="nouveau">Nouveau</option>` dans les menus déroulants de `index.html`
 4. Ajouter la grammaire Prism si nécessaire
 5. Ajouter le label dans `getLangLabel()` dans `js/compare.js`
 
 ## Performance et optimisations
 
-- Chargement parallèle des JSON via `Promise.all`
-- Mise en cache navigateur (fichiers statiques)
+- Chargement immédiat en mémoire vive via balises `<script>` sans requêtes HTTP secondaires
+- Mise en cache navigateur (fichiers statiques statiques)
 - Coloration Prism déclenchée uniquement lors des changements
 - DOM minimalement manipulé (innerHTML ciblé)
 

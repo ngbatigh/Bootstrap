@@ -1,10 +1,12 @@
-# Correspondance des clés de `metadata.json` avec l'interface
+# Correspondance des clés de `metadata.js` avec l'interface
 
-Ce document indique où chaque clé des objets de `data/metadata.json` est affichée ou utilisée dans l'interface utilisateur.
+Ce document indique où chaque clé des objets de `data/metadata.js` est affichée ou utilisée dans l'interface utilisateur.
 
-## Structure d'un objet de metadata.json
+## Structure d'un objet de metadata.js
 
-```json
+```javascript
+window.CompIde = window.CompIde || {};
+CompIde.metadata = [
 {
   "id": "base_hello_world",
   "level": 1,
@@ -14,6 +16,7 @@ Ce document indique où chaque clé des objets de `data/metadata.json` est affic
   "description": "Anatomie d'un programme minimal...",
   "related_concepts": ["base_variables_01", "func_syntax_01"]
 }
+];
 ```
 
 ---

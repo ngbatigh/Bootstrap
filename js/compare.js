@@ -112,7 +112,18 @@ CompIde.Compare = {
     },
 
     getLangLabel(langKey) {
-        const labels = { cpp: 'C++', csharp: 'C#', python: 'Python' };
+        const labels = {
+            c: 'C',
+            cpp: 'C++',
+            csharp: 'C#',
+            java: 'Java',
+            javascript: 'JavaScript',
+            typescript: 'TypeScript',
+            php: 'PHP',
+            python: 'Python',
+            vb: 'VB.NET',
+            vba: 'VBA'
+        };
         return labels[langKey] || langKey;
     },
 

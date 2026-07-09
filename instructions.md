@@ -1,0 +1,1 @@
+pas de JSON, pas de fonction asynchrone (async et await), pas de fetch(), pas de promesse

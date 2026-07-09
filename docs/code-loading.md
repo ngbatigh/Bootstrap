@@ -1,6 +1,6 @@
 # Chargement des Codes des Langages
 
-Ce document décrit comment les blocs de code des trois langages (C++, Langage 2, Langage 3) sont chargés et affichés dans COMP_IDE //.
+Ce document décrit comment les blocs de code des langages sont chargés et affichés dans COMP_IDE //. L'application prend en charge 10 langages.
 
 ## 1. Structure HTML statique
 
@@ -21,8 +21,11 @@ Dans `index.html`, la zone centrale contient une grille de 3 colonnes (`.compari
 <div class="code-column">
     <div class="column-header">
         <select id="select-lang-2" onchange="CompIde.Compare.update()">
+            <option value="c">C</option>
+            <option value="cpp">C++</option>
             <option value="csharp" selected>C#</option>
-            <option value="python">Python</option>
+            <option value="java">Java</option>
+            <!-- ... autres options ... -->
         </select>
         <button class="copy-btn" onclick="CompIde.Compare.copy('code-lang-2', event)">Copier</button>
     </div>
@@ -34,8 +37,12 @@ Dans `index.html`, la zone centrale contient une grille de 3 colonnes (`.compari
 <div class="code-column">
     <div class="column-header">
         <select id="select-lang-3" onchange="CompIde.Compare.update()">
-            <option value="python" selected>Python</option>
+            <option value="c">C</option>
+            <option value="cpp">C++</option>
             <option value="csharp">C#</option>
+            <option value="java">Java</option>
+            <!-- ... autres options ... -->
+            <option value="python" selected>Python</option>
         </select>
         <button class="copy-btn" onclick="CompIde.Compare.copy('code-lang-3', event)">Copier</button>
     </div>
@@ -51,34 +58,23 @@ Les identifiants cibles sont donc `code-lang-1`, `code-lang-2`, `code-lang-3`.
 
 ## 2. Source des données
 
-Les codes proviennent de `CompIde.data`, le tableau unifié produit par `App.loadData()` dans `js/app.js`.
+Les codes proviennent de `CompIde.data`, le tableau global défini dans `data/concepts.js`.
 
-Chaque concept possède une propriété `languages` structurée ainsi :
+Chaque concept possède une propriété `languages` structurée ainsi (pour les 10 langages) :
 
 ```javascript
 languages: {
     cpp:    { minimal: "...", complete: "...", best_practices: "...", pitfalls: "...", notes: "..." },
     csharp: { minimal: "...", complete: "...", ... },
-    python: { minimal: "...", complete: "...", ... }
+    python: { minimal: "...", complete: "...", ... },
+    java:   { minimal: "...", complete: "...", ... },
+    // ...
 }
 ```
 
 Les valeurs `minimal` et `complete` sont les deux versions de code source affichées selon le scope choisi par l'utilisateur.
 
-La fusion est opérée dans `App.loadData()` :
-
-```javascript
-CompIde.data = metadata.map(concept => ({
-    ...concept,
-    languages: {
-        cpp:    cppData[concept.id]    || {},
-        csharp: csharpData[concept.id] || {},
-        python: pythonData[concept.id] || {}
-    }
-}));
-```
-
-> Remarque : `data/concepts.js` contient également un jeu de données complet (utilisé en remplacement si le fetch échoue), mais le pipeline de production utilise les fichiers JSON (`metadata.json`, `cpp.json`, `csharp.json`, `python.json`).
+Ce tableau est chargé de manière synchrone par le navigateur via les balises `<script>` d'`index.html`, sans aucune requête réseau.
 
 ## 3. Flux de rendu
 
@@ -180,7 +176,7 @@ Chaque colonne a un bouton « Copier » qui appelle `CompIde.Compare.copy(elemen
 
 Les codes des langages ne sont pas en dur dans le HTML. Ils sont :
 
-1. Chargés depuis les fichiers JSON fusionnés dans `CompIde.data` (`App.loadData`)
+1. Chargés statiquement via `data/concepts.js` qui initialise `CompIde.data`
 2. Injectés dynamiquement dans les `<pre id="code-lang-X">` par `Compare.fillCode()`
 3. Colorés par Prism selon la classe `language-xxx`
 4. Alternés entre versions `minimal` / `complete` via `UI.codeScope`

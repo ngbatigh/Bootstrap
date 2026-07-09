@@ -1,13 +1,14 @@
-# Correspondance des clés des fichiers JSON de langage (cpp.json, csharp.json, etc.) avec l'interface
+# Correspondance des clés des fichiers JS de langage (cpp.js, csharp.js, etc.) avec l'interface
 
-Ce document indique où chaque clé des fichiers JSON de langage (comme `data/cpp.json`, `data/csharp.json`, etc.) est affichée ou utilisée dans l'interface utilisateur.
+Ce document indique où chaque clé des fichiers JS de langage (comme `data/cpp.js`, `data/csharp.js`, etc.) est affichée ou utilisée dans l'interface utilisateur.
 
-> Ces fichiers sont tous structurés de la même manière. Ce document utilise `cpp.json` comme exemple, mais s'applique à tous : `c.json`, `cpp.json`, `csharp.json`, `java.json`, `javascript.json`, `php.json`, `python.json`, `typescript.json`, `vb.json`, `vba.json`.
+> Ces fichiers sont tous structurés de la même manière. Ce document utilise `cpp.js` comme exemple, mais s'applique à tous : `c.js`, `cpp.js`, `csharp.js`, `java.js`, `javascript.js`, `php.js`, `python.js`, `typescript.js`, `vb.js`, `vba.js`.
 
-## Structure d'une entrée dans cpp.json
+## Structure d'une entrée dans cpp.js
 
-```json
-{
+```javascript
+window.CompIde = window.CompIde || {};
+CompIde.cppData = {
   "base_hello_world": {
     "minimal": "int main() {\n    std::cout << \"Hello World!\";\n}",
     "complete": "#include <iostream>\n\nint main() {\n    std::cout << \"Hello World!\\n\";\n    return 0;\n}",
@@ -15,7 +16,7 @@ Ce document indique où chaque clé des fichiers JSON de langage (comme `data/cp
     "pitfalls": "Oublier l'espace de noms std:: ou la directive using namespace std; provoquera une erreur de compilation.",
     "notes": "C++ utilise un compilateur natif. Le point d'entrée doit impérativement s'appeler main."
   }
-}
+};
 ```
 
 ---
@@ -178,14 +179,14 @@ Le libellé "C++" est remplacé dynamiquement par le nom du langage via `getLang
 ## Ordre d'apparition dans chaque panneau `.lang-doc`
 
 ```
-1. Description du concept     ← de metadata.json
-2. ℹ️ Remarques (notes)       ← du fichier JSON de langage
+1. Description du concept     ← de metadata.js
+2. ℹ️ Remarques (notes)       ← du fichier JS de langage
 3. ✅ Bonnes pratiques         ← best_practices
 4. ⚠️ Pièges fréquents        ← pitfalls
-5. 🔗 Concepts liés           ← de metadata.json
+5. 🔗 Concepts liés           ← de metadata.js
 ```
 
-Les sections 2, 3, 4 ne sont affichées que si la clé correspondante existe et n'est pas vide dans le fichier JSON du langage.
+Les sections 2, 3, 4 ne sont affichées que si la clé correspondante existe et n'est pas vide dans le fichier JS du langage.
 
 ## Résumé
 
@@ -211,4 +212,4 @@ Les sections 2, 3, 4 ne sont affichées que si la clé correspondante existe et 
 └────────────────────────────────────────┘
 ```
 
-**Nota** : Les fichiers `data/cpp.json`, `data/csharp.json`, `data/python.json` et tous les autres fichiers JSON de langage (`data/c.json`, `data/java.json`, etc.) partagent exactement la même structure de clés (`minimal`, `complete`, `best_practices`, `pitfalls`, `notes`) et le même mécanisme d'affichage via `Compare.fillCode()` et `Compare.fillDocumentation()` dans `js/compare.js`.
+**Nota** : Les fichiers `data/cpp.js`, `data/csharp.js`, `data/python.js` et tous les autres fichiers JS de langage (`data/c.js`, `data/java.js`, etc.) partagent exactement la même structure de clés (`minimal`, `complete`, `best_practices`, `pitfalls`, `notes`) et le même mécanisme d'affichage via `Compare.fillCode()` et `Compare.fillDocumentation()` dans `js/compare.js`.

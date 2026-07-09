@@ -16,31 +16,9 @@ Le contenu réel est injecté dynamiquement par JavaScript. Le conteneur cible e
 
 ## 2. Source des données
 
-Le sidebar s'appuie sur `CompIde.data`, le tableau unifié produit par `App.loadData()` dans `js/app.js`.
+Le sidebar s'appuie sur `CompIde.data`, le tableau global défini dans `data/concepts.js`.
 
-Ce tableau est obtenu par fusion (dans `loadData()`) de plusieurs fichiers :
-
-| Fichier | Rôle |
-|---------|------|
-| `data/metadata.json` | Métadonnées légères (id, chapter, name, description, related_concepts) |
-| `data/cpp.json` | Exemples et notes C++ |
-| `data/csharp.json` | Exemples et notes C# |
-| `data/python.json` | Exemples et notes Python |
-
-Les fichiers sont récupérés en parallèle via `Promise.all([fetch(...), ...])` puis fusionnés :
-
-```javascript
-CompIde.data = metadata.map(concept => ({
-    ...concept,
-    languages: {
-        cpp: cppData[concept.id] || {},
-        csharp: csharpData[concept.id] || {},
-        python: pythonData[concept.id] || {}
-    }
-}));
-```
-
-> Remarque : `data/concepts.js` contient également un jeu de données complet (utilisé en remplacement de la fusion JSON si le fetch échoue), mais le pipeline principal de production utilise les fichiers JSON.
+Contrairement aux versions précédentes, il n'y a plus de fusion asynchrone : toutes les données sont chargées de manière synchrone via les balises `<script>` de `index.html`.
 
 ## 3. Flux d'initialisation
 
@@ -49,7 +27,7 @@ DOMContentLoaded
   └─ CompIde.App.init()
        ├─ CompIde.UI.init()                     // boutons, zoom, thème
        ├─ searchBox.addEventListener('input')   // filtrage temps réel
-       ├─ await this.loadData()                 // remplit CompIde.data
+       ├─ this.loadData()                       // vérifie que CompIde.data existe
        └─ this.selectConcept(premierId)
             └─ CompIde.Search.renderTree(filtre) // 🌳 PEUPLE LE SIDEBAR
 ```
@@ -57,7 +35,7 @@ DOMContentLoaded
 `App.init()` se trouve dans `js/app.js` :
 
 ```javascript
-async init() {
+init() {
     CompIde.UI.init();
 
     const searchBox = document.getElementById('search-box');
@@ -67,7 +45,7 @@ async init() {
         });
     }
 
-    await this.loadData();
+    this.loadData();
 
     if (CompIde.data && CompIde.data.length > 0) {
         this.selectConcept(CompIde.data[0].id);
@@ -142,4 +120,4 @@ Cela garantit que le surlignage du concept actif suit toujours la sélection de 
 
 ## Résumé
 
-Le sidebar n'a aucun contenu statique. Il est entièrement généré par `CompIde.Search.renderTree()` à partir de `CompIde.data`, lui-même issu de la fusion des fichiers JSON opérée dans `CompIde.App.loadData()`. L'interaction se fait via la recherche textuelle et le clic sur un concept, qui déclenchent tous deux un re-rendu de l'arbre.
+Le sidebar n'a aucun contenu statique. Il est entièrement généré par `CompIde.Search.renderTree()` à partir de `CompIde.data` (défini statiquement dans `data/concepts.js`). L'interaction se fait via la recherche textuelle et le clic sur un concept, qui déclenchent tous deux un re-rendu de l'arbre.
