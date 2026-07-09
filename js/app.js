@@ -4,37 +4,10 @@ window.CompIde = window.CompIde || {};
 CompIde.App = {
     currentConceptId: null,
 
-    // C'est ici que la magie de la fusion JSON opère
+    // Vérification du chargement des données (effectué de manière synchrone via les balises script)
     async loadData() {
-        try {
-            // 1. Chargement asynchrone et simultané de tous les fichiers JSON
-            const [metaRes, cppRes, csharpRes, pythonRes] = await Promise.all([
-                fetch('data/metadata.json'),
-                fetch('data/cpp.json'),
-                fetch('data/csharp.json'),
-                fetch('data/python.json')
-            ]);
-
-            const metadata = await metaRes.json();
-            const cppData = await cppRes.json();
-            const csharpData = await csharpRes.json();
-            const pythonData = await pythonRes.json();
-
-            // 2. Fusion dans le format unique CompIde.data attendu par le reste du code
-            CompIde.data = metadata.map(concept => {
-                return {
-                    ...concept,
-                    languages: {
-                        cpp: cppData[concept.id] || {},
-                        csharp: csharpData[concept.id] || {},
-                        python: pythonData[concept.id] || {}
-                    }
-                };
-            });
-
-        } catch (error) {
-            console.error("Erreur critique lors du chargement des fichiers JSON :", error);
-            CompIde.data = [];
+        if (!CompIde.data || CompIde.data.length === 0) {
+            console.error("Aucune donnée conceptuelle chargée.");
         }
     },
 

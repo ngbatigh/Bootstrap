@@ -73,8 +73,16 @@
                 <div class="code-column">
                     <div class="column-header">
                         <select id="select-lang-2" onchange="CompIde.Compare.update()">
+                            <option value="c">C</option>
+                            <option value="cpp">C++</option>
                             <option value="csharp" selected>C#</option>
+                            <option value="java">Java</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="typescript">TypeScript</option>
+                            <option value="php">PHP</option>
                             <option value="python">Python</option>
+                            <option value="vb">VB.NET</option>
+                            <option value="vba">VBA</option>
                         </select>
                         <button class="copy-btn" onclick="CompIde.Compare.copy('code-lang-2', event)">Copier</button>
                     </div>
@@ -86,8 +94,16 @@
                 <div class="code-column">
                     <div class="column-header">
                         <select id="select-lang-3" onchange="CompIde.Compare.update()">
-                            <option value="python" selected>Python</option>
+                            <option value="c">C</option>
+                            <option value="cpp">C++</option>
                             <option value="csharp">C#</option>
+                            <option value="java">Java</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="typescript">TypeScript</option>
+                            <option value="php">PHP</option>
+                            <option value="python" selected>Python</option>
+                            <option value="vb">VB.NET</option>
+                            <option value="vba">VBA</option>
                         </select>
                         <button class="copy-btn" onclick="CompIde.Compare.copy('code-lang-3', event)">Copier</button>
                     </div>
@@ -101,7 +117,20 @@
 
     <!-- CHARGEMENT DE L'ARCHITECTURE MODULAIRE HORS-LIGNE -->
     <!-- 1. La donnée brute en premier -->
+    <script src="data/c.js"></script>
+    <script src="data/cpp.js"></script>
+    <script src="data/csharp.js"></script>
+    <script src="data/java.js"></script>
+    <script src="data/javascript.js"></script>
+    <script src="data/typescript.js"></script>
+    <script src="data/python.js"></script>
+    <script src="data/php.js"></script>
+    <script src="data/vb.js"></script>
+    <script src="data/vba.js"></script>
+    
+    <script src="data/metadata.js"></script>
     <script src="data/concepts.js"></script>
+    
     
     <!-- 2. Les modules outils (sans dépendance entre eux) -->
     <script src="js/ui.js"></script>
