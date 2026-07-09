@@ -5,46 +5,27 @@ Source : `js/app.js` (objet `CompIde.App`)
 ## Signature et nature
 
 ```javascript
-loadData() { ... }
+async loadData() { ... }
 ```
 
-C'est une **méthode synchrone** de l'objet `CompIde.App`. Elle est appelée par `App.init()`.
+C'est une **méthode asynchrone** de l'objet `CompIde.App`. Elle est appelée par `App.init()`.
 
-Contrairement aux versions précédentes, elle n'effectue **aucune requête réseau (`fetch`)**. Son seul rôle est désormais de vérifier que les données ont bien été chargées en mémoire.
+Elle effectue une requête réseau asynchrone vers l'API du serveur Node.js (`/api/data`) pour récupérer la structure de données complètes et unifiées, et l'assigner à `CompIde.data`.
 
-## Étape 1 — Chargement préalable via `<script>`
+## Étape 1 — Requête Fetch
 
-Avant même que `app.js` ne s'exécute, le fichier `index.html` charge statiquement tous les fichiers de données via des balises `<script>` :
-
-```html
-<!-- 1. La donnée brute en premier -->
-<script src="data/c.js"></script>
-<script src="data/cpp.js"></script>
-<script src="data/csharp.js"></script>
-<script src="data/java.js"></script>
-<script src="data/javascript.js"></script>
-<script src="data/typescript.js"></script>
-<script src="data/python.js"></script>
-<script src="data/php.js"></script>
-<script src="data/vb.js"></script>
-<script src="data/vba.js"></script>
-
-<script src="data/metadata.js"></script>
-<script src="data/concepts.js"></script>
-```
-
-Le fichier **`data/concepts.js`** contient la structure unifiée finale (nommée `CompIde.data`), qui regroupe tous les concepts et toutes les implémentations pour les 10 langages supportés.
-
-## Étape 2 — Vérification dans `loadData()`
-
-La fonction s'assure simplement que cet objet global existe bien :
+L'application n'inclut plus de balises `<script>` statiques pour les données. La méthode contacte directement le backend :
 
 ```javascript
-loadData() {
-    if (!CompIde.data || CompIde.data.length === 0) {
-        console.error("Aucune donnée conceptuelle chargée.");
-    }
-}
+const response = await fetch('/api/data');
+```
+
+## Étape 2 — Traitement et Assignation
+
+Si la réponse est valide, les données sont extraites et assignées à la variable globale de l'application :
+
+```javascript
+CompIde.data = await response.json();
 ```
 
 ## Résultat final (`CompIde.data`)
@@ -76,17 +57,14 @@ C'est cette structure unifiée que consomment ensuite `Search.renderTree()`, `Co
 ## Résumé du flux
 
 ```
-Fichiers .js dans <head>
-  │
-  ├─ Chargement séquentiel par le navigateur
-  └─ CompIde.data = [...] (Défini dans concepts.js)
+Lancement du serveur : `node server.js`
 
 DOMContentLoaded
   │
   └─ App.init()
        ├─ UI.init()
-       ├─ loadData() -> Vérifie l'existence de CompIde.data
-       └─ selectConcept() -> Démarre l'application
+       ├─ await loadData() -> Requête vers l'API Node.js
+       └─ selectConcept() -> Démarre l'application une fois les données reçues
 ```
 
-C'est l'approche "zéro dépendance / 100% hors-ligne" : l'application peut fonctionner directement depuis le système de fichiers (`file://`) sans se soucier des politiques CORS qui bloquent généralement les `fetch` locaux.
+C'est l'approche Full-Stack (Client/Serveur). L'application JavaScript s'appuie sur le serveur pour effectuer la lourde tâche de lecture et de consolidation des fichiers JSON purs, réduisant la taille du code côté client et favorisant une séparation claire des responsabilités.
