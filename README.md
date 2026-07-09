@@ -44,18 +44,18 @@ Chaque colonne affiche sa propre documentation :
 
 ### Langages supportés
 
-| Langage | Données JS |
+| Langage | Données JSON |
 |---------|-------------|
-| C | `data/c.js` |
-| C++ (référence) | `data/cpp.js` |
-| C# | `data/csharp.js` |
-| Java | `data/java.js` |
-| JavaScript | `data/javascript.js` |
-| PHP | `data/php.js` |
-| Python | `data/python.js` |
-| TypeScript | `data/typescript.js` |
-| VB.NET | `data/vb.js` |
-| VBA | `data/vba.js` |
+| C | `data/c.json` |
+| C++ (référence) | `data/cpp.json` |
+| C# | `data/csharp.json` |
+| Java | `data/java.json` |
+| JavaScript | `data/javascript.json` |
+| PHP | `data/php.json` |
+| Python | `data/python.json` |
+| TypeScript | `data/typescript.json` |
+| VB.NET | `data/vb.json` |
+| VBA | `data/vba.json` |
 
 ### Coloration syntaxique
 
@@ -70,20 +70,15 @@ Chaque colonne affiche sa propre documentation :
 ```
 Bootstrap/
 ├── index.html              # SPA - interface unique
+├── api.php                 # API backend (fusionne les JSON à la volée)
 ├── styles.css              # Styles et variables thème
-├── data/
-│   ├── concepts.js         # Données fusionnées de tous les concepts (source de vérité)
-│   ├── metadata.js         # Métadonnées pour l'arbre des concepts
-│   ├── cpp.js              # Exemples C++
-│   ├── csharp.js           # Exemples C#
-│   ├── python.js           # Exemples Python
-│   ├── c.js                # Exemples C
-│   ├── java.js             # Exemples Java
-│   ├── javascript.js       # Exemples JavaScript
-│   ├── php.js              # Exemples PHP
-│   ├── typescript.js       # Exemples TypeScript
-│   ├── vb.js               # Exemples VB.NET
-│   └── vba.js              # Exemples VBA
+├── data/                   # Source de vérité (fichiers JSON)
+│   ├── metadata.json       # Métadonnées pour l'arbre des concepts
+│   ├── cpp.json            # Exemples C++
+│   ├── csharp.json         # Exemples C#
+│   └── ...                 # (10 langages au total)
+├── dataOld/                # (Archive) Anciens fichiers de données statiques JS
+├── scriptsOld/             # (Archive) Anciens scripts de migration JS vers JSON
 ├── docs/
 │   ├── architecture.md     # Documentation technique
 │   ├── app-loaddata.md     # Explication de loadData()
@@ -143,27 +138,17 @@ Bootstrap/
 
 ## 🎮 Utilisation
 
-### Lancement rapide
+### Lancement avec PHP (Requis)
+
+Depuis le passage à une architecture API, **un serveur PHP est requis** pour lire et fusionner les fichiers JSON :
 
 ```bash
-# Ouvrir simplement le fichier index.html dans un navigateur
-# Ou servir le dossier via un serveur HTTP local
+# Avec le serveur interne de PHP 
+php -S localhost:8000
+# Puis ouvrir http://localhost:8000/index.html
 ```
 
-### Avec Python (recommandé)
-
-```bash
-# Python 3
-python -m http.server 8000
-# Puis ouvrir http://localhost:8000
-```
-
-### Avec Node.js
-
-```bash
-npx serve .
-# Puis ouvrir http://localhost:3000
-```
+*(L'application peut également être hébergée sur XAMPP, WAMP, Laragon ou un serveur web standard avec PHP).*
 
 ### Avec VS Code
 
@@ -189,16 +174,17 @@ npx serve .
 
 ### Ajouter un nouveau concept
 
-1. Ajouter l'entrée dans `data/metadata.js`
-2. Ajouter les données dans les fichiers JS des langages (`data/cpp.js`, etc.)
-3. Optionnel : ajouter également dans `data/concepts.js` (source de vérité complète)
+1. Ajouter l'entrée dans `data/metadata.json`
+2. Ajouter les données dans les fichiers JSON des langages (ex: `data/cpp.json`)
+3. L'API `api.php` fera la fusion automatiquement !
 
 ### Ajouter un langage
 
 1. Ajouter l'option dans les `<select>` de `index.html`
-2. Créer le fichier JS dans `data/` (ex: `data/nouveau.js`) et l'importer via `<script>` dans `index.html`
-3. Ajouter le label du langage dans la fonction `getLangLabel()` de `js/compare.js`
-4. Ajouter la grammaire PrismJS si nécessaire
+2. Créer le fichier `.json` dans `data/` (ex: `data/nouveau.json`)
+3. Ajouter la clé dans le tableau `$languages` de `api.php`
+4. Ajouter le label du langage dans `getLangLabel()` de `js/compare.js`
+5. Ajouter la grammaire PrismJS si nécessaire
 
 ---
 
@@ -232,12 +218,13 @@ CompIde.Search = { /* ... */ };
 CompIde.UI = { /* ... */ };
 ```
 
-### Flux de données
+### Flux de données (Architecture Serveur/Client)
 
 ```
-Fichiers JS (metadata.js + cpp.js + concepts.js...) chargés via balises <script>
-  → CompIde.data est instantanément disponible en mémoire
-  → App.init() (synchrone)
+Fichiers JSON purs (metadata.json + cpp.json + ...)
+  → Fusion à la volée côté serveur (api.php)
+  → JS asynchrone : fetch('api.php')
+  → CompIde.data est peuplé
   → renderTree() / fillCode() / fillDocumentation()
   → DOM
 ```
@@ -249,9 +236,15 @@ DOMContentLoaded
   → CompIde.App.init()
     → UI.init()
     → Search listener
-    → Vérification loadData() (synchrone)
+    → await loadData() (Appel API fetch)
     → selectConcept()
 ```
+
+### Historique de Migration
+L'application a connu 3 phases de développement :
+1. **100% Statique Asynchrone (Échec CORS)** : Tentative de lire des `.json` avec `fetch()` en local (bloqué par les navigateurs).
+2. **100% Statique Synchrone (Hack JS)** : Utilisation de variables globales dans des fichiers `.js` (voir dossier `dataOld/`).
+3. **API Serveur (Actuel)** : Migration propre des données en JSON pur et ajout d'un endpoint `api.php` pour résoudre l'accès fichier sécurisé.
 
 ---
 

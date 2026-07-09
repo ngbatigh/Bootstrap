@@ -58,7 +58,7 @@ Les identifiants cibles sont donc `code-lang-1`, `code-lang-2`, `code-lang-3`.
 
 ## 2. Source des données
 
-Les codes proviennent de `CompIde.data`, le tableau global défini dans `data/concepts.js`.
+Les codes proviennent de `CompIde.data`, le tableau dynamique fourni par l'API `api.php`.
 
 Chaque concept possède une propriété `languages` structurée ainsi (pour les 10 langages) :
 
@@ -74,7 +74,7 @@ languages: {
 
 Les valeurs `minimal` et `complete` sont les deux versions de code source affichées selon le scope choisi par l'utilisateur.
 
-Ce tableau est chargé de manière synchrone par le navigateur via les balises `<script>` d'`index.html`, sans aucune requête réseau.
+Ce tableau est chargé de manière asynchrone par `js/app.js` via un appel réseau `fetch('api.php')` au démarrage.
 
 ## 3. Flux de rendu
 
@@ -176,7 +176,7 @@ Chaque colonne a un bouton « Copier » qui appelle `CompIde.Compare.copy(elemen
 
 Les codes des langages ne sont pas en dur dans le HTML. Ils sont :
 
-1. Chargés statiquement via `data/concepts.js` qui initialise `CompIde.data`
+1. Chargés asynchronement via `fetch('api.php')` qui initialise `CompIde.data`
 2. Injectés dynamiquement dans les `<pre id="code-lang-X">` par `Compare.fillCode()`
 3. Colorés par Prism selon la classe `language-xxx`
 4. Alternés entre versions `minimal` / `complete` via `UI.codeScope`

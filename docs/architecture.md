@@ -9,20 +9,21 @@ COMP_IDE // est une application web monopage (SPA) légère comparative de langa
 ```
 Bootstrap/
 ├── index.html              # Point d'entrée HTML unique
+├── api.php                 # API backend lisant et fusionnant les JSON
 ├── styles.css              # Styles CSS avec thèmes sombre/clair
 ├── data/
-│   ├── concepts.js         # Données conceptuelles unifiées
-│   ├── metadata.js         # Métadonnées des concepts pour l'arbre
-│   ├── cpp.js              # Exemples C++ (référence)
-│   ├── c.js                # Exemples C
-│   ├── csharp.js           # Exemples C#
-│   ├── java.js             # Exemples Java
-│   ├── javascript.js       # Exemples JavaScript
-│   ├── php.js              # Exemples PHP
-│   ├── python.js           # Exemples Python
-│   ├── typescript.js       # Exemples TypeScript
-│   ├── vb.js               # Exemples VB.NET
-│   └── vba.js              # Exemples VBA
+│   ├── metadata.json       # Métadonnées des concepts pour l'arbre
+│   ├── cpp.json            # Exemples C++ (référence)
+│   ├── c.json              # Exemples C
+│   ├── csharp.json         # Exemples C#
+│   ├── java.json           # Exemples Java
+│   ├── javascript.json     # Exemples JavaScript
+│   ├── php.json            # Exemples PHP
+│   ├── python.json         # Exemples Python
+│   ├── typescript.json     # Exemples TypeScript
+│   ├── vb.json             # Exemples VB.NET
+│   └── vba.json            # Exemples VBA
+├── dataOld/                # (Archive) Anciens fichiers de données JS 
 ├── docs/
 │   ├── architecture.md     # Ce fichier
 │   ├── app-loaddata.md     # Explication de App.loadData()
@@ -41,9 +42,9 @@ Bootstrap/
 
 ## Structure des données
 
-### concepts.js
+### La réponse de `api.php` (`CompIde.data`)
 
-Contient le dataset maître sous forme de tableau d'objets (historiquement unifié, contenant ~30 concepts). Chaque concept possède :
+Le fichier `api.php` construit à la volée le dataset maître sous forme de tableau d'objets. Chaque concept possède :
 
 - `id` : Identifiant unique
 - `level` : Niveau de difficulté (1-8)
@@ -54,9 +55,9 @@ Contient le dataset maître sous forme de tableau d'objets (historiquement unifi
 - `related_concepts` : Tableau d'IDs de concepts liés
 - `languages` : Objet contenant les exemples par langage (cpp, csharp, python...)
 
-### Fichiers JS par langage (cpp.js, csharp.js, python.js, ...)
+### Fichiers JSON par langage (`cpp.json`, `csharp.json`, `python.json`, ...)
 
-Structure locale chargeant un objet `CompIde.<lang>Data` (ex: `CompIde.cppData`). Chaque fichier est un objet indexé par `id` de concept. Chaque entrée contient :
+Base de données locale. Chaque fichier est un objet JSON pur indexé par `id` de concept. Chaque entrée contient :
 
 - `minimal` : Version courte du code
 - `complete` : Version complète du code
@@ -64,9 +65,9 @@ Structure locale chargeant un objet `CompIde.<lang>Data` (ex: `CompIde.cppData`)
 - `pitfalls` : Erreurs courantes
 - `notes` : Remarques contextuelles
 
-### metadata.js
+### metadata.json
 
-Charge l'objet `CompIde.metadata` (métadonnées légères pour l'Arbre des concepts). Contient id, chapter, category, name, description, related_concepts.
+Métadonnées légères pour l'Arbre des concepts. Fichier JSON pur contenant : id, chapter, category, name, description, related_concepts.
 
 ## Modules JavaScript
 
@@ -76,9 +77,9 @@ Charge l'objet `CompIde.metadata` (métadonnées légères pour l'Arbre des conc
 
 **Responsabilités** :
 
-- Vérification synchrone du chargement des données (déjà chargées via balises `<script>`)
-- Initialisation séquentielle : UI → Recherche → Vérification données → Sélection concept
-- Gestion du concept actif via `currentConceptId`
+- Chargement asynchrone des données via `fetch('api.php')`.
+- Initialisation séquentielle : UI → Recherche → Attente Données → Sélection concept.
+- Gestion du concept actif via `currentConceptId`.
 
 **Flux d'initialisation** :
 
@@ -86,7 +87,7 @@ Charge l'objet `CompIde.metadata` (métadonnées légères pour l'Arbre des conc
 DOMContentLoaded → CompIde.App.init()
   → CompIde.UI.init()
   → Setup Search Listener
-  → this.loadData() (vérification synchrone)
+  → await this.loadData() (fetch api.php)
   → selectConcept(premier_id)
 ```
 
@@ -151,7 +152,7 @@ DOMContentLoaded → CompIde.App.init()
 
 ## Modèle de données unifié (`CompIde.data`)
 
-Défini statiquement dans `data/concepts.js` :
+Construit dynamiquement par `api.php` et renvoyé au client :
 
 ```javascript
 CompIde.data = [{
@@ -188,22 +189,22 @@ CompIde.data = [{
 
 ### Ajout d'un concept
 
-1. Ajouter l'entrée dans `data/metadata.js` et `data/concepts.js`
-2. Ajouter les clés dans les fichiers JS des langages (`data/cpp.js`, etc.)
+1. Ajouter l'entrée dans `data/metadata.json`
+2. Ajouter les clés dans les fichiers JSON des langages (`data/cpp.json`, etc.)
 3. Respecter la structure `languages[langKey].minimal` / `.complete`
 
 ### Ajout d'un langage
 
-1. Créer le fichier `data/nouveau.js` (structure indexée par id de concept)
-2. L'ajouter via `<script>` dans `index.html`
+1. Créer le fichier `data/nouveau.json` (structure indexée par id de concept)
+2. L'ajouter dans le tableau `$languages` au début de `api.php`
 3. Ajouter une option `<option value="nouveau">Nouveau</option>` dans les menus déroulants de `index.html`
 4. Ajouter la grammaire Prism si nécessaire
 5. Ajouter le label dans `getLangLabel()` dans `js/compare.js`
 
 ## Performance et optimisations
 
-- Chargement immédiat en mémoire vive via balises `<script>` sans requêtes HTTP secondaires
-- Mise en cache navigateur (fichiers statiques statiques)
+- Délégation de la fusion des données (calcul lourd) au serveur backend (PHP).
+- Une seule requête HTTP `fetch` pour récupérer l'entièreté de la base de données préparée.
 - Coloration Prism déclenchée uniquement lors des changements
 - DOM minimalement manipulé (innerHTML ciblé)
 

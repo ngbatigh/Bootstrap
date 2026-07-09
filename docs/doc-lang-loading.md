@@ -178,7 +178,7 @@ Changer le `<select>` d'une colonne relance `Compare.update()`, qui rejoue `fill
 
 Les panneaux `.lang-doc` ne sont pas statiques. Ils sont :
 
-1. Chargés statiquement via `data/concepts.js` qui initialise `CompIde.data`
+1. Chargés dynamiquement par l'API backend via `fetch('api.php')`
 2. Remplis par `Compare.fillDocumentation()` avec description + alert-box (notes, bonnes pratiques, pièges) propres au langage de la colonne
 3. Re-rendus à chaque changement de concept ou de langage sélectionné
 4. Mis en forme par les classes `.alert-box` et `.lang-doc` de `styles.css`

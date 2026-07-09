@@ -4,14 +4,25 @@ window.CompIde = window.CompIde || {};
 CompIde.App = {
     currentConceptId: null,
 
-    // Vérification du chargement des données (effectué de manière synchrone via les balises script)
-    loadData() {
-        if (!CompIde.data || CompIde.data.length === 0) {
-            console.error("Aucune donnée conceptuelle chargée.");
+    // Chargement asynchrone des données depuis l'API PHP
+    async loadData() {
+        try {
+            const response = await fetch('api.php');
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP: ${response.status}`);
+            }
+            CompIde.data = await response.json();
+            
+            if (!CompIde.data || CompIde.data.length === 0) {
+                console.error("L'API a retourné un tableau de données vide.");
+            }
+        } catch (error) {
+            console.error("Erreur lors du chargement des données depuis api.php:", error);
+            CompIde.data = [];
         }
     },
 
-    init() {
+    async init() {
         // 1. Initialiser l'interface utilisateur (boutons, zoom)
         CompIde.UI.init();
 
@@ -23,8 +34,8 @@ CompIde.App = {
             });
         }
 
-        // 3. Vérifier que les données sont bien chargées
-        this.loadData();
+        // 3. Charger les données depuis le serveur
+        await this.loadData();
 
         // 4. Sélectionner le premier concept et dessiner l'arbre
         if (CompIde.data && CompIde.data.length > 0) {

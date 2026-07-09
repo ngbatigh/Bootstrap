@@ -16,9 +16,16 @@ Le contenu réel est injecté dynamiquement par JavaScript. Le conteneur cible e
 
 ## 2. Source des données
 
-Le sidebar s'appuie sur `CompIde.data`, le tableau global défini dans `data/concepts.js`.
+Le sidebar s'appuie sur `CompIde.data`, le tableau global retourné par `api.php`.
 
-Contrairement aux versions précédentes, il n'y a plus de fusion asynchrone : toutes les données sont chargées de manière synchrone via les balises `<script>` de `index.html`.
+Ce tableau est obtenu via la fonction asynchrone `loadData()` au démarrage de l'application :
+
+```javascript
+async loadData() {
+    const response = await fetch('api.php');
+    CompIde.data = await response.json();
+}
+```
 
 ## 3. Flux d'initialisation
 
@@ -27,32 +34,9 @@ DOMContentLoaded
   └─ CompIde.App.init()
        ├─ CompIde.UI.init()                     // boutons, zoom, thème
        ├─ searchBox.addEventListener('input')   // filtrage temps réel
-       ├─ this.loadData()                       // vérifie que CompIde.data existe
+       ├─ await this.loadData()                 // ⬇️ TÉLÉCHARGE LES DONNÉES
        └─ this.selectConcept(premierId)
             └─ CompIde.Search.renderTree(filtre) // 🌳 PEUPLE LE SIDEBAR
-```
-
-`App.init()` se trouve dans `js/app.js` :
-
-```javascript
-init() {
-    CompIde.UI.init();
-
-    const searchBox = document.getElementById('search-box');
-    if (searchBox) {
-        searchBox.addEventListener('input', (e) => {
-            CompIde.Search.renderTree(e.target.value);
-        });
-    }
-
-    this.loadData();
-
-    if (CompIde.data && CompIde.data.length > 0) {
-        this.selectConcept(CompIde.data[0].id);
-    } else {
-        CompIde.Search.renderTree();
-    }
-}
 ```
 
 ## 4. Rendu de l'arbre (`Search.renderTree`)
@@ -120,4 +104,4 @@ Cela garantit que le surlignage du concept actif suit toujours la sélection de 
 
 ## Résumé
 
-Le sidebar n'a aucun contenu statique. Il est entièrement généré par `CompIde.Search.renderTree()` à partir de `CompIde.data` (défini statiquement dans `data/concepts.js`). L'interaction se fait via la recherche textuelle et le clic sur un concept, qui déclenchent tous deux un re-rendu de l'arbre.
+Le sidebar n'a aucun contenu statique. Il est entièrement généré par `CompIde.Search.renderTree()` à partir de `CompIde.data` (récupéré depuis `api.php`). L'interaction se fait via la recherche textuelle et le clic sur un concept, qui déclenchent tous deux un re-rendu de l'arbre.
