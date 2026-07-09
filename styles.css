@@ -122,6 +122,10 @@ body {
     background: transparent; color: var(--text-main); border: none;
     font-weight: bold; outline: none; cursor: pointer;
 }
+.column-header select option {
+    background: var(--bg-sidebar);
+    color: var(--text-main);
+}
 .copy-btn {
     background: transparent; border: none; color: var(--accent-color);
     cursor: pointer; font-size: 11px;
