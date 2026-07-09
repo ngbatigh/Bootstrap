@@ -1,0 +1,20 @@
+{
+  "name": "comp-ide",
+  "version": "1.0.0",
+  "description": "Comparateur Pédagogique de Langages de Programmation",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "education",
+    "ide",
+    "code",
+    "compare"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

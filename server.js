@@ -2,7 +2,8 @@ const http = require('http');
 const fs = require('fs').promises;
 const path = require('path');
 
-const PORT = 3000;
+// Permet au serveur (Render, Heroku, etc.) d'injecter son propre port, ou 3000 par défaut
+const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
 
 // Types MIME basiques pour servir les fichiers statiques
