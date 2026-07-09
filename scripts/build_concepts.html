@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de concepts.js (COMP_IDE)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e1e; color: #f4f4f4; padding: 40px; text-align: center; }
+        .container { background-color: #2d2d2d; padding: 30px; border-radius: 8px; max-width: 600px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        h1 { color: #66d9ef; margin-top: 0; }
+        p { color: #aaaaaa; line-height: 1.5; margin-bottom: 25px; }
+        .btn { background-color: #66d9ef; color: #1e1e1e; border: none; padding: 15px 25px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; }
+        .btn:hover { background-color: #4eb5c9; }
+        .btn:disabled { background-color: #555; color: #888; cursor: not-allowed; }
+        #status { margin-top: 20px; font-weight: bold; color: #a6e22e; }
+        #code-preview { display: none; text-align: left; background: #000; padding: 15px; border-radius: 5px; color: #a6e22e; font-family: monospace; font-size: 12px; height: 150px; overflow-y: auto; margin-top: 20px; border: 1px solid #3c3c3c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Générateur de concepts.js</h1>
+    <p>Cet outil charge tous vos fichiers <code>data/*.js</code> locaux, les fusionne, et génère le fichier <strong>concepts.js en dur</strong> contenant toute la base de données.</p>
+    
+    <button id="downloadBtn" class="btn" onclick="generateAndDownload()" disabled>Chargement des données...</button>
+    
+    <div id="status">Veuillez patienter, chargement des scripts...</div>
+    <div id="code-preview"></div>
+</div>
+
+<!-- Scripts de l'application chargés dans le navigateur pour simuler l'environnement -->
+<script>
+    // Initialisation du conteneur global
+    window.CompIde = window.CompIde || {};
+</script>
+
+<!-- 1. Chargement des métadonnées -->
+<script src="../data/metadata.js"></script>
+
+<!-- 2. Chargement des langages -->
+<script src="../data/c.js"></script>
+<script src="../data/cpp.js"></script>
+<script src="../data/csharp.js"></script>
+<script src="../data/python.js"></script>
+<script src="../data/java.js"></script>
+<script src="../data/javascript.js"></script>
+<script src="../data/typescript.js"></script>
+<script src="../data/php.js"></script>
+<script src="../data/vb.js"></script>
+<script src="../data/vba.js"></script>
+
+<script>
+    // 3. Logique de fusion (exécutée une fois que les scripts ont été évalués par le navigateur)
+    window.onload = function() {
+        try {
+            if (!window.CompIde.metadata) {
+                throw new Error("metadata.js n'a pas pu être chargé. Assurez-vous d'ouvrir ce fichier via un serveur web (Live Server) si le protocole file:// bloque les scripts locaux.");
+            }
+
+            const langs = ['c', 'cpp', 'csharp', 'python', 'java', 'javascript', 'typescript', 'php', 'vb', 'vba'];
+            
+            // Fusion
+            const unifiedData = window.CompIde.metadata.map(meta => {
+                const concept = { ...meta, languages: {} };
+                langs.forEach(lang => {
+                    const dataContainer = window.CompIde[`${lang}Data`];
+                    if (dataContainer && dataContainer[meta.id]) {
+                        concept.languages[lang] = dataContainer[meta.id];
+                    }
+                });
+                return concept;
+            });
+
+            // Stockage de la chaîne finale
+//            window.finalContent = `// Fichier généré automatiquement (en dur) via build_concepts.html\nwindow.CompIde = window.CompIde || {};\nwindow.CompIde.data = ${JSON.stringify(unifiedData, null, 2)};\n`;
+
+//            document.getElementById('status').innerText = `Données prêtes ! (${unifiedData.length} concepts fusionnés)`;
+//            const btn = document.getElementById('downloadBtn');
+//            btn.innerText = "Télécharger concepts.js";
+
+
+            // Stockage de la chaîne finale (JSON pur)
+            window.finalContent = JSON.stringify(unifiedData, null, 2);
+
+            document.getElementById('status').innerText = `Données prêtes ! (${unifiedData.length} concepts fusionnés)`;
+            const btn = document.getElementById('downloadBtn');
+            btn.innerText = "Télécharger concepts.json";
+            btn.disabled = false;
+            
+            const preview = document.getElementById('code-preview');
+            preview.style.display = 'block';
+            preview.innerText = window.finalContent.substring(0, 500) + "\n\n... (aperçu tronqué) ...";
+
+        } catch (error) {
+            document.getElementById('status').style.color = '#f92672';
+            document.getElementById('status').innerText = `Erreur: ${error.message}`;
+        }
+    };
+
+    // 4. Fonction de téléchargement
+    function generateAndDownload() {
+        if (!window.finalContent) return;
+
+        const blob = new Blob([window.finalContent], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'concepts.json'; // Nom du fichier suggéré
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        document.getElementById('status').innerText = "Fichier téléchargé ! Veuillez le placer dans le dossier /data/concepts/";
+    }
+</script>
+
+</body>
+</html>

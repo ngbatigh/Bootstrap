@@ -1,0 +1,650 @@
+[
+  {
+    "id": "php_variables_types_strict_01",
+    "level": 1,
+    "chapter": "1. Bases et Typage Stricte",
+    "category": "Syntaxe & Typage",
+    "name": "Variables, Typage Scalaire et Mode Stricte (declare(strict_types=1))",
+    "description": "Gestion des variables, de la portée locale et activation du mode de contrôle de type strict au niveau du fichier.",
+    "related_concepts": ["js_variables_scope_01", "base_variables_02"],
+    "languages": {
+      "php": {
+        "minimal": "declare(strict_types=1); string $str = 'text'; int $num = 42;",
+        "complete": "<?php\ndeclare(strict_types=1);\n\nfunction additionner(int $a, int $b): int {\n    return $a + $b;\n}\n\n$val = 10; // Portée locale/globale par script\n$resultat = additionner(5, $val);",
+        "best_practices": "Placer 'declare(strict_types=1);' tout en haut de chaque fichier PHP sans exception.",
+        "pitfalls": "Sans 'strict_types=1', PHP convertit silencieusement les chaînes numériques en entiers/floats lors des appels de fonction.",
+        "notes": "Introduit en PHP 7.0 pour apporter de la rigueur au moteur Zend."
+      },
+      "javascript": {
+        "minimal": "'use strict'; let str = 'text'; let num = 42;",
+        "complete": "'use strict';\nfunction additionner(a, b) {\n    if (typeof a !== 'number' || typeof b !== 'number') throw new TypeError();\n    return a + b;\n}\nlet val = 10;\nlet resultat = additionner(5, val);",
+        "best_practices": "Activer le mode strict JS ou utiliser TypeScript.",
+        "pitfalls": "JS fait du coercitif implicite lors des opérations arithmétiques (+ transforme en string).",
+        "notes": "JS utilise le typage dynamique par défaut."
+      },
+      "typescript": {
+        "minimal": "let str: string = 'text'; let num: number = 42;",
+        "complete": "function additionner(a: number, b: number): number {\n    return a + b;\n}\nconst val: number = 10;\nconst resultat = additionner(5, val);",
+        "best_practices": "Activer 'strict: true' dans le tsconfig.json.",
+        "pitfalls": "Le typage disparait à la compilation, la vérification est uniquement statique.",
+        "notes": "Vérification stricte à la compilation."
+      },
+      "python": {
+        "minimal": "str_val: str = 'text'\nnum: int = 42",
+        "complete": "def additionner(a: int, b: int) -> int:\n    return a + b\n\nval: int = 10\nresultat = additionner(5, val)",
+        "best_practices": "Utiliser Mypy pour valider le typage dynamique hints.",
+        "pitfalls": "Les annotations de type en Python n'empêchent pas le code d'exécuter des mauvais types au runtime.",
+        "notes": "Type hinting indicatif."
+      },
+      "csharp": {
+        "minimal": "string str = \"text\"; int num = 42;",
+        "complete": "int Additionner(int a, int b) {\n    return a + b;\n}\nint val = 10;\nint resultat = Additionner(5, val);",
+        "best_practices": "Laisser l'inférence 'var' agir lorsque le type est explicite.",
+        "pitfalls": "Conversion explicite (cast) obligatoire sous peine d'erreur de compilation.",
+        "notes": "Statique et fortement typé."
+      },
+      "java": {
+        "minimal": "String str = \"text\"; int num = 42;",
+        "complete": "public static int additionner(int a, int b) {\n    return a + b;\n}\nint val = 10;\nint resultat = additionner(5, val);",
+        "best_practices": "Utiliser 'var' (Java 10+) pour raccourcir les déclarations locales.",
+        "pitfalls": "Attention à la distinction entre types primitifs (int) et leurs objets (Integer).",
+        "notes": "Typage statique strict."
+      },
+      "cpp": {
+        "minimal": "std::string str = \"text\"; int num = 42;",
+        "complete": "int additionner(int a, int b) {\n    return a + b;\n}\nint val = 10;\nint resultat = additionner(5, val);",
+        "best_practices": "Privilégier `auto` si le type est déduit d'une expression complexe.",
+        "pitfalls": "Transtypage implicite risqué entre entiers signés et non-signés.",
+        "notes": "Compilé avec typage statique fort."
+      },
+      "c": {
+        "minimal": "char str[] = \"text\"; int num = 42;",
+        "complete": "int additionner(int a, int b) {\n    return a + b;\n}\nint val = 10;\nint resultat = additionner(5, val);",
+        "best_practices": "Initialiser toutes les variables lors de leur déclaration.",
+        "pitfalls": "Conversion de types implicite risquée sans avertissement du compilateur.",
+        "notes": "Typage statique bas niveau."
+      },
+      "vb": {
+        "minimal": "Option Strict On : Dim str As String = \"text\" : Dim num As Integer = 42",
+        "complete": "Option Strict On\nFunction Additionner(a As Integer, b As Integer) As Integer\n    Return a + b\nEnd Function\nDim val As Integer = 10\nDim resultat As Integer = Additionner(5, val)",
+        "best_practices": "Garder Option Strict On pour éviter les conversions implicites lentes.",
+        "pitfalls": "L'utilisation de 'Object' dégrade fortement les performances.",
+        "notes": "Vérification stricte si activée."
+      },
+      "vba": {
+        "minimal": "Option Explicit : Dim str As String : Dim num As Long",
+        "complete": "Option Explicit\nFunction Additionner(a As Long, b As Long) As Long\n    Additionner = a + b\nEnd Function\nSub Main()\n    Dim val As Long : val = 10\n    Dim resultat As Long\n    resultat = Additionner(5, val)\nEnd Sub",
+        "best_practices": "Activer Option Explicit pour forcer la déclaration de toutes les variables.",
+        "pitfalls": "Toute variable non typée devient un 'Variant' (lourd et permissif).",
+        "notes": "Typage statique optionnel."
+      }
+    }
+  },
+  {
+    "id": "php_array_manipulation_functions_01",
+    "level": 2,
+    "chapter": "2. Structures de Données",
+    "category": "Tableaux (Arrays)",
+    "name": "Tableaux Associatifs, Multidimensionnels et Fonctions de Manipulation",
+    "description": "Utilisation du type natif 'array' (qui combine tableau ordonné et table de hachage/dictionnaire) et fonctions associées.",
+    "related_concepts": ["js_operators_destructuring_spread_01"],
+    "languages": {
+      "php": {
+        "minimal": "$user = ['id' => 1, 'nom' => 'Alice']; $noms = array_column($users, 'nom');",
+        "complete": "<?php\n$users = [\n    ['id' => 1, 'nom' => 'Alice', 'role' => 'admin'],\n    ['id' => 2, 'nom' => 'Bob', 'role' => 'user']\n];\n// Filtrage et transformation\n$admins = array_filter($users, fn($u) => $u['role'] === 'admin');\n$noms = array_map(fn($u) => strtoupper($u['nom']), $users);\nprint_r($noms);",
+        "best_practices": "Utiliser les fonctions 'array_*' ou les générateurs pour traiter de grands volumes.",
+        "pitfalls": "Incohérence historique de l'ordre des arguments dans les fonctions PHP (`array_map(callback, array)` vs `array_filter(array, callback)`).",
+        "notes": "Le type 'array' de PHP est une table de hachage ordonnée polyvalente."
+      },
+      "javascript": {
+        "minimal": "const user = { id: 1, nom: 'Alice' }; const noms = users.map(u => u.nom);",
+        "complete": "const users = [\n    { id: 1, nom: 'Alice', role: 'admin' },\n    { id: 2, nom: 'Bob', role: 'user' }\n];\nconst admins = users.filter(u => u.role === 'admin');\nconst noms = users.map(u => u.nom.toUpperCase());\nconsole.log(noms);",
+        "best_practices": "Chainer les méthodes d'instance `.filter().map()`.",
+        "pitfalls": "Distinction stricte entre Objet `{}` (dictionnaire) et Array `[]` (liste).",
+        "notes": "Séparation entre Array et Object."
+      },
+      "typescript": {
+        "minimal": "type User = { id: number; nom: string }; const noms: string[] = users.map(u => u.nom);",
+        "complete": "interface User { id: number; nom: string; role: string; }\nconst users: User[] = [\n    { id: 1, nom: 'Alice', role: 'admin' }\n];\nconst noms: string[] = users.map((u: User) => u.nom.toUpperCase());",
+        "best_practices": "Typer les éléments du tableau pour sécuriser les transformations.",
+        "pitfalls": "Accéder à un index inexistant ne lève pas d'erreur sans configuration `noUncheckedIndexedAccess`.",
+        "notes": "Tableaux fortement typés."
+      },
+      "python": {
+        "minimal": "user = {'id': 1, 'nom': 'Alice'}; noms = [u['nom'] for u in users]",
+        "complete": "users = [\n    {'id': 1, 'nom': 'Alice', 'role': 'admin'},\n    {'id': 2, 'nom': 'Bob', 'role': 'user'}\n]\nadmins = [u for u in users if u['role'] == 'admin']\nnoms = [u['nom'].upper() for u in users]\nprint(noms)",
+        "best_practices": "Préférer les list/dict comprehensions aux fonctions `map()` et `filter()`.",
+        "pitfalls": "Tenter d'accéder à une clé de dictionnaire inexistante lève une `KeyError` (utiliser `.get()`).",
+        "notes": "Distinction stricte entre `list` et `dict`."
+      },
+      "csharp": {
+        "minimal": "var user = new Dictionary<string, object> { {\"id\", 1} };",
+        "complete": "using System.Linq;\nvar users = new[] {\n    new { Id = 1, Nom = \"Alice\", Role = \"admin\" },\n    new { Id = 2, Nom = \"Bob\", Role = \"user\" }\n};\nvar admins = users.Where(u => u.Role == \"admin\").ToList();\nvar noms = users.Select(u => u.Nom.ToUpper()).ToList();",
+        "best_practices": "Utiliser LINQ (`Select`, `Where`) pour manipuler les collections.",
+        "pitfalls": "Attention à l'évaluation différée de LINQ (Deferred Execution).",
+        "notes": "LINQ fournit une API unifiée puissante."
+      },
+      "java": {
+        "minimal": "Map<String, Object> user = Map.of(\"id\", 1, \"nom\", \"Alice\");",
+        "complete": "import java.util.List;\nimport java.util.stream.Collectors;\n\nrecord User(int id, String nom, String role) {}\nList<User> users = List.of(new User(1, \"Alice\", \"admin\"));\nList<String> noms = users.stream()\n                         .map(u -> u.nom().toUpperCase())\n                         .collect(Collectors.toList());",
+        "best_practices": "Employer l'API Stream (`stream()`) pour transformer les collections.",
+        "pitfalls": "`Map.of()` produit des collections immuables.",
+        "notes": "Ecosystème `java.util.Collection` et `Stream`."
+      },
+      "cpp": {
+        "minimal": "std::unordered_map<std::string, std::string> user = {{\"nom\", \"Alice\"}};",
+        "complete": "#include <vector>\n#include <algorithm>\n#include <string>\n\nstruct User { int id; std::string nom; };\nstd::vector<User> users = {{1, \"Alice\"}, {2, \"Bob\"}};\nstd::vector<std::string> noms;\nstd::transform(users.begin(), users.end(), std::back_inserter(noms),\n    [](const User& u) { return u.nom; });",
+        "best_practices": "Employer la bibliothèque `<algorithm>` ou les Ranges de C++20.",
+        "pitfalls": "Copies mémoire involontaires lors des itérations sans références `const auto&`.",
+        "notes": "Séparation entre `std::vector` et `std::unordered_map`."
+      },
+      "c": {
+        "minimal": "// Pas de dictionnaires ni de tableaux dynamiques natifs",
+        "complete": "#include <stdio.h>\ntypedef struct { int id; char nom[20]; } User;\nUser users[2] = {{1, \"Alice\"}, {2, \"Bob\"}};\nfor(int i = 0; i < 2; i++) {\n    printf(\"%s\\n\", users[i].nom);\n}",
+        "best_practices": "Gérer la mémoire manuellement ou utiliser des structures définies sur mesure.",
+        "pitfalls": "Aucune fonction de transformation native de type map/filter.",
+        "notes": "Structures manuelles et allocations contiguës."
+      },
+      "vb": {
+        "minimal": "Dim user As New Dictionary(Of String, Object) From {{\"nom\", \"Alice\"}}",
+        "complete": "Imports System.Linq\nDim users = {New With {.Nom = \"Alice\", .Role = \"admin\"}}\nDim noms = users.Select(Function(u) u.Nom.ToUpper()).ToList()",
+        "best_practices": "Utiliser LINQ en VB.NET.",
+        "pitfalls": "Tableaux VB redimensionnables avec `ReDim Preserve` très couteux.",
+        "notes": "S'appuie sur la BCL .NET."
+      },
+      "vba": {
+        "minimal": "Dim dict As Object : Set dict = CreateObject(\"Scripting.Dictionary\")",
+        "complete": "Dim dict As Object\nSet dict = CreateObject(\"Scripting.Dictionary\")\ndict.Add \"id\", 1\ndict.Add \"nom\", \"Alice\"\nDebug.Print dict(\"nom\")",
+        "best_practices": "Utiliser le composant COM 'Scripting.Dictionary' pour les clés/valeurs.",
+        "pitfalls": "Les tableaux natifs VBA (`Array()`) ne possèdent pas de méthodes d'itération fonctionnelle.",
+        "notes": "Manipulations impératives élément par élément."
+      }
+    }
+  },
+  {
+    "id": "php_oop_constructor_promotion_readonly_01",
+    "level": 3,
+    "chapter": "3. Programmation Orientée Objet Moderne",
+    "category": "POO Avancée",
+    "name": "Promotion de Constructeur, Classes/Propriétés Readonly et Enums",
+    "description": "Syntaxe moderne PHP 8.x pour réduire le boilerplate des classes, garantir l'immuabilité et créer des énumérations typées (Backed Enums).",
+    "related_concepts": ["js_prototypal_inheritance_class_syntax_01", "poo_classes_01"],
+    "languages": {
+      "php": {
+        "minimal": "enum Statut: string { case ACTIF = 'A'; }\nreadonly class User { public function __construct(public int $id, public Statut $statut) {} }",
+        "complete": "<?php\ndeclare(strict_types=1);\n\nenum StatutCommande: string {\n    case EN_ATTENTE = 'P';\n    case PAYEE = 'C';\n}\n\nreadonly class Commande {\n    public function __construct(\n        public int $id,\n        public float $montant,\n        public StatutCommande $statut = StatutCommande::EN_ATTENTE\n    ) {}\n}\n\n$cmd = new Commande(101, 49.99);\necho $cmd->statut->value; // 'P'",
+        "best_practices": "Utiliser des classes `readonly` pour tous les Objet de Valeur (Value Objects) DTO.",
+        "pitfalls": "Une propriété `readonly` ne peut être écrite qu'une seule fois; toute tentative ultérieure lève une `Error`.",
+        "notes": "Révolution de la syntaxe POO introduite entre PHP 8.0 et 8.2."
+      },
+      "javascript": {
+        "minimal": "class Commande { constructor(id, montant) { Object.freeze(this); } }",
+        "complete": "const StatutCommande = Object.freeze({\n    EN_ATTENTE: 'P',\n    PAYEE: 'C'\n});\nclass Commande {\n    constructor(id, montant, statut = StatutCommande.EN_ATTENTE) {\n        this.id = id;\n        this.montant = montant;\n        this.statut = statut;\n        Object.freeze(this); // Immuabilité simulée\n    }\n}",
+        "best_practices": "Employer `Object.freeze()` pour empêcher la modification.",
+        "pitfalls": "JavaScript ne possède pas d'énumérations natives (nécessite des objets gelés).",
+        "notes": "Simulé via la métaprogrammation et le gel d'objets."
+      },
+      "typescript": {
+        "minimal": "enum Statut { EN_ATTENTE = 'P' }\nclass Commande { constructor(public readonly id: number) {} }",
+        "complete": "enum StatutCommande {\n    EN_ATTENTE = 'P',\n    PAYEE = 'C'\n}\nclass Commande {\n    constructor(\n        public readonly id: number,\n        public readonly montant: number,\n        public readonly statut: StatutCommande = StatutCommande.EN_ATTENTE\n    ) {}\n}",
+        "best_practices": "Utiliser la promotion de constructeur intégrée à TS depuis ses débuts.",
+        "pitfalls": "Les `enum` TS génèrent du code JS lourd (préférer les `union types` de chaînes si possible).",
+        "notes": "Inspiration originelle de la fonctionnalité PHP."
+      },
+      "python": {
+        "minimal": "from dataclasses import dataclass\nfrom enum import Enum\n@dataclass(frozen=True)\nclass Commande: id: int",
+        "complete": "from dataclasses import dataclass\nfrom enum import Enum\n\nclass StatutCommande(Enum):\n    EN_ATTENTE = 'P'\n    PAYEE = 'C'\n\n@dataclass(frozen=True)\nclass Commande:\n    id: int\n    montant: float\n    statut: StatutCommande = StatutCommande.EN_ATTENTE\n\ncmd = Commande(101, 49.99)\nprint(cmd.statut.value)",
+        "best_practices": "Utiliser `@dataclass(frozen=True)` pour des objets immuables instantanés.",
+        "pitfalls": "La modification reste techniquement possible en Python si on force l'accès aux attributs internes.",
+        "notes": "Mécanisme standard très proche via Data Classes."
+      },
+      "csharp": {
+        "minimal": "public enum Statut { EnAttente }\npublic record Commande(int Id, decimal Montant, Statut Statut);",
+        "complete": "public enum StatutCommande { EnAttente, Payee }\n\n// Primary Constructor + Record (C# 9+ / 12+)\npublic record Commande(\n    int Id, \n    decimal Montant, \n    StatutCommande Statut = StatutCommande.EnAttente\n);",
+        "best_practices": "Utiliser les `record` pour des DTO immuables déclarés en une ligne.",
+        "pitfalls": "Confondre `record struct` (valeur) et `record class` (référence).",
+        "notes": "Les Records C# apportent l'immuabilité native et l'égalité par valeur."
+      },
+      "java": {
+        "minimal": "public enum Statut { P, C }\npublic record Commande(int id, double montant, Statut statut) {}",
+        "complete": "public enum StatutCommande { EN_ATTENTE, PAYEE }\n\n// Records Java 14+\npublic record Commande(int id, double montant, StatutCommande statut) {\n    public Commande(int id, double montant) {\n        this(id, montant, StatutCommande.EN_ATTENTE);\n    }\n}\nCommande cmd = new Commande(101, 49.99);",
+        "best_practices": "Employer les `record` pour supprimer getters, equals et hashCode.",
+        "pitfalls": "Un Record ne peut pas hériter d'une autre classe (hérite déjà de `java.lang.Record`).",
+        "notes": "Fonctionnalité moderne d'immuabilité native."
+      },
+      "cpp": {
+        "minimal": "enum class Statut { EnAttente, Payee };\nstruct Commande { const int id; const double montant; };",
+        "complete": "#include <iostream>\n\nenum class StatutCommande : char { EN_ATTENTE = 'P', PAYEE = 'C' };\n\nstruct Commande {\n    const int id;\n    const double montant;\n    const StatutCommande statut;\n    Commande(int i, double m, StatutCommande s = StatutCommande::EN_ATTENTE)\n        : id(i), montant(m), statut(s) {}\n};",
+        "best_practices": "Utiliser `enum class` fortement typé plutôt que les `enum` C classiques.",
+        "pitfalls": "Une structure avec membres `const` désactive l'opérateur d'assignation par défaut.",
+        "notes": "Const-correctness stricte."
+      },
+      "c": {
+        "minimal": "typedef enum { P, C } Statut;\ntypedef struct { const int id; } Commande;",
+        "complete": "#include <stdio.h>\ntypedef enum { EN_ATTENTE, PAYEE } StatutCommande;\ntypedef struct {\n    int id;\n    double montant;\n    StatutCommande statut;\n} Commande;\n\nCommande creerCmd(int id, double m) {\n    Commande c = {id, m, EN_ATTENTE};\n    return c;\n}",
+        "best_practices": "Initialiser via des fonctions constructeurs dédiées.",
+        "pitfalls": "Pas de vrai contrôle d'accès `private` ou `readonly` au niveau des membres de struct.",
+        "notes": "Structures impératives pures."
+      },
+      "vb": {
+        "minimal": "Public Enum Statut : EnAttente : End Enum\nPublic Class Commande : Public ReadOnly Property Id As Integer : End Class",
+        "complete": "Public Enum StatutCommande\n    EnAttente\n    Payee\nEnd Enum\nPublic Class Commande\n    Public ReadOnly Property Id As Integer\n    Public ReadOnly Property Montant As Double\n    Sub New(id As Integer, montant As Double)\n        Me.Id = id\n        Me.Montant = montant\n    End Sub\nEnd Class",
+        "best_practices": "Utiliser `ReadOnly Property` auto-implémentée.",
+        "pitfalls": "Pas de syntaxe d'abréviation de constructeur explicite.",
+        "notes": "Propriétés immuables .NET."
+      },
+      "vba": {
+        "minimal": "Public Enum StatutCommande : EN_ATTENTE = 1 : End Enum",
+        "complete": "' Fichier de classe ClassCommande.cls\nPrivate m_id As Long\nPrivate m_statut As Long\n\nPublic Property Get Id() As Long\n    Id = m_id\nEnd Property\n\nPublic Sub Init(id As Long)\n    m_id = id\nEnd Sub",
+        "best_practices": "Omettre le 'Property Let' pour rendre la propriété en lecture seule.",
+        "pitfalls": "VBA ne possède pas de constructeur prenant des arguments (`Class_Initialize` est sans paramètre).",
+        "notes": "Nécessite une méthode de pseudo-initialisation `Init()`."
+      }
+    }
+  },
+  {
+    "id": "php_traits_interfaces_abstract_01",
+    "level": 4,
+    "chapter": "3. Programmation Orientée Objet Moderne",
+    "category": "Composition & Architecture",
+    "name": "Traits, Interfaces, Classes Abstraites et Résolution de Conflits",
+    "description": "Réutilisation de code horizontale via les Traits, découplage par Interfaces et composition architecturale.",
+    "related_concepts": ["poo_classes_01", "js_prototypal_inheritance_class_syntax_01"],
+    "languages": {
+      "php": {
+        "minimal": "trait Horodatage { public string $creeA; }\ninterface Enregistrable { public function enregistrer(): void; }",
+        "complete": "<?php\ntrait Horodatage {\n    public function getTemps(): string {\n        return date('Y-m-d H:i:s');\n    }\n}\n\ninterface Loggable {\n    public function log(string $msg): void;\n}\n\nabstract class ServiceBase implements Loggable {\n    use Horodatage; // Composition horizontale par Trait\n}\n\nclass MonService extends ServiceBase {\n    public function log(string $msg): void {\n        echo \"[{$this->getTemps()}] $msg\";\n    }\n}",
+        "best_practices": "Utiliser les traits uniquement pour du code horizontal sans état complexe (ex: Horodatage, Singleton).",
+        "pitfalls": "L'abus de traits crée des dépendances cachées difficiles à tracer et des conflits de noms de méthodes.",
+        "notes": "PHP ne prend pas en charge l'héritage multiple de classes, mais le simule via les Traits."
+      },
+      "javascript": {
+        "minimal": "const Horodatage = (Base) => class extends Base { ... }; // Mixins pattern",
+        "complete": "// Pattern Mixin pour simuler les Traits\nconst HorodatageMixin = Base => class extends Base {\n    getTemps() { return new Date().toISOString(); }\n};\n\nclass ServiceBase {}\nclass MonService extends HorodatageMixin(ServiceBase) {\n    log(msg) {\n        console.log(`[${this.getTemps()}] ${msg}`);\n    }\n}",
+        "best_practices": "Privilégier la composition d'objets simples plutôt que les Mixins complexes.",
+        "pitfalls": "La chaîne de prototypes s'allonge pour chaque Mixin imbriqué.",
+        "notes": "Implémenté via des fonctions de fabrique de classes (Mixins)."
+      },
+      "typescript": {
+        "minimal": "interface Loggable { log(msg: string): void; }\nabstract class ServiceBase {}",
+        "complete": "interface Loggable {\n    log(msg: string): void;\n}\n\ntype Constructor<T = {}> = new (...args: any[]) => T;\nfunction WithHorodatage<TBase extends Constructor>(Base: TBase) {\n    return class extends Base {\n        getTemps() { return new Date().toISOString(); }\n    };\n}\nclass MonService extends WithHorodatage(class {}) implements Loggable {\n    log(msg: string) { console.log(msg); }\n}",
+        "best_practices": "Combiner 'implements' d'interfaces multiples et composition.",
+        "pitfalls": "Les Mixins TS requièrent une syntaxe de typage lourde.",
+        "notes": "Interfaces pures compilées sans empreinte au runtime."
+      },
+      "python": {
+        "minimal": "class Horodatage: pass\nclass Service(Horodatage): pass # Héritage multiple natif",
+        "complete": "from abc import ABC, abstractmethod\nimport datetime\n\nclass HorodatageMixin:\n    def get_temps(self):\n        return datetime.datetime.now().isoformat()\n\nclass Loggable(ABC):\n    @abstractmethod\n    def log(self, msg: str): pass\n\nclass MonService(HorodatageMixin, Loggable):\n    def log(self, msg: str):\n        print(f\"[{self.get_temps()}] {msg}\")",
+        "best_practices": "Utiliser l'héritage multiple de Mixins légers sans constructeurs complexes.",
+        "pitfalls": "Problème du Diamant résolu par l'ordre MRO (Method Resolution Order).",
+        "notes": "Support de l'héritage multiple natif."
+      },
+      "csharp": {
+        "minimal": "interface ILoggable { void Log(string msg); void Defaut() => Console.WriteLine(); }",
+        "complete": "using System;\n\npublic interface IHorodatage {\n    string GetTemps() => DateTime.Now.ToString(); // Implémentation par défaut (C# 8+)\n}\npublic interface ILoggable {\n    void Log(string msg);\n}\npublic class MonService : IHorodatage, ILoggable {\n    public void Log(string msg) {\n        Console.WriteLine($\"[{((IHorodatage)this).GetTemps()}] {msg}\");\n    }\n}",
+        "best_practices": "Utiliser les méthodes d'interface par défaut (Default Interface Methods).",
+        "pitfalls": "Une classe ne peut avoir qu'une seule classe de base (`class A : B`).",
+        "notes": "Interfaces riches en remplacement des Traits."
+      },
+      "java": {
+        "minimal": "interface IHorodatage { default String getTemps() { return \"\"; } }",
+        "complete": "import java.time.LocalDateTime;\n\ninterface Horodatage {\n    default String getTemps() {\n        return LocalDateTime.now().toString();\n    }\n}\ninterface Loggable {\n    void log(String msg);\n}\npublic class MonService implements Horodatage, Loggable {\n    public void log(String msg) {\n        System.out.println(\"[\" + getTemps() + \"] \" + msg);\n    }\n}",
+        "best_practices": "Utiliser les méthodes `default` d'interfaces pour la composition horizontale.",
+        "pitfalls": "Les interfaces ne peuvent pas conserver d'état d'instance (champs non statiques).",
+        "notes": "Introduit dans Java 8."
+      },
+      "cpp": {
+        "minimal": "class ILoggable { public: virtual void log(std::string m) = 0; };",
+        "complete": "#include <iostream>\n#include <string>\n\nclass Horodatage {\npublic:\n    std::string getTemps() { return \"2026-01-01\"; }\n};\nclass ILoggable {\npublic:\n    virtual void log(std::string msg) = 0; // Interface pure\n};\nclass MonService : public Horodatage, public ILoggable {\npublic:\n    void log(std::string msg) override {\n        std::cout << \"[\" << getTemps() << \"] \" << msg;\n    }\n};",
+        "best_practices": "Utiliser l'héritage multiple d'interfaces pures (classes sans membres de données).",
+        "pitfalls": "L'héritage multiple avec données provoque l'ambiguïté (nécessite 'virtual inheritance').",
+        "notes": "Classes abstraites pures."
+      },
+      "c": {
+        "minimal": "// Pas de classes abstraites ni de traits",
+        "complete": "#include <stdio.h>\ntypedef struct {\n    void (*log)(const char* msg);\n} ILoggable;\n\nvoid monLog(const char* msg) {\n    printf(\"%s\\n\", msg);\n}\n\nint main() {\n    ILoggable service = { monLog };\n    service.log(\"Test\");\n}",
+        "best_practices": "Tables de pointeurs de fonctions (vtable manuelle).",
+        "pitfalls": "Aucun contrôle de conformité à la compilation.",
+        "notes": "Simulé via des pointeurs de fonctions dans des structures."
+      },
+      "vb": {
+        "minimal": "Interface ILoggable : Sub Log(msg As String) : End Interface",
+        "complete": "Public Interface ILoggable\n    Sub Log(msg As String)\nEnd Interface\nPublic Class MonService\n    Implements ILoggable\n    Public Sub Log(msg As String) Implements ILoggable.Log\n        Console.WriteLine(msg)\n    End Sub\nEnd Class",
+        "best_practices": "Implémenter explicitement chaque méthode d'interface.",
+        "pitfalls": "Pas de traits natifs en VB.NET.",
+        "notes": "Implémentation d'interface stricte."
+      },
+      "vba": {
+        "minimal": "' Dans ILoggable.cls\nPublic Sub Log(ByVal msg As String) : End Sub",
+        "complete": "' Fichier MonService.cls\nImplements ILoggable\n\nPrivate Sub ILoggable_Log(ByVal msg As String)\n    Debug.Print msg\nEnd Sub",
+        "best_practices": "Créer des classes vides servant d'interfaces.",
+        "pitfalls": "Pas d'héritage de code, pas d'implémentation par défaut.",
+        "notes": "Héritage d'interface pur COM."
+      }
+    }
+  },
+  {
+    "id": "php_attributes_reflection_metaprogramming_01",
+    "level": 6,
+    "chapter": "6. Métaprogrammation et Introspection",
+    "category": "Métaprogrammation",
+    "name": "Attributs Négociés (#[Attribute]) et API de Réflexion (ReflectionClass)",
+    "description": "Ajout de métadonnées structurées sur les classes, méthodes ou propriétés et inspection au runtime via l'API Reflection.",
+    "related_concepts": ["js_v8_memory_garbage_collection_01"],
+    "languages": {
+      "php": {
+        "minimal": "#[Attribute] class Route { public function __construct(public string $path) {} }\n#[Route('/api')] class ApiController {}",
+        "complete": "<?php\ndeclare(strict_types=1);\n\n#[Attribute(Attribute::TARGET_METHOD)]\nclass Route {\n    public function __construct(public string $path, public string $method = 'GET') {}\n}\n\nclass UserController {\n    #[Route('/users', method: 'POST')]\n    public function creer(): void {}\n}\n\n// Inspection via Réflexion\n$ref = new ReflectionMethod(UserController::class, 'creer');\n$attrs = $ref->getAttributes(Route::class);\n$route = $attrs[0]->newInstance();\necho $route->path; // '/users'",
+        "best_practices": "Utiliser les Attributs modernes PHP 8 à la place des anciens PHPDoc annotations (`@Route`).",
+        "pitfalls": "L'utilisation excessive de la réflexion en boucle peut dégrader la vitesse d'exécution (utiliser du cache de métadonnées).",
+        "notes": "Standardisé en PHP 8.0 pour remplacer la lecture de commentaires de code."
+      },
+      "javascript": {
+        "minimal": "// Décorateurs ES (Stage 3)\n@route('/api') class ApiController {}",
+        "complete": "function route(path) {\n    return function (target, key, descriptor) {\n        target.path = path;\n    };\n}\nclass ApiController {\n    @route('/users')\n    creer() {}\n}",
+        "best_practices": "Utiliser la nouvelle spécification officielle des Décorateurs JS.",
+        "pitfalls": "Nécessite Babel ou un transpileur récent selon le support des navigateurs/Node.",
+        "notes": "Décorateurs JavaScript ES2023+."
+      },
+      "typescript": {
+        "minimal": "function Route(path: string) { return (target: any) => {}; }\n@Route('/api') class ApiController {}",
+        "complete": "import 'reflect-metadata';\n\nfunction Route(path: string) {\n    return Reflect.metadata('routePath', path);\n}\nclass ApiController {\n    @Route('/users')\n    creer() {}\n}\nconst path = Reflect.getMetadata('routePath', ApiController.prototype, 'creer');",
+        "best_practices": "Activer `experimentalDecorators` et `emitDecoratorMetadata`.",
+        "pitfalls": "Ne pas confondre les anciens décorateurs TS et la nouvelle norme TC39.",
+        "notes": "Richement utilisé dans les frameworks comme NestJS."
+      },
+      "python": {
+        "minimal": "def route(path): return lambda fn: setattr(fn, 'path', path) or fn\n@route('/api')\ndef get_users(): pass",
+        "complete": "def route(path, method='GET'):\n    def decorator(func):\n        func.route_path = path\n        func.route_method = method\n        return func\n    return decorator\n\nclass UserController:\n    @route('/users', method='POST')\n    def creer(self):\n        pass\n\nprint(UserController.creer.route_path) # '/users'",
+        "best_practices": "Utiliser `functools.wraps` pour préserver le nom et le docstring des fonctions décorées.",
+        "pitfalls": "Les décorateurs s'exécutent lors du chargement du module, pas à l'appel de la fonction.",
+        "notes": "Décorateurs de fonctions et classes très idiomatiques."
+      },
+      "csharp": {
+        "minimal": "[AttributeUsage(AttributeTargets.Method)] class RouteAttribute : Attribute { public string Path { get; set; } }\n[Route(Path=\"/api\")] void Get() {}",
+        "complete": "using System;\nusing System.Reflection;\n\n[AttributeUsage(AttributeTargets.Method)]\npublic class RouteAttribute : Attribute {\n    public string Path { get; }\n    public RouteAttribute(string path) => Path = path;\n}\npublic class UserController {\n    [Route(\"/users\")]\n    public void Creer() {}\n}\n// Inspection\nvar method = typeof(UserController).GetMethod(\"Creer\");\nvar attr = method.GetCustomAttribute<RouteAttribute>();\nConsole.WriteLine(attr.Path);",
+        "best_practices": "Suffixer le nom de la classe par 'Attribute'.",
+        "pitfalls": "Inspection via Reflection lente si non mise en cache dans un dictionnaire.",
+        "notes": "Attributs .NET compilés dans les métadonnées IL."
+      },
+      "java": {
+        "minimal": "@Retention(RetentionPolicy.RUNTIME) @interface Route { String value(); }\n@Route(\"/api\") class ApiController {}",
+        "complete": "import java.lang.annotation.*;\nimport java.lang.reflect.Method;\n\n@Retention(RetentionPolicy.RUNTIME)\n@Target(ElementType.METHOD)\n@interface Route {\n    String path();\n}\npublic class UserController {\n    @Route(path = \"/users\")\n    public void creer() {}\n}\n// Inspection\nMethod m = UserController.class.getMethod(\"creer\");\nRoute r = m.getAnnotation(Route.class);\nSystem.out.println(r.path());",
+        "best_practices": "Utiliser `RetentionPolicy.RUNTIME` pour que l'annotation soit visible par réflexion.",
+        "pitfalls": "Les annotations sans politique de rétention explicite sont effacées au runtime.",
+        "notes": "Pierres angulaires de frameworks comme Spring Boot."
+      },
+      "cpp": {
+        "minimal": "[[deprecated(\"Utiliser la nouvelle API\")]] void ancienneFn();",
+        "complete": "#include <iostream>\n// C++ n'a pas de réflexion runtime complète native pour les attributs personnalisés\n[[nodiscard]] int calculer() {\n    return 42;\n}\nint main() {\n    calculer(); // Génère un avertissement de compilation car la valeur est ignorée\n    return 0;\n}",
+        "best_practices": "Utiliser les attributs standardisés (`[[nodiscard]]`, `[[maybe_unused]]`, `[[deprecated]]`).",
+        "pitfalls": "L'absence de système de réflexion complet au runtime rend impossible l'instanciation automatique par attributs.",
+        "notes": "Attributs gérés principalement à la compilation (Réflexion C++26 à venir)."
+      },
+      "c": {
+        "minimal": "__attribute__((deprecated)) void ancienneFn(void);",
+        "complete": "#include <stdio.h>\n// Attributs spécifiques aux compilateurs (GCC/Clang)\nvoid __attribute__((constructor)) init() {\n    printf(\"S'exécute avant le main()\\n\");\n}\nint main() {\n    return 0;\n}",
+        "best_practices": "Encapsuler les attributs GCC/MSVC dans des macros de préprocesseur pour la portabilité.",
+        "pitfalls": "Non standard et dépendant de la plateforme.",
+        "notes": "Extensions spécifiques aux compilateurs (GCC/Clang/MSVC)."
+      },
+      "vb": {
+        "minimal": "<Route(\"/api\")> Sub GetUsers()",
+        "complete": "<AttributeUsage(AttributeTargets.Method)> _\nPublic Class RouteAttribute : Inherits Attribute\n    Public Property Path As String\n    Public Sub New(p As String) : Path = p : End Sub\nEnd Class\nPublic Class UserController\n    <Route(\"/users\")>\n    Public Sub Creer() : End Sub\nEnd Class",
+        "best_practices": "Même modèle d'attributs qu'en C#.",
+        "pitfalls": "Syntaxe avec les chevrons `<Attribute>`.",
+        "notes": "Totalement intégré à la réflexion .NET."
+      },
+      "vba": {
+        "minimal": "' Pas d'attributs personnalisés ni de réflexion runtime",
+        "complete": "' VBA ne supporte pas l'annotation ou la réflexion\n' On utilise des commentaires ou des conventions de nommage\nPublic Sub Route_Users_Creer()\n    ' Logique manuelle\nEnd Sub",
+        "best_practices": "Utiliser des conventions de nommage explicites.",
+        "pitfalls": "Impossible d'inspecter dynamiquement les méthodes d'un module au runtime standard.",
+        "notes": "Aucun support de la métaprogrammation par attributs."
+      }
+    }
+  },
+  {
+    "id": "php_exceptions_error_handling_01",
+    "level": 3,
+    "chapter": "4. Gestion des Erreurs et Exceptions",
+    "category": "Exceptions",
+    "name": "Hiérarchie Throwable, Exceptions Personnalisées et Bloc Try-Catch-Finally",
+    "description": "Système unifié de gestion des erreurs modernes (Error) et des exceptions applicatives (Exception) via la souscription à Throwable.",
+    "related_concepts": ["js_async_await_promises_01"],
+    "languages": {
+      "php": {
+        "minimal": "try { throw new Exception('Erreur'); } catch (Throwable $e) { echo $e->getMessage(); }",
+        "complete": "<?php\ndeclare(strict_types=1);\n\nclass ValidationException extends Exception {}\n\nfunction traiter(int $age): void {\n    if ($age < 18) {\n        throw new ValidationException(\"Âge insuffisant : $age\");\n    }\n}\n\ntry {\n    traiter(15);\n} catch (ValidationException $e) {\n    echo \"Erreur Métier : \" . $e->getMessage();\n} catch (Throwable $e) {\n    echo \"Erreur Système : \" . $e->getMessage();\n} finally {\n    echo \" Nettoyage exécuté.\";\n}",
+        "best_practices": "Attraper `Throwable` pour capturer à la fois les `Error` internes du moteur PHP et les `Exception` utilisateur.",
+        "pitfalls": "Utiliser l'ancien opérateur de suppression d'erreur `@` (ex: `@file_get_contents`) masque les bugs et détruit les performances.",
+        "notes": "Unified Error Architecture introduit en PHP 7.0."
+      },
+      "javascript": {
+        "minimal": "try { throw new Error('Erreur'); } catch (e) { console.error(e.message); }",
+        "complete": "class ValidationException extends Error {\n    constructor(msg) {\n        super(msg);\n        this.name = 'ValidationException';\n    }\n}\ntry {\n    throw new ValidationException('Âge insuffisant');\n} catch (e) {\n    if (e instanceof ValidationException) {\n        console.error('Métier:', e.message);\n    } else {\n        throw e;\n    }\n} finally {\n    console.log('Nettoyage');\n}",
+        "best_practices": "Toujours lancer des objets dérivant de `Error` (ne pas faire `throw 'chaîne'`).",
+        "pitfalls": "JS permet de lancer n'importe quel type (`throw 42;`), rendant le typage dans le `catch` incertain.",
+        "notes": "Gestion des exceptions synchrone basique."
+      },
+      "typescript": {
+        "minimal": "try {} catch (e: unknown) { if (e instanceof Error) console.log(e.message); }",
+        "complete": "class ValidationException extends Error {}\ntry {\n    throw new ValidationException('Erreur');\n} catch (e: unknown) {\n    if (e instanceof ValidationException) {\n        console.error(e.message);\n    }\n}",
+        "best_practices": "Typer l'erreur capturée en `unknown` pour forcer la vérification de type `instanceof`.",
+        "pitfalls": "Impossible de déclarer les types d'exceptions levées dans la signature de la fonction.",
+        "notes": "Sécurité renforcée sur le bloc catch."
+      },
+      "python": {
+        "minimal": "try: raise ValueError('Erreur')\nexcept Exception as e: print(e)",
+        "complete": "class ValidationException(Exception): pass\n\ntry:\n    raise ValidationException('Âge insuffisant')\nexcept ValidationException as e:\n    print(f'Métier : {e}')\nexcept Exception as e:\n    print(f'Système : {e}')\nfinally:\n    print('Nettoyage')",
+        "best_practices": "Hériter de la classe de base `Exception` et créer des hiérarchies d'erreurs explicites.",
+        "pitfalls": "Capturer `BaseException` attrape aussi les signaux d'interruption système (`KeyboardInterrupt`).",
+        "notes": "Exceptions très intégrées à la philosophie Python (EAFP)."
+      },
+      "csharp": {
+        "minimal": "try { throw new Exception(\"Erreur\"); } catch (Exception e) { Console.WriteLine(e.Message); }",
+        "complete": "public class ValidationException : Exception {\n    public ValidationException(string msg) : base(msg) {}\n}\ntry {\n    throw new ValidationException(\"Âge insuffisant\");\n} catch (ValidationException e) {\n    Console.WriteLine($\"Métier : {e.Message}\");\n} finally {\n    Console.WriteLine(\"Nettoyage\");\n}",
+        "best_practices": "Utiliser des filtres d'exception `catch (Exception e) when (code == 404)`.",
+        "pitfalls": "Faire `throw e;` au lieu de `throw;` réinitialise la pile d'exécution (StackTrace).",
+        "notes": "Gestion très performante sur le CLR."
+      },
+      "java": {
+        "minimal": "try { throw new Exception(\"Erreur\"); } catch (Exception e) {}",
+        "complete": "class ValidationException extends Exception {\n    public ValidationException(String msg) { super(msg); }\n}\npublic class Main {\n    public static void traiter() throws ValidationException {\n        throw new ValidationException(\"Erreur\");\n    }\n    public static void main(String[] args) {\n        try {\n            traiter();\n        } catch (ValidationException e) {\n            System.out.println(e.getMessage());\n        }\n    }\n}",
+        "best_practices": "Faire la distinction entre exceptions contrôlées (Checked Exceptions) et non contrôlées (RuntimeException).",
+        "pitfalls": "Capturer `Throwable` attrape aussi les erreurs fatales de la JVM (`OutOfMemoryError`).",
+        "notes": "Checked exceptions uniques à Java."
+      },
+      "cpp": {
+        "minimal": "try { throw std::runtime_error(\"Erreur\"); } catch (const std::exception& e) {}",
+        "complete": "#include <iostream>\n#include <stdexcept>\n\nclass ValidationException : public std::runtime_error {\npublic:\n    ValidationException(const std::string& msg) : std::runtime_error(msg) {}\n};\n\nint main() {\n    try {\n        throw ValidationException(\"Âge insuffisant\");\n    } catch (const ValidationException& e) {\n        std::cout << e.what();\n    }\n    return 0;\n}",
+        "best_practices": "Toujours attraper les exceptions par référence constante `catch (const std::exception& e)`.",
+        "pitfalls": "Attraper par valeur provoque un tranchage d'objet (Object Slicing).",
+        "notes": "Exceptions sans bloc `finally` (remplacé par l'idiome RAII)."
+      },
+      "c": {
+        "minimal": "// Pas d'exceptions synchrones : gestion via codes de retour",
+        "complete": "#include <stdio.h>\n\nint traiter(int age) {\n    if (age < 18) return -1; // Code d'erreur\n    return 0;\n}\n\nint main() {\n    if (traiter(15) != 0) {\n        printf(\"Erreur de traitement\\n\");\n    }\n    return 0;\n}",
+        "best_practices": "Tester scrupuleusement la valeur de retour de chaque fonction.",
+        "pitfalls": "L'absence de remontée d'erreur automatique peut laisser passer des états corrompus.",
+        "notes": "Gestion par codes de retour d'erreur (errno)."
+      },
+      "vb": {
+        "minimal": "Try : Throw New Exception(\"Erreur\") : Catch ex As Exception : End Try",
+        "complete": "Public Class ValidationException : Inherits Exception\n    Public Sub New(msg As String) : MyBase.New(msg) : End Sub\nEnd Class\nTry\n    Throw New ValidationException(\"Âge insuffisant\")\nCatch ex As ValidationException\n    Console.WriteLine(ex.Message)\nFinally\n    Console.WriteLine(\"Nettoyage\")\nEnd Try",
+        "best_practices": "Utiliser les blocs Try-Catch modernes plutôt que 'On Error GoTo'.",
+        "pitfalls": "L'instruction legacy `On Error Resume Next` masque toutes les erreurs mortelles.",
+        "notes": "Structure Try-Catch-Finally classique .NET."
+      },
+      "vba": {
+        "minimal": "On Error GoTo ErrHandler",
+        "complete": "Public Sub TestErreur()\n    On Error GoTo ErrHandler\n    \n    ' Code à risque\n    Err.Raise 513, \"Source\", \"Âge insuffisant\"\n    \n    Exit Sub\nErrHandler:\n    MsgBox \"Erreur \" & Err.Number & \": \" & Err.Description\nEnd Sub",
+        "best_practices": "Définir un point de sortie `Exit Sub` juste avant l'étiquette de gestion d'erreur.",
+        "pitfalls": "Oublier le `Exit Sub` provoque l'exécution systématique du gestionnaire d'erreur.",
+        "notes": "Gestion procédurale à base d'interruption `On Error GoTo`."
+      }
+    }
+  },
+  {
+    "id": "php_fibers_asynchronous_concurrency_01",
+    "level": 7,
+    "chapter": "5. Concurrence et Asynchronisme",
+    "category": "Asynchronisme",
+    "name": "Fibers (Coroutines), Boucle d'Événements et Concurrence",
+    "description": "Exécution concurrente non-bloquante avec les Fibers natives PHP 8.1 ou via des bibliothèques réseau asynchrones (Revolt, Swoole, Amp, ReactPHP).",
+    "related_concepts": ["js_async_await_promises_01", "js_loops_iterators_generators_01"],
+    "languages": {
+      "php": {
+        "minimal": "$fiber = new Fiber(fn() => Fiber::suspend('pause')); $res = $fiber->start();",
+        "complete": "<?php\n// Fibers natives PHP 8.1+ pour interrompre et reprendre des piles d'exécution\n$fiber = new Fiber(function(string $nom): void {\n    echo \"Début Fiber $nom\\n\";\n    $val = Fiber::suspend(\"Interrompu\");\n    echo \"Reprise Fiber avec : $val\\n\";\n});\n\n$statut = $fiber->start(\"Tâche 1\");\necho \"Statut principal : $statut\\n\";\n$fiber->resume(\"Donnée externe\");",
+        "best_practices": "Utiliser un framework asynchrone complet (Swoole, Workerman ou Revolt/Amp) qui encapsule les Fibers.",
+        "pitfalls": "Les Fibers ne s'exécutent pas en parallèle sur plusieurs cœurs CPU : c'est de la concurrence coopérative monopasse.",
+        "notes": "Introduit en PHP 8.1 pour révolutionner le développement de serveurs asynchrones."
+      },
+      "javascript": {
+        "minimal": "const delay = ms => new Promise(res => setTimeout(res, ms)); await delay(1000);",
+        "complete": "async function tâche() {\n    console.log(\"Début\");\n    await new Promise(resolve => setTimeout(resolve, 1000));\n    console.log(\"Reprise\");\n}\ntâche();",
+        "best_practices": "Employer `async/await` au-dessus de l'Event Loop natif.",
+        "pitfalls": "Bloquer le thread principal avec une boucle CPU intensive détruit la réactivité.",
+        "notes": "Asynchronisme non-bloquant natif basé sur l'Event Loop."
+      },
+      "typescript": {
+        "minimal": "const pause = (ms: number): Promise<void> => new Promise(r => setTimeout(r, ms));",
+        "complete": "async function tâche(): Promise<string> {\n    await new Promise(resolve => setTimeout(resolve, 500));\n    return \"Terminé\";\n}",
+        "best_practices": "Typer systématiquement la valeur de retour en `Promise<T>`.",
+        "pitfalls": "Oublier le mot-clé `await` sur une promesse retourne l'instance de la promesse et non son résultat.",
+        "notes": "Surcouche typée des promesses JS."
+      },
+      "python": {
+        "minimal": "import asyncio; await asyncio.sleep(1)",
+        "complete": "import asyncio\n\nasync def tache():\n    print(\"Début\")\n    await asyncio.sleep(1)\n    print(\"Reprise\")\n\nasyncio.run(tache())",
+        "best_practices": "Utiliser `asyncio` pour toutes les opérations d'E/S réseau.",
+        "pitfalls": "Appeler une fonction synchrone bloquante au milieu d'une coroutine bloque la boucle `asyncio`.",
+        "notes": "Coroutines basées sur `async/await` et Event Loop."
+      },
+      "csharp": {
+        "minimal": "await Task.Delay(1000);",
+        "complete": "using System.Threading.Tasks;\n\nasync Task TacheAsync() {\n    Console.WriteLine(\"Début\");\n    await Task.Delay(1000);\n    Console.WriteLine(\"Reprise\");\n}",
+        "best_practices": "Utiliser `ConfigureAwait(false)` dans les bibliothèques pour éviter les verrous de contexte.",
+        "pitfalls": "Les fonctions `async void` empêchent la capture correcte des exceptions.",
+        "notes": "Modèle TAP (Task-based Asynchronous Pattern) extrêmement optimisé."
+      },
+      "java": {
+        "minimal": "Thread.startVirtualThread(() -> { ... }); // Java 21 Virtual Threads",
+        "complete": "public class Main {\n    public static void main(String[] args) throws Exception {\n        // Loom / Virtual Threads (Java 21+)\n        Thread vThread = Thread.ofVirtual().start(() -> {\n            System.out.println(\"Exécution légère sur Virtual Thread\");\n        });\n        vThread.join();\n    }\n}",
+        "best_practices": "Utiliser les Virtual Threads du projet Loom pour l'E/S intensive à grande échelle.",
+        "pitfalls": "Pincer un Virtual Thread avec un bloc `synchronized` synchrone.",
+        "notes": "Coroutines intégrées au niveau du runtime JVM (Project Loom)."
+      },
+      "cpp": {
+        "minimal": "#include <coroutine> // Coroutines C++20",
+        "complete": "#include <iostream>\n#include <coroutine>\n\n// Nécessite la définition d'un type de tâche (PromiseType) en C++20\n// Utilisé pour la suspension et la reprise explicite via co_await / co_yield",
+        "best_practices": "S'appuyer sur des bibliothèques éprouvées comme `cppcoro` ou `Boost.Asio`.",
+        "pitfalls": "Complexité d'implémentation du type `promise_type` en C++20.",
+        "notes": "Coroutines bas niveau introduites dans C++20."
+      },
+      "c": {
+        "minimal": "// Pas de coroutines natives (threads POSIX / pthreads)",
+        "complete": "#include <pthread.h>\n#include <stdio.h>\n\nvoid* executer(void* arg) {\n    printf(\"Thread parallèle\\n\");\n    return NULL;\n}\nint main() {\n    pthread_t t;\n    pthread_create(&t, NULL, executer, NULL);\n    pthread_join(t, NULL);\n    return 0;\n}",
+        "best_practices": "Protéger les données partagées par des verrous Mutex.",
+        "pitfalls": "Conditions de concurrence (Race conditions) et verrous mortels (Deadlocks).",
+        "notes": "Multi-threading système brut."
+      },
+      "vb": {
+        "minimal": "Await Task.Delay(1000)",
+        "complete": "Imports System.Threading.Tasks\n\nAsync Function TacheAsync() As Task\n    Console.WriteLine(\"Début\")\n    Await Task.Delay(1000)\n    Console.WriteLine(\"Reprise\")\nEnd Function",
+        "best_practices": "Utiliser la syntaxe `Async/Await` natif .NET.",
+        "pitfalls": "Ne pas bloquer avec `.Result`.",
+        "notes": "Intégration TAP .NET."
+      },
+      "vba": {
+        "minimal": "' Pas d'asynchronisme natif ni de threads",
+        "complete": "' Utilisation de DoEvents ou de minutages Windows API pour garder la main\nPublic Sub Attendre(secondes As Double)\n    Dim fin As Double: fin = Timer + secondes\n    Do While Timer < fin\n        DoEvents ' Libère la main temporairement à l'IHM\n    Loop\nEnd Sub",
+        "best_practices": "Employer `DoEvents` avec parcimonie pour ne pas figer l'interface Excel.",
+        "pitfalls": "`DoEvents` peut provoquer des réentrances imprévues dans d'autres procédures.",
+        "notes": "Modèle mono-thread strict à boucle de messages COM."
+      }
+    }
+  },
+  {
+    "id": "php_memory_garbage_collector_zval_01",
+    "level": 8,
+    "chapter": "6. Moteur Interne Zend et Performance",
+    "category": "Interne & Mémoire",
+    "name": "Structures ZVAL, Count-on-Write (COW) et Garbage Collection",
+    "description": "Compréhension de la représentation interne des variables par le moteur Zend (Zval), mécanisme de copie sur écriture et nettoyage de cycles.",
+    "related_concepts": ["js_v8_memory_garbage_collection_01", "mem_references_02"],
+    "languages": {
+      "php": {
+        "minimal": "$a = [1, 2]; $b = $a; // Même mémoire via Copy-On-Write (COW) jusqu'à modification",
+        "complete": "<?php\n// Démonstration du Copy-On-Write (COW)\n$a = range(1, 1000000); // Allocation unique\n$b = $a; // Aucune duplication mémoire ! $b pointe vers le même ZVAL\n\n$b[0] = 99; // Modification : déclenchement de la copie mémoire réelle pour $b\n\necho gc_status()['runs']; // État du collecteur de cycles",
+        "best_practices": "Passer les gros tableaux par valeur en profitant du COW au lieu de passer abusivement par référence `&$arr`.",
+        "pitfalls": "Le passage par référence `&$arr` casse l'optimisation COW et force la création immédiate de structures séparées.",
+        "notes": "Au cœur des performances mémoire exceptionnelles du moteur Zend Engine 3+."
+      },
+      "javascript": {
+        "minimal": "let a = { x: 1 }; let b = a; // Copie par référence d'objet directe",
+        "complete": "let a = [1, 2, 3];\nlet b = a;\nb[0] = 99; // Modifie immédiatement 'a' ! Pas de Copy-On-Write natif pour les objets/arrays\nconsole.log(a[0]); // 99",
+        "best_practices": "Utiliser la décomposition `[...a]` ou `structuredClone()` si une copie distincte est requise.",
+        "pitfalls": "Penser que modifier un objet assigné à une nouvelle variable ne touche pas l'original.",
+        "notes": "Les objets et tableaux sont toujours transmis par référence de pointeur."
+      },
+      "typescript": {
+        "minimal": "let a: number[] = [1, 2]; let b: number[] = a;",
+        "complete": "const a: number[] = [1, 2, 3];\nconst b: number[] = a;\nb[0] = 99; // Altera 'a'",
+        "best_practices": "Utiliser `ReadonlyArray<T>` pour interdire toute modification par référence involontaire.",
+        "pitfalls": "Même comportement de pointeur mémoire que JavaScript.",
+        "notes": "Gestion de référence basique JS."
+      },
+      "python": {
+        "minimal": "import copy; b = copy.copy(a)",
+        "complete": "import sys\n\na = [1, 2, 3]\nb = a\nprint(sys.getrefcount(a)) # Compteur de références\nb.append(4) # 'a' est également modifié",
+        "best_practices": "Utiliser `copy.deepcopy()` pour dupliquer des structures imbriquées.",
+        "pitfalls": "Modifier une liste passée en paramètre modifie l'objet appelant.",
+        "notes": "Tout est objet transmis par référence."
+      },
+      "csharp": {
+        "minimal": "int[] a = {1, 2}; int[] b = a; // Référence de tableau sur le tas",
+        "complete": "int[] a = { 1, 2, 3 };\nint[] b = a;\nb[0] = 99; // 'a' est modifié\n\n// Pour cloner réellement :\nint[] c = (int[])a.Clone();",
+        "best_practices": "Utiliser des `struct` (types valeur) si un comportement de copie sur pile est requis.",
+        "pitfalls": "Les types références (classes, tableaux) copient uniquement l'adresse mémoire lors de l'affectation.",
+        "notes": "Modèle CLI Référence vs Valeur."
+      },
+      "java": {
+        "minimal": "int[] a = {1, 2}; int[] b = a;",
+        "complete": "int[] a = {1, 2, 3};\nint[] b = a;\nb[0] = 99; // 'a' est modifié\n\nint[] c = a.clone(); // Copie réelle",
+        "best_practices": "Utiliser `System.arraycopy()` pour des duplications rapides.",
+        "pitfalls": "Attention aux copies d'objets dérivées (Shallow Copy vs Deep Copy).",
+        "notes": "Gestion par références d'objets sur le tas."
+      },
+      "cpp": {
+        "minimal": "std::vector<int> a = {1, 2}; std::vector<int> b = a; // Copie intégrale profonde immédiate",
+        "complete": "#include <vector>\n#include <iostream>\n\nint main() {\n    std::vector<int> a = {1, 2, 3};\n    std::vector<int> b = a; // Copie mémoire intégrale immédiate (Pas de COW par défaut)\n    b[0] = 99; // 'a' reste intact (a[0] == 1)\n    return 0;\n}",
+        "best_practices": "Passer par référence constante `const std::vector<int>&` pour éviter la copie couteuse à l'appel de fonction.",
+        "pitfalls": "Duplication mémoire involontaire et lourde lors des réaffectations de conteneurs STL.",
+        "notes": "Sémantique de valeur par défaut."
+      },
+      "c": {
+        "minimal": "int* b = a; // Copie uniquement l'adresse du pointeur",
+        "complete": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\nint main() {\n    int* a = malloc(3 * sizeof(int));\n    int* b = a; // Partage du même bloc mémoire\n    \n    // Pour dupliquer le bloc :\n    int* c = malloc(3 * sizeof(int));\n    memcpy(c, a, 3 * sizeof(int));\n    free(a); free(c);\n    return 0;\n}",
+        "best_practices": "Utiliser `memcpy` pour la duplication explicite de blocs mémoire.",
+        "pitfalls": "Double libération (`free`) si deux pointeurs partagent la même adresse.",
+        "notes": "Pointeurs bruts sans abstraction."
+      },
+      "vb": {
+        "minimal": "Dim b As Integer() = a",
+        "complete": "Dim a As Integer() = {1, 2, 3}\nDim b As Integer() = a\nb(0) = 99 ' 'a' est également modifié\nDim c As Integer() = CType(a.Clone(), Integer())",
+        "best_practices": "Utiliser `.Clone()` pour créer une copie distincte.",
+        "pitfalls": "Même comportement de type référence .NET.",
+        "notes": "Types références CLR."
+      },
+      "vba": {
+        "minimal": "Dim b As Variant : b = a ' Copie intégrale du tableau sous VBA !",
+        "complete": "Public Sub TestCOW()\n    Dim a As Variant, b As Variant\n    a = Array(1, 2, 3)\n    b = a ' VBA effectue une COPIE intégrale de la structure de tableau !\n    b(0) = 99\n    Debug.Print a(0) ' Affiche 1 (a n'est pas modifié !)\nEnd Sub",
+        "best_practices": "Prendre en compte cette duplication mémoire automatique lors de la manipulation de gros tableaux Variant.",
+        "pitfalls": "Consommation mémoire cachée lors des affectations répétées de grands tableaux.",
+        "notes": "Copie de tableaux Variant intégrale par valeur sous VBA."
+      }
+    }
+  }
+]

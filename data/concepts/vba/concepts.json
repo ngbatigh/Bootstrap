@@ -1,0 +1,407 @@
+[
+  {
+    "id": "vba_control_declarations_01",
+    "level": 1,
+    "chapter": "1. Syntaxe & Contrôle de Flux",
+    "category": "Briques Fondamentales",
+    "name": "Déclarations, Contrôle Conditionnel et Select Case",
+    "description": "Typage explicite/Variant (`Option Explicit`), évaluation conditionnelle (`If...Then...Else`), et filtrage par valeurs/intervalles via `Select Case`.",
+    "related_concepts": ["vb_control_declarations_01"],
+    "languages": {
+      "vba": {
+        "minimal": "Select Case val : Case 1 : MsgBox \"Un\" : Case Else : MsgBox \"Autre\" : End Select",
+        "complete": "Option Explicit\n\nPublic Function AnalyserCommande(action As String, val As Long) As String\n    Dim statut As String\n    ' Fonction IIf pour condition courte\n    statut = IIf(val > 0, \"Actif\", \"Inactif\")\n    \n    ' Select Case avec évaluation d'intervalles (To) et comparaisons (Is)\n    Select Case val\n        Case Is <= 0\n            AnalyserCommande = \"Valeur négative ou nulle\"\n        Case 1 To 10\n            AnalyserCommande = \"Commande '\" & action & \"' (\" & statut & \")\"\n        Case 11, 12, 13\n            AnalyserCommande = \"Commande prioritaire\"\n        Case Else\n            AnalyserCommande = \"Commande standard\"\n    End Select\nEnd Function",
+        "best_practices": "Toujours inscrire `Option Explicit` en haut de chaque module pour interdire la déclaration implicite de variables `Variant` non désirées.",
+        "pitfalls": "Attention avec `IIf(cond, expr1, expr2)` : contrairement aux autres langages, VBA évalue systématiquement `expr1` et `expr2` même si la condition est fausse (pas de Short-Circuit).",
+        "notes": "Le `Select Case` en VBA est extrêmement souple grâce aux mots-clés `To` et `Is`."
+      },
+      "vb": {
+        "minimal": "Select Case val : Case 1 : Console.WriteLine(\"Un\") : Case Else : End Select",
+        "complete": "Option Strict On\n\nPublic Module Program\n    Public Function AnalyserCommande(action As String, val As Integer) As String\n        Dim statut As String = If(val > 0, \"Actif\", \"Inactif\")\n        Select Case val\n            Case Is <= 0\n                Return \"Valeur négative ou nulle\"\n            Case 1 To 10\n                Return $\"Commande '{action}' ({statut})\"\n            Case Else\n                Return \"Commande standard\"\n        End Select\n    End Function\nEnd Module",
+        "best_practices": "Préférer le nouvel opérateur `If(cond, v1, v2)` (Short-Circuit) au legacy `IIf`.",
+        "pitfalls": "Laisser `Option Strict Off` autorisant les conversions implicites d'un objet .NET.",
+        "notes": "Version moderne .NET héritée de la syntaxe VB6/VBA."
+      },
+      "python": {
+        "minimal": "match val: case 1: print('Un'); case _: print('Autre')",
+        "complete": "def analyser_commande(action: str, val: int) -> str:\n    statut = \"Actif\" if val > 0 else \"Inactif\"\n    match val:\n        case v if v <= 0:\n            return \"Valeur négative ou nulle\"\n        case v if 1 <= v <= 10:\n            return f\"Commande '{action}' ({statut})\"\n        case _:\n            return \"Commande standard\"",
+        "best_practices": "Utiliser `match/case` pour le Structural Pattern Matching moderne.",
+        "pitfalls": "Mélanger indentation par espaces et tabulations.",
+        "notes": "Pattern matching structurel natif introduit en Python 3.10."
+      },
+      "javascript": {
+        "minimal": "switch(val) { case 1: console.log('Un'); break; default: console.log('Autre'); }",
+        "complete": "function analyserCommande(action, val) {\n    const statut = val > 0 ? \"Actif\" : \"Inactif\";\n    if (val <= 0) return \"Valeur négative ou nulle\";\n    switch (true) {\n        case (val >= 1 && val <= 10):\n            return `Commande '${action}' (${statut})`;\n        default:\n            return \"Commande standard\";\n    }\n}",
+        "best_practices": "Utiliser `switch(true)` pour évaluer des conditions dynamiques.",
+        "pitfalls": "Oublier de mettre un `break` provoquant un fallthrough.",
+        "notes": "Contrôle de flux standard en JS."
+      },
+      "typescript": {
+        "minimal": "const statut: string = val > 0 ? 'Actif' : 'Inactif';",
+        "complete": "function analyserCommande(action: string, val: number): string {\n    const statut = val > 0 ? \"Actif\" : \"Inactif\";\n    if (val <= 0) return \"Valeur négative ou nulle\";\n    return \"Commande standard\";\n}",
+        "best_practices": "Annoter explicitement les types d'arguments et de retour.",
+        "pitfalls": "Comportement au runtime identique au JavaScript.",
+        "notes": "Typage statique au-dessus de la syntaxe JS."
+      },
+      "php": {
+        "minimal": "$res = match($val) { 1 => 'Un', default => 'Autre' };",
+        "complete": "<?php\nfunction analyserCommande(string $action, int $val): string {\n    $statut = $val > 0 ? 'Actif' : 'Inactif';\n    return match(true) {\n        $val <= 0 => 'Valeur négative ou nulle',\n        $val >= 1 && $val <= 10 => \"Commande '{$action}' ({$statut})\",\n        default => 'Commande standard'\n    };\n}",
+        "best_practices": "Utiliser l'expression `match` (PHP 8+) plutôt que `switch`.",
+        "pitfalls": "Levée d'exception en l'absence de case `default`.",
+        "notes": "`match` renvoie directement une valeur (expression)."
+      },
+      "csharp": {
+        "minimal": "var res = val switch { 1 => \"Un\", _ => \"Autre\" };",
+        "complete": "public static string AnalyserCommande(string action, int val) {\n    var statut = val > 0 ? \"Actif\" : \"Inactif\";\n    return val switch {\n        <= 0 => \"Valeur négative ou nulle\",\n        >= 1 and <= 10 => $\"Commande '{action}' ({statut})\",\n        _ => \"Commande standard\"\n    };\n}",
+        "best_practices": "Utiliser les Switch Expressions modernes avec des relational patterns.",
+        "pitfalls": "Avertissement du compilateur si tous les cas ne sont pas traités.",
+        "notes": "Pattern matching très expressif."
+      },
+      "java": {
+        "minimal": "String res = switch(val) { case 1 -> \"Un\"; default -> \"Autre\"; };",
+        "complete": "public String analyserCommande(String action, int val) {\n    var statut = val > 0 ? \"Actif\" : \"Inactif\";\n    return switch (val) {\n        case 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 -> \"Commande dans la plage (\" + statut + \")\";\n        default -> \"Commande standard\";\n    };\n}",
+        "best_practices": "Employer les expressions `switch` modernes (Java 14+).",
+        "pitfalls": "Confusion de syntaxe entre flèche `->` et `:` classique.",
+        "notes": "Rapprochement vers le style fonctionnel."
+      },
+      "cpp": {
+        "minimal": "switch(val) { case 1: std::cout << \"Un\"; break; }",
+        "complete": "#include <string>\n\nstd::string analyserCommande(const std::string& action, int val) {\n    std::string statut = (val > 0) ? \"Actif\" : \"Inactif\";\n    if (val <= 0) return \"Valeur négative ou nulle\";\n    return \"Commande standard\";\n}",
+        "best_practices": "Utiliser des gardes conditionnels explicites.",
+        "pitfalls": "Switch restreint aux types entiers/énumérations.",
+        "notes": "Syntaxe bas niveau performante."
+      },
+      "c": {
+        "minimal": "switch(val) { case 1: break; default: break; }",
+        "complete": "#include <stdio.h>\n\nconst char* analyser(int val) {\n    switch (val) {\n        case 1: case 2:\n            return \"Petit\";\n        default:\n            return \"Grand\";\n    }\n}",
+        "best_practices": "Découper la logique conditionnelle en fonctions isolées.",
+        "pitfalls": "Chaines de caractères incompatibles dans un `switch` C.",
+        "notes": "Contrôle impératif minimaliste."
+      }
+    }
+  },
+  {
+    "id": "vba_iteration_arrays_01",
+    "level": 2,
+    "chapter": "2. Collections & Traitement de Données",
+    "category": "Paradigmes Impératifs",
+    "name": "Parcours de Tableaux (`For...Next`, `LBound`, `UBound`) et Collections",
+    "description": "Itération impérative séquentielle sur des tableaux statiques/dynamiques (`ReDim`) et sur des objets `Collection` ou `Dictionary` (via COM).",
+    "related_concepts": ["vb_functional_linq_01"],
+    "languages": {
+      "vba": {
+        "minimal": "For i = LBound(arr) To UBound(arr) : acc = acc + arr(i) : Next i",
+        "complete": "Option Explicit\n\nPublic Function TraiterDonnees(arr As Variant) As Long\n    Dim i As Long\n    Dim somme As Long\n    somme = 0\n    \n    ' Parcours sécurisé de tableau de bornes dynamiques\n    If IsArray(arr) Then\n        For i = LBound(arr, 1) To UBound(arr, 1)\n            If arr(i) Mod 2 = 0 Then\n                somme = somme + (arr(i) * arr(i))\n            End If\n        Next i\n    End If\n    \n    TraiterDonnees = somme\nEnd Function\n\nPublic Sub ExempleDictionary()\n    ' Utilisation d'un dictionnaire via liaison tardive COM (Late Binding)\n    Dim dict As Object\n    Set dict = CreateObject(\"Scripting.Dictionary\")\n    dict.Add \"Cle1\", 100\n    dict.Add \"Cle2\", 200\nEnd Sub",
+        "best_practices": "Toujours passer par `LBound` et `UBound` pour parcourir un tableau, car la borne inférieure en VBA dépend de `Option Base` (0 ou 1).",
+        "pitfalls": "Ne pas faire de `Set` lors de l'assignation d'objets (comme un `Dictionary` ou un `Range`), déclenchant une erreur d'exécution 91.",
+        "notes": "VBA utilise un modèle impératif pur sans fonctions anonymes ni pipeline déclaratif (pas de LINQ ou de map/filter natifs)."
+      },
+      "vb": {
+        "minimal": "Dim res = From n In nums Where n Mod 2 = 0 Select n * n",
+        "complete": "Imports System.Linq\n\nPublic Module Program\n    Public Function TraiterDonnees(valeurs As Integer()) As Integer\n        ' VB.NET apporte LINQ nativement par rapport à VBA\n        Return (From val In valeurs Where val Mod 2 = 0 Select val * val).Sum()\n    End Function\nEnd Module",
+        "best_practices": "Préférer les expressions LINQ pour les filtrages déclaratifs.",
+        "pitfalls": "Confusion entre les tableaux indexés à 0 (.NET) et à 1 (legacy VBA).",
+        "notes": "Passage d'un style impératif (VBA) à un style déclaratif (VB.NET)."
+      },
+      "python": {
+        "minimal": "carres = [x**2 for x in nums if x % 2 == 0]",
+        "complete": "def traiter_donnees(valeurs: list[int]) -> int:\n    return sum(x * x for x in valeurs if x % 2 == 0)",
+        "best_practices": "Utiliser des compréhensions de listes ou générateurs.",
+        "pitfalls": "Création inutile d'objets en mémoire si le tableau est géant.",
+        "notes": "Les compréhensions remplacent les boucles impératives `For`."
+      },
+      "javascript": {
+        "minimal": "const res = nums.filter(x => x%2===0).map(x => x**2);",
+        "complete": "function traiterDonnees(valeurs) {\n    return valeurs\n        .filter(x => x % 2 === 0)\n        .reduce((acc, x) => acc + (x * x), 0);\n}",
+        "best_practices": "Privilégier le chaînage d'ordre supérieur immuable.",
+        "pitfalls": "Mutations accidentelles sur le tableau d'origine.",
+        "notes": "Style fonctionnel sur les Arrays JS."
+      },
+      "typescript": {
+        "minimal": "const res: number[] = nums.filter(x => x % 2 === 0);",
+        "complete": "function traiterDonnees(valeurs: number[]): number {\n    return valeurs\n        .filter(x => x % 2 === 0)\n        .reduce((acc, x) => acc + (x * x), 0);\n}",
+        "best_practices": "Typer les tableaux d'entrée et de sortie.",
+        "pitfalls": "Décrochage du type `any` lors de manipulations complexes.",
+        "notes": "Array API typée."
+      },
+      "php": {
+        "minimal": "$res = array_filter($n, fn($x)=>$x%2==0);",
+        "complete": "<?php\nfunction traiterDonnees(array $valeurs): int {\n    $pairs = array_filter($valeurs, fn($x) => $x % 2 === 0);\n    return array_sum(array_map(fn($x) => $x ** 2, $pairs));\n}",
+        "best_practices": "Découper le code avec des fonctions fléchées `fn()`.",
+        "pitfalls": "Ordre incohérent des arguments selon les fonctions d'array PHP.",
+        "notes": "Manipulation native par fonctions d'ordre supérieur."
+      },
+      "csharp": {
+        "minimal": "var res = nums.Where(x => x % 2 == 0).Select(x => x * x);",
+        "complete": "using System.Linq;\nusing System.Collections.Generic;\n\npublic static int TraiterDonnees(IEnumerable<int> valeurs) {\n    return valeurs.Where(x => x % 2 == 0).Sum(x => x * x);\n}",
+        "best_practices": "Exploiter la puissance de LINQ Method Syntax.",
+        "pitfalls": "Exécution différée (Deferred Execution) oubliée.",
+        "notes": "Équivalent .NET moderne des boucles."
+      },
+      "java": {
+        "minimal": "int res = nums.stream().filter(x -> x%2==0).sum();",
+        "complete": "import java.util.List;\n\npublic int traiterDonnees(List<Integer> valeurs) {\n    return valeurs.stream()\n        .filter(x -> x % 2 == 0)\n        .mapToInt(x -> x * x)\n        .sum();\n}",
+        "best_practices": "Utiliser `mapToInt` pour éviter le boxing d'objets.",
+        "pitfalls": "Réutiliser un Stream déjà fermé.",
+        "notes": "API Stream Java 8+."
+      },
+      "cpp": {
+        "minimal": "// C++20 Ranges & Views",
+        "complete": "#include <vector>\n#include <numeric>\n#include <ranges>\n\nint traiterDonnees(const std::vector<int>& vals) {\n    auto carres = vals | std::views::filter([](int x){ return x % 2 == 0; })\n                       | std::views::transform([](int x){ return x * x; });\n    return std::accumulate(carres.begin(), carres.end(), 0);\n}",
+        "best_practices": "Privilégier `std::views` pour zéro allocation mémoire.",
+        "pitfalls": "Incompatibilité selon les versions de compilateurs.",
+        "notes": "Pipeline fonctionnel zéro-surcoût."
+      },
+      "c": {
+        "minimal": "for(int i=0; i<len; i++) { ... }",
+        "complete": "#include <stdio.h>\n\nint traiter_donnees(int* arr, int len) {\n    int somme = 0;\n    for(int i = 0; i < len; i++) {\n        if (arr[i] % 2 == 0) somme += arr[i] * arr[i];\n    }\n    return somme;\n}",
+        "best_practices": "Contrôler rigoureusement la taille du pointeur.",
+        "pitfalls": "Dépassement de capacité mémoire de tableau (Buffer overflow).",
+        "notes": "Proche de la syntaxe de boucle impérative de VBA."
+      }
+    }
+  },
+  {
+    "id": "vba_oop_events_class_01",
+    "level": 3,
+    "chapter": "3. Modules de Classe, Événements & COM",
+    "category": "POO & Architecture COM",
+    "name": "Classes (`cls`), Propriétés (`Property Get/Let/Set`), Événements et `WithEvents`",
+    "description": "Encapsulation par Modules de Classe (`.cls`), accesseurs personnalisés, émission d'événements (`Event`, `RaiseEvent`) et consommation via `WithEvents`.",
+    "related_concepts": ["vb_oop_events_properties_01"],
+    "languages": {
+      "vba": {
+        "minimal": "Public Event SeuilDepasse(val As Double) : RaiseEvent SeuilDepasse(85.5)",
+        "complete": "' --- DANS UN MODULE DE CLASSE : clsCapteur.cls ---\nOption Explicit\n\nPublic Event SeuilDepasse(ByVal temp As Double)\nPrivate m_Temperature As Double\n\nPublic Property Get Temperature() As Double\n    Temperature = m_Temperature\nEnd Property\n\nPublic Property Let Temperature(ByVal val As Double)\n    m_Temperature = val\n    If m_Temperature > 80# Then\n        RaiseEvent SeuilDepasse(m_Temperature)\n    End If\nEnd Property\n\n' --- DANS UN FORMULAIRE OU AUTRE MODULE DE CLASSE ---\nPrivate WithEvents m_Capteur As clsCapteur\n\nPrivate Sub Class_Initialize()\n    Set m_Capteur = New clsCapteur\nEnd Sub\n\nPrivate Sub m_Capteur_SeuilDepasse(ByVal temp As Double)\n    MsgBox \"[ALERTE] Température critique : \" & temp & \"°C\"\nEnd Sub",
+        "best_practices": "Déclarer les variables réceptrices avec `WithEvents` uniquement dans des modules de classe ou de formulaires (interdit dans les modules standards `.bas`).",
+        "pitfalls": "Oublier de faire la différence entre `Property Let` (pour les types primitifs/valeurs) et `Property Set` (pour les objets).",
+        "notes": "Repose entièrement sur l'architecture COM d'Automation Microsoft."
+      },
+      "vb": {
+        "minimal": "Public Event CapteurAlerte(msg As String) : RaiseEvent CapteurAlerte(\"Erreur\")",
+        "complete": "Public Class CapteurTemperature\n    Public Event SeuilDepasse(temp As Double)\n    Private m_Temp As Double\n    \n    Public Property Temperature As Double\n        Get\n            Return m_Temp\n        End Get\n        Set(value As Double)\n            m_Temp = value\n            If m_Temp > 80.0 Then RaiseEvent SeuilDepasse(m_Temp)\n        End Set\n    End Property\nEnd Class\n\nPublic Class Gestionnaire\n    Private WithEvents m_Capteur As New CapteurTemperature()\n    Private Sub SurSeuil(temp As Double) Handles m_Capteur.SeuilDepasse\n        Console.WriteLine($\"Alerte : {temp}\")\n    End Sub\nEnd Class",
+        "best_practices": "Utiliser la clause `Handles` très lisible spécifique à VB.NET.",
+        "pitfalls": "Confusion avec la syntaxe `Property Let/Set` de VBA.",
+        "notes": "Héritier direct du modèle événementiel VBA sous le framework .NET."
+      },
+      "python": {
+        "minimal": "class Capteur: @property def temp(self): return self._t",
+        "complete": "class CapteurTemperature:\n    def __init__(self):\n        self._subscribers = []\n        self._temp = 0.0\n        \n    @property\n    def temperature(self) -> float:\n        return self._temp\n        \n    @temperature.setter\n    def temperature(self, val: float):\n        self._temp = val\n        if self._temp > 80.0:\n            for cb in self._subscribers:\n                cb(self._temp)\n\n    def s_abonner(self, callback):\n        self._subscribers.append(callback)",
+        "best_practices": "Utiliser le décorateur `@property` pour encapsuler l'accès aux attributs.",
+        "pitfalls": "Implémentation manuelle du pattern Observer nécessaire pour gérer les événements.",
+        "notes": "Pattern Observer explicite via des callbacks."
+      },
+      "javascript": {
+        "minimal": "target.addEventListener('alerte', e => {}); target.dispatchEvent(new Event('alerte'));",
+        "complete": "class Capteur extends EventTarget {\n    #temp = 0;\n    set temperature(val) {\n        this.#temp = val;\n        if (val > 80) {\n            this.dispatchEvent(new CustomEvent('seuil', { detail: val }));\n        }\n    }\n}\nconst c = new Capteur();\nc.addEventListener('seuil', e => console.log(`Alerte: ${e.detail}`));\nc.temperature = 85.5;",
+        "best_practices": "Employer les setters/getters `set`/`get` et les champs privés `#`.",
+        "pitfalls": "Problèmes de désabonnement `removeEventListener` non effectués.",
+        "notes": "Basé sur EventTarget natif du navigateur ou Node.js."
+      },
+      "typescript": {
+        "minimal": "get temp(): number { return this._temp; }",
+        "complete": "class Capteur {\n    private _temp: number = 0;\n    private listeners: ((temp: number) => void)[] = [];\n    \n    set temperature(val: number) {\n        this._temp = val;\n        if (val > 80) this.listeners.forEach(cb => cb(val));\n    }\n    onAlerte(cb: (temp: number) => void) { this.listeners.push(cb); }\n}",
+        "best_practices": "Encapsuler les données privées avec les mots-clés d'accès TS.",
+        "pitfalls": "Perte du contexte d'exécution `this` dans les méthodes réceptrices.",
+        "notes": "Getters/Setters typés de manière rigoureuse."
+      },
+      "php": {
+        "minimal": "public function __set($name, $value) { ... }",
+        "complete": "<?php\nclass Capteur {\n    private float $temp = 0.0;\n    public function setTemperature(float $val): void {\n        $this->temp = $val;\n    }\n}",
+        "best_practices": "Préférer de vrais accesseurs typés aux méthodes magiques `__get`/`__set`.",
+        "pitfalls": "Performances réduites en cas d'utilisation excessive de méthodes magiques.",
+        "notes": "Modèle POO standard avec encapsulation."
+      },
+      "csharp": {
+        "minimal": "public event Action<double> SeuilDepasse; SeuilDepasse?.Invoke(85.5);",
+        "complete": "public class CapteurTemperature {\n    public event EventHandler<double>? SeuilDepasse;\n    private double _temp;\n    public double Temperature {\n        get => _temp;\n        set {\n            _temp = value;\n            if (_temp > 80.0) SeuilDepasse?.Invoke(this, _temp);\n        }\n    }\n}",
+        "best_practices": "Employer les propriétés auto-implémentées et les événements `EventHandler`.",
+        "pitfalls": "Nécessite le retrait manuel du listener (`-=`) pour éviter la rétention mémoire.",
+        "notes": "Modèle d'événements par délégués."
+      },
+      "java": {
+        "minimal": "// Listener pattern via interface",
+        "complete": "import java.util.*;\n\npublic class Capteur {\n    private double temp;\n    private List<Consumer<Double>> listeners = new ArrayList<>();\n    public void addListener(Consumer<Double> l) { listeners.add(l); }\n    public void setTemperature(double temp) {\n        this.temp = temp;\n        if (temp > 80.0) listeners.forEach(l -> l.accept(temp));\n    }\n}",
+        "best_practices": "Suivre la convention JavaBeans `getTemperature()` / `setTemperature()`.",
+        "pitfalls": "Accès concurrencent aux listeners non thread-safe.",
+        "notes": "Modèle JavaBeans Listener classique."
+      },
+      "cpp": {
+        "minimal": "// Mutateurs explicités avec std::function",
+        "complete": "#include <vector>\n#include <functional>\n\nclass Capteur {\n    double temp;\npublic:\n    std::vector<std::function<void(double)>> handlers;\n    void setTemperature(double t) {\n        temp = t;\n        if (temp > 80.0) for(auto& f : handlers) f(temp);\n    }\n};",
+        "best_practices": "Créer des accesseurs `const` pour la lecture.",
+        "pitfalls": "Captures invalides par référence dans les lambdas des callbacks.",
+        "notes": "Pattern de notification construit manuellement."
+      },
+      "c": {
+        "minimal": "typedef struct { double temp; } Capteur;",
+        "complete": "#include <stdio.h>\n\ntypedef void (*CallbackAlerte)(double);\ntypedef struct {\n    double temp;\n    CallbackAlerte onAlerte;\n} Capteur;\n\nvoid set_temperature(Capteur* c, double t) {\n    c->temp = t;\n    if (t > 80.0 && c->onAlerte) c->onAlerte(t);\n}",
+        "best_practices": "Encapsuler la mutation par une fonction recevant le pointeur de structure.",
+        "pitfalls": "Pas de mécanisme natif d'encapsulation (accès direct aux membres du struct).",
+        "notes": "Encapsulation impérative manuelle via pointeurs."
+      }
+    }
+  },
+  {
+    "id": "vba_concurrency_ontime_01",
+    "level": 4,
+    "chapter": "4. Exécution Différée & Simulation d'Asynchronisme",
+    "category": "Gestion du Fil d'Exécution",
+    "name": "Planification (`Application.OnTime`) et Boucle d'Événements (`DoEvents`)",
+    "description": "Simulation de tâches non bloquantes par enregistrement de procédures différées dans l'IHM (`OnTime`) et libération de la boucle de messages COM/Windows (`DoEvents`).",
+    "related_concepts": ["vb_concurrency_tpl_01"],
+    "languages": {
+      "vba": {
+        "minimal": "Application.OnTime Now + TimeValue(\"00:00:01\"), \"ProchaineEtape\"",
+        "complete": "Option Explicit\n\n' Inscription d'un rappel différé dans la boucle d'événements de l'application hôte (Excel/Access)\nPublic Sub DemarrerTraitementDiffere()\n    MsgBox \"Lancement de la tâche...\"\n    \n    ' Planifie l'exécution de la macro 'ProchaineEtape' dans 2 secondes sans figer l'interface\n    Application.OnTime Now + TimeValue(\"00:00:02\"), \"ProchaineEtape\"\nEnd Sub\n\nPublic Sub ProchaineEtape()\n    MsgBox \"Tache différée exécutée avec succès !\"\nEnd Sub\n\n' Permet d'éviter le gel de l'IHM pendant une boucle lourde\nPublic Sub TraitementLourd()\n    Dim i As Long\n    For i = 1 To 100000\n        ' Rend la main au système pour traiter la rafraîchissement graphique\n        If i Mod 1000 = 0 Then DoEvents\n    Next i\nEnd Sub",
+        "best_practices": "Toujours passer le nom de la macro globale sous forme de chaîne de caractères à `Application.OnTime`.",
+        "pitfalls": "Abuser de `DoEvents` dans une boucle rapide, ce qui chute drastiquement les performances d'exécution globale.",
+        "notes": "VBA est strictement mono-thread. Il ne possède ni multithreading natif, ni `Async`/`Await`, ni TPL."
+      },
+      "vb": {
+        "minimal": "Async Function ExecuterAsync() As Task : Await Task.Delay(1000) : End Function",
+        "complete": "Imports System.Threading.Tasks\n\nPublic Module Program\n    Public Async Function TelechargerAsync() As Task\n        ' VB.NET apporte le vrai modèle Async/Await non bloquant\n        Await Task.Delay(2000)\n        Console.WriteLine(\"Tâche terminée !\")\n    End Function\nEnd Module",
+        "best_practices": "Privilégier `Async` et `Await` par rapport aux temporisateurs.",
+        "pitfalls": "Confondre l'exécution asynchrone .NET avec la temporisation `Application.OnTime` de VBA.",
+        "notes": "Gestion moderne de la concurrence via la Task Parallel Library (TPL)."
+      },
+      "python": {
+        "minimal": "async def main(): await asyncio.sleep(1)",
+        "complete": "import asyncio\n\nasync def prochaine_etape():\n    await asyncio.sleep(2)\n    print(\"Tâche différée exécutée\")\n\nasyncio.run(prochaine_etape())",
+        "best_practices": "Rendre le contrôle via `await asyncio.sleep()` dans l'Event Loop.",
+        "pitfalls": "Appeler du code synchrone bloquant au milieu d'une fonction `async`.",
+        "notes": "Boucle d'événements coopérative avec `asyncio`."
+      },
+      "javascript": {
+        "minimal": "setTimeout(() => console.log('OK'), 2000);",
+        "complete": "function demarrerTraitementDiffere() {\n    console.log(\"Lancement...\");\n    setTimeout(() => {\n        console.log(\"Tâche différée exécutée avec succès !\");\n    }, 2000);\n}",
+        "best_practices": "Utiliser `setTimeout` ou `Promises` pour ne pas figer le fil d'exécution de l'IHM web.",
+        "pitfalls": "Bloquer la boucle d'événements (`Event Loop`) avec un calcul synchrone massif.",
+        "notes": "Mécanisme de Timer JS quasi identique dans son concept à `Application.OnTime`."
+      },
+      "typescript": {
+        "minimal": "await new Promise(r => setTimeout(r, 1000));",
+        "complete": "async function demarrerDiffere(): Promise<void> {\n    await new Promise(resolve => setTimeout(resolve, 2000));\n    console.log(\"Terminé\");\n}",
+        "best_practices": "Encapsuler `setTimeout` dans des Promises typées.",
+        "pitfalls": "Typage ambigu lors du passage des callbacks.",
+        "notes": "Gestion asynchrone non-bloquante typée."
+      },
+      "php": {
+        "minimal": "// Fibers PHP 8.1+",
+        "complete": "<?php\n// Simulation de tâche différée ou asynchrone via Fibers\n$fiber = new Fiber(function(): void {\n    Fiber::suspend();\n});\n$fiber->start();",
+        "best_practices": "Utiliser des extensions comme Swoole pour de vraies tâches de fond.",
+        "pitfalls": "L'exécution standard du langage demeure bloquante et mono-thread.",
+        "notes": "Fibers pour interrompre l'exécution séquentielle."
+      },
+      "csharp": {
+        "minimal": "await Task.Delay(2000);",
+        "complete": "using System.Threading.Tasks;\n\npublic async Task DemarrerDiffereAsync() {\n    await Task.Delay(2000);\n    System.Console.WriteLine(\"Terminé\");\n}",
+        "best_practices": "Utiliser `Task.Delay` à la place de `Thread.Sleep` pour ne pas bloquer le thread.",
+        "pitfalls": "Risque de deadlock si appel explicite à `.Wait()`.",
+        "notes": "Asynchronisme fluide via le runtime .NET."
+      },
+      "java": {
+        "minimal": "CompletableFuture.delayedExecutor(2, TimeUnit.SECONDS);",
+        "complete": "import java.util.concurrent.*;\n\nScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);\nscheduler.schedule(() -> System.out.println(\"Tâche différée\"), 2, TimeUnit.SECONDS);",
+        "best_practices": "Préférer les planificateurs `ScheduledExecutorService` aux boucles manuelles.",
+        "pitfalls": "Oublier d'arrêter le service avec `.shutdown()`.",
+        "notes": "Framework de concurrence robuste (java.util.concurrent)."
+      },
+      "cpp": {
+        "minimal": "std::this_thread::sleep_for(std::chrono::seconds(2));",
+        "complete": "#include <thread>\n#include <chrono>\n#include <iostream>\n\nvoid executerDiffere() {\n    std::thread([]() {\n        std::this_thread::sleep_for(std::chrono::seconds(2));\n        std::cout << \"Exécuté\\n\";\n    }).detach();\n}",
+        "best_practices": "Détacher proprement le thread de tâche de fond ou faire un `join()`.",
+        "pitfalls": "Accéder à des données détruites sur le thread principal.",
+        "notes": "Thread natif bas niveau."
+      },
+      "c": {
+        "minimal": "sleep(2);",
+        "complete": "#include <unistd.h>\n#include <stdio.h>\n\nvoid differe() {\n    sleep(2); // Bloquant\n    printf(\"Terminé\\n\");\n}",
+        "best_practices": "Déporter le travail sur un thread POSIX (`pthread`).",
+        "pitfalls": "`sleep()` bloque l'intégralité du fil d'exécution du processus.",
+        "notes": "Gestion bloquante par le système d'exploitation."
+      }
+    }
+  },
+  {
+    "id": "vba_resources_error_handling_01",
+    "level": 2,
+    "chapter": "5. Robustesse & Gestion des Erreurs",
+    "category": "Gestion de Ressources",
+    "name": "Interception d'Erreurs (`On Error GoTo`), Saut d'Étiquette et Libération `Close`",
+    "description": "Modèle historique de capture des erreurs d'exécution via dépilement impératif, déroutement vers des étiquettes (`Nettoyage:`) et fermeture explicite de ressources.",
+    "related_concepts": ["vb_resources_using_01"],
+    "languages": {
+      "vba": {
+        "minimal": "On Error GoTo GestionErreur : Open \"file.txt\" For Output As #1 : Close #1",
+        "complete": "Option Explicit\n\nPublic Sub EcrireFichierRessource()\n    Dim fNum As Integer\n    fNum = FreeFile\n    \n    ' Activation du saut d'interception vers l'étiquette d'erreur\n    On Error GoTo GestionErreur\n    \n    Open \"C:\\temp\\log.txt\" For Output As #fNum\n    Print #fNum, \"Écriture de données sécurisées...\"\n    \n    ' Bloc de sortie normale : redirection obligatoire pour sauter la gestion d'erreur\nNettoyage:\n    ' Garantit la fermeture du canal même en cas de problème\n    If fNum > 0 Then Close #fNum\n    Exit Sub\n    \nGestionErreur:\n    MsgBox \"Erreur n°\" & Err.Number & \" : \" & Err.Description, vbCritical, \"Erreur\"\n    ' Reprise du flux vers la section de nettoyage (équivalent Finally)\n    Resume Nettoyage\nEnd Sub",
+        "best_practices": "Organiser systématiquement le bloc `Nettoyage:` juste avant `GestionErreur:` avec une instruction `Exit Sub` intermédiaire pour simuler le bloc `Finally`.",
+        "pitfalls": "Utiliser la directive `On Error Resume Next` de façon globale, ce qui masque silencieusement toutes les erreurs de votre code.",
+        "notes": "VBA n'a pas de structure `Try...Catch...Finally` ou de gestionnaire de contexte `Using`."
+      },
+      "vb": {
+        "minimal": "Using f As New StreamWriter(\"t.txt\") : f.WriteLine(\"Data\") : End Using",
+        "complete": "Imports System.IO\n\nPublic Module Program\n    Public Sub EcrireFichier()\n        Try\n            Using res As New StreamWriter(\"test.txt\")\n                res.WriteLine(\"Données\")\n            End Using\n        Catch ex As Exception\n            Console.WriteLine($\"Erreur : {ex.Message}\")\n        End Try\n    End Sub\nEnd Module",
+        "best_practices": "Bannir l'héritage `On Error GoTo` au profit du bloc `Using` et `Try...Catch`.",
+        "pitfalls": "Conserver les mécanismes d'erreurs historiques de VBA lors d'une migration .NET.",
+        "notes": "Structure moderne `Try...Catch...Finally` et libération déterministe `Using`."
+      },
+      "python": {
+        "minimal": "with open('f.txt', 'w') as f: f.write('Data')",
+        "complete": "try:\n    with open('test.txt', 'w') as f:\n        f.write('Données')\nexcept IOError as e:\n    print(f\"Erreur I/O : {e}\")\nfinally:\n    print(\"Nettoyage final\")",
+        "best_practices": "Utiliser le gestionnaire de contexte `with` pour la libération garantie.",
+        "pitfalls": "Intercepter inutilement un `Exception` trop générique sans le ré-émettre.",
+        "notes": "Gestionnaire de contexte `with` équivalent au bloc `Finally`."
+      },
+      "javascript": {
+        "minimal": "try { ... } catch(e) { ... } finally { res.close(); }",
+        "complete": "let f = null;\ntry {\n    f = ouvrirFichier();\n    ecrire(f);\n} catch (err) {\n    console.error(`Erreur : ${err.message}`);\n} finally {\n    if (f) f.close();\n}",
+        "best_practices": "Mettre le nettoyage de ressource impératif dans le bloc `finally`.",
+        "pitfalls": "Oublier d'intercepter les promesses rejetées dans les flux asynchrones.",
+        "notes": "Bloc `try...catch...finally` impératif standard."
+      },
+      "typescript": {
+        "minimal": "using res = new Resource();",
+        "complete": "try {\n    using f = ouvrirFichier();\n    ecrire(f);\n} catch (err) {\n    console.error(err);\n}",
+        "best_practices": "Utiliser le nouveau mot-clé `using` (TS 5.2+).",
+        "pitfalls": "Nécessite la définition explicite de `[Symbol.dispose]`.",
+        "notes": "Gestion automatique des ressources."
+      },
+      "php": {
+        "minimal": "try { ... } catch (Throwable $e) { ... } finally { fclose($f); }",
+        "complete": "<?php\n$f = fopen('test.txt', 'w');\ntry {\n    fwrite($f, 'Données');\n} catch (Throwable $e) {\n    echo \"Erreur : {$e->getMessage()}\";\n} finally {\n    if ($f) fclose($f);\n}",
+        "best_practices": "Attraper `Throwable` pour capturer la totalité des erreurs et exceptions.",
+        "pitfalls": "Absence de mot-clé de libération automatique de portée.",
+        "notes": "Gestion moderne des exceptions PHP 7+."
+      },
+      "csharp": {
+        "minimal": "using var f = File.Create(\"t.txt\");",
+        "complete": "try {\n    using var res = new StreamWriter(\"test.txt\");\n    res.WriteLine(\"Données\");\n} catch (IOException ex) {\n    Console.WriteLine($\"Erreur : {ex.Message}\");\n}",
+        "best_practices": "Déclarer les ressources avec `using var` pour un nettoyage à la fin de la portée.",
+        "pitfalls": "Ne pas implémenter `IDisposable` sur ses classes personnalisées.",
+        "notes": "Nettoyage déterministe .NET via `IDisposable`."
+      },
+      "java": {
+        "minimal": "try (var f = new FileWriter(\"t.txt\")) { ... }",
+        "complete": "import java.io.FileWriter;\nimport java.io.IOException;\n\ntry (FileWriter writer = new FileWriter(\"test.txt\")) {\n    writer.write(\"Données\");\n} catch (IOException e) {\n    e.printStackTrace();\n}",
+        "best_practices": "Adopter le Try-With-Resources (Java 7+).",
+        "pitfalls": "Conserver des structures Try-Finally verbeuses historiques.",
+        "notes": "Fermeture automatique native via l'interface `AutoCloseable`."
+      },
+      "cpp": {
+        "minimal": "std::ofstream f(\"t.txt\"); // Destructeur RAII",
+        "complete": "#include <fstream>\n#include <iostream>\n\nvoid ecrire() {\n    try {\n        std::ofstream f(\"test.txt\");\n        f << \"Données\";\n    } catch (const std::exception& e) {\n        std::cerr << e.what();\n    }\n} // Le fichier est fermé automatiquement lors du dépilement du destructeur",
+        "best_practices": "Confier la libération des descripteurs au mécanisme RAII.",
+        "pitfalls": "Utiliser des pointeurs nus avec `delete` manuel.",
+        "notes": "Gestion des ressources liée au cycle de vie de la pile (RAII)."
+      },
+      "c": {
+        "minimal": "FILE* f = fopen(\"t.txt\", \"w\"); fclose(f);",
+        "complete": "#include <stdio.h>\n\nvoid ecrire() {\n    FILE* f = fopen(\"test.txt\", \"w\");\n    if (!f) goto err;\n    \n    if (fputs(\"Données\", f) == EOF) goto err;\n    \n    fclose(f);\n    return;\n    \nerr:\n    if (f) fclose(f);\n    printf(\"Erreur d'écriture\\n\");\n}",
+        "best_practices": "Structure de saut d'erreur basée sur `goto err;` très proche du style VBA.",
+        "pitfalls": "Oublier de libérer la mémoire ou les flux sur l'une des branches de saut.",
+        "notes": "Gestion d'erreur par codes de retour et sauts conditionnels."
+      }
+    }
+  }
+]

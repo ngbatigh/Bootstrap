@@ -1,0 +1,488 @@
+[
+  {
+    "id": "py_control_declarations_01",
+    "level": 1,
+    "chapter": "1. Syntaxe & Contrôle de Flux",
+    "category": "Briques Fondamentales",
+    "name": "Déclarations, Contrôle Conditionnel et Filtrage par Motif (Pattern Matching)",
+    "description": "Affectations, structures conditionnelles (`if/elif/else`), assignation par expression (Walrus `:=`) et Structural Pattern Matching (`match/case`).",
+    "related_concepts": ["js_control_flow_switch_01"],
+    "languages": {
+      "python": {
+        "minimal": "match val: case 1: print('Un'); case _: print('Autre')",
+        "complete": "# Utilisation de l'opérateur Walrus et du Structural Pattern Matching (Python 3.10+)\ndef analyser_requete(commande: dict):\n    if (taille := len(commande)) == 0:\n        return \"Commande vide\"\n    \n    match commande:\n        case {\"action\": \"lire\", \"fichier\": str(f)}:\n            return f\"Lecture de {f}\"\n        case {\"action\": \"ecrire\", \"contenu\": str(c)} if len(c) > 0:\n            return f\"Écriture de {len(c)} caractères\"\n        case _:\n            return \"Commande inconnue\"\n\nprint(analyser_requete({\"action\": \"lire\", \"fichier\": \"data.txt\"}))",
+        "best_practices": "Préférer `match/case` aux longues chaînes de `if/elif` imbriqués pour déstructurer des objets de données complexes.",
+        "pitfalls": "Confondre le pattern matching structurel avec un simple `switch/case` scalaire : en Python, `case` extrait et lie des variables.",
+        "notes": "L'introduction de `match/case` rapproche la syntaxe Python de la puissance du Pattern Matching des langages fonctionnels."
+      },
+      "javascript": {
+        "minimal": "switch(val) { case 1: console.log('Un'); break; default: console.log('Autre'); }",
+        "complete": "function analyserRequete(commande) {\n    const taille = Object.keys(commande).length;\n    if (taille === 0) return 'Commande vide';\n    \n    switch (commande.action) {\n        case 'lire':\n            return `Lecture de ${commande.fichier}`;\n        case 'ecrire':\n            return commande.contenu ? `Écriture` : 'Contenu vide';\n        default:\n            return 'Commande inconnue';\n    }\n}",
+        "best_practices": "Ne pas oublier les instructions `break` dans les blocs `switch` pour éviter le fallthrough non désiré.",
+        "pitfalls": "JS ne dispose pas encore de pattern matching natif complet (proposition TC39 en cours).",
+        "notes": "Utilisation du `switch` classique et de la déstructuration d'objets."
+      },
+      "typescript": {
+        "minimal": "type Cmd = { action: 'lire' } | { action: 'ecrire' };",
+        "complete": "type Commande = \n  | { action: 'lire'; fichier: string }\n  | { action: 'ecrire'; contenu: string };\n\nfunction analyser(c: Commande) {\n    switch (c.action) {\n        case 'lire': return `Lecture de ${c.fichier}`;\n        case 'ecrire': return `Écriture de ${c.contenu.length}`;\n    }\n}",
+        "best_practices": "Utiliser des Union Types discriminés pour bénéficier de la vérification d'exhaustivité à la compilation.",
+        "pitfalls": "L'absence de cas `default` peut poser problème si de nouvelles variantes de types sont ajoutées sans mise à jour du `switch`.",
+        "notes": "Typage algébrique très puissant couplé aux conditionnelles standard."
+      },
+      "php": {
+        "minimal": "$res = match($val) { 1 => 'Un', default => 'Autre' };",
+        "complete": "<?php\nfunction analyser(array $cmd): string {\n    return match($cmd['action'] ?? null) {\n        'lire' => \"Lecture de \" . ($cmd['fichier'] ?? 'inconnu'),\n        'ecrire' => \"Écriture de \" . strlen($cmd['contenu'] ?? ''),\n        default => \"Commande inconnue\"\n    };\n}",
+        "best_practices": "Utiliser l'expression `match` (PHP 8.0+) à la place de `switch` pour éviter les comparaisons larges (`==`) non strictes.",
+        "pitfalls": "L'expression `match` lève une `UnhandledMatchError` si aucun cas ne correspond et qu'aucun `default` n'est fourni.",
+        "notes": "`match` en PHP est une expression qui renvoie directement une valeur."
+      },
+      "csharp": {
+        "minimal": "var res = val switch { 1 => \"Un\", _ => \"Autre\" };",
+        "complete": "public record Commande(string Action, string Data);\n\npublic static string Analyser(Commande cmd) => cmd switch {\n    { Action: \"lire\" } => $\"Lecture de {cmd.Data}\",\n    { Action: \"ecrire\", Data: var d } when d.Length > 0 => $\"Écriture de {d.Length}\",\n    _ => \"Inconnu\"\n};",
+        "best_practices": "Privilégier les Switch Expressions modernes avec filtres `when`.",
+        "pitfalls": "Oublier la clause discard `_` provoquant un avertissement de non-exhaustivité.",
+        "notes": "C# possède l'un des moteurs de pattern matching les plus avancés de l'écosystème .NET."
+      },
+      "java": {
+        "minimal": "String res = switch(val) { case 1 -> \"Un\"; default -> \"Autre\"; };",
+        "complete": "public sealed interface Commande permits Lire, Ecrire {}\npublic record Lire(String fichier) implements Commande {}\npublic record Ecrire(String contenu) implements Commande {}\n\npublic String analyser(Commande c) {\n    return switch(c) {\n        case Lire l -> \"Lecture de \" + l.fichier();\n        case Ecrire e -> \"Écriture de \" + e.contenu().length();\n    };\n}",
+        "best_practices": "Combiner le Switch Pattern Matching (Java 21+) avec les interfaces scellées (`sealed`).",
+        "pitfalls": "Syntaxe verbeuse si on utilise d'anciennes versions du JDK.",
+        "notes": "Évolution moderne apportant le pattern matching fonctionnel à la JVM."
+      },
+      "cpp": {
+        "minimal": "switch(val) { case 1: std::cout << \"Un\"; break; }",
+        "complete": "#include <variant>\n#include <string>\n#include <iostream>\n\nstruct Lire { std::string fichier; };\nstruct Ecrire { std::string contenu; };\nusing Commande = std::variant<Lire, Ecrire>;\n\nvoid analyser(const Commande& cmd) {\n    std::visit([](auto&& arg) {\n        using T = std::decay_t<decltype(arg)>;\n        if constexpr (std::is_same_v<T, Lire>) std::cout << \"Lire \" << arg.fichier;\n        else if constexpr (std::is_same_v<T, Ecrire>) std::cout << \"Ecrire\";\n    }, cmd);\n}",
+        "best_practices": "Utiliser `std::variant`, `std::visit` et `if constexpr` pour simuler le pattern matching.",
+        "pitfalls": "Complexité syntaxique importante sans proposition de Pattern Matching native (prévue C++26).",
+        "notes": "Repose sur la métaprogrammation par templates."
+      },
+      "c": {
+        "minimal": "switch(val) { case 1: break; default: break; }",
+        "complete": "#include <stdio.h>\n\ntypedef enum { CMD_LIRE, CMD_ECRIRE } CmdType;\ntypedef struct {\n    CmdType type;\n    union { char fichier[50]; char contenu[100]; };\n} Commande;\n\nvoid analyser(Commande c) {\n    switch (c.type) {\n        case CMD_LIRE: printf(\"Lecture : %s\\n\", c.fichier); break;\n        case CMD_ECRIRE: printf(\"Écriture\\n\"); break;\n    }\n}",
+        "best_practices": "Associer une énumération à une `union` pour simuler un type algébrique (Tagged Union).",
+        "pitfalls": "Aucune protection mémoire si le mauvais champ de l'union est lu.",
+        "notes": "Gestion manuelle du contrôle de flux."
+      },
+      "vb": {
+        "minimal": "Select Case val : Case 1 : Console.WriteLine(\"Un\") : End Select",
+        "complete": "Select Case commande.Action\n    Case \"lire\"\n        Console.WriteLine(\"Lecture de \" & commande.Data)\n    Case \"ecrire\"\n        Console.WriteLine(\"Écriture\")\n    Case Else\n        Console.WriteLine(\"Inconnu\")\nEnd Select",
+        "best_practices": "Employer `Select Case` avec des clauses d'intervalle ou de comparaison.",
+        "pitfalls": "Absence de déstructuration dynamique d'objets.",
+        "notes": "Syntaxe impérative classique."
+      },
+      "vba": {
+        "minimal": "Select Case val : Case 1 : MsgBox \"Un\" : End Select",
+        "complete": "Public Sub Analyser(action As String, data As String)\n    Select Case action\n        Case \"lire\"\n            Debug.Print \"Lecture : \" & data\n        Case \"ecrire\"\n            Debug.Print \"Écriture : \" & data\n        Case Else\n            Debug.Print \"Commande inconnue\"\n    End Select\nEnd Sub",
+        "best_practices": "Préférer `Select Case` aux cascades de `If...ElseIf`.",
+        "pitfalls": "Évaluation limitée aux valeurs scalaires simples.",
+        "notes": "Support standard VBA des instructions conditionnelles."
+      }
+    }
+  },
+  {
+    "id": "py_functional_fp_01",
+    "level": 2,
+    "chapter": "2. Programmation Fonctionnelle",
+    "category": "Paradigmes",
+    "name": "Fonctions Purement Ordre Supérieur, Lambdas, Map/Filter/Reduce et Immuabilité",
+    "description": "Transformations de données déclaratives à l'aide de fonctions anonymes (`lambda`), compositions et outils `functools` (`reduce`, `partial`).",
+    "related_concepts": ["js_functional_map_reduce_01"],
+    "languages": {
+      "python": {
+        "minimal": "carres = list(map(lambda x: x**2, filter(lambda x: x%2==0, nums)))",
+        "complete": "from functools import reduce\nfrom typing import List\n\nvaleurs: List[int] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\n\n# Pipeline fonctionnel : Filtrage, Cartographie et Réduction\npairs = filter(lambda x: x % 2 == 0, valeurs)\ncarres = map(lambda x: x ** 2, pairs)\nsomme = reduce(lambda acc, val: acc + val, carres)\n\n# En Python, la syntaxe pythonique équivalente est la compréhension :\nsomme_pythonique = sum(x**2 for x in valeurs if x % 2 == 0)\nprint(f\"Somme : {somme}\") # 220",
+        "best_practices": "Préférer les expressions génératrices et compréhensions à `map()` et `filter()` pour des raisons de lisibilité.",
+        "pitfalls": "Utiliser `lambda` pour des opérations complexes sur plusieurs lignes (interdit par la syntaxe Python).",
+        "notes": "Python supporte le style fonctionnel, mais valorise la lisibilité impérative/pythonique via les compréhensions."
+      },
+      "javascript": {
+        "minimal": "const res = nums.filter(x => x%2===0).map(x => x**2).reduce((a,b)=>a+b, 0);",
+        "complete": "const valeurs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\n\nconst somme = valeurs\n  .filter(x => x % 2 === 0)\n  .map(x => x ** 2)\n  .reduce((acc, val) => acc + val, 0);\n\nconsole.log(somme);",
+        "best_practices": "Chaîner les méthodes d'array natives de manière immuable.",
+        "pitfalls": "Attention à certaines méthodes qui mutent le tableau d'origine (ex: `.sort()`, `.splice()`).",
+        "notes": "Style fonctionnel naturel et fluide grâce à l'API Array."
+      },
+      "typescript": {
+        "minimal": "const res: number = nums.reduce((acc, x) => acc + x, 0);",
+        "complete": "const valeurs: readonly number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\nconst somme = valeurs\n  .filter((x): x is number => x % 2 === 0)\n  .map(x => x ** 2)\n  .reduce((acc, val) => acc + val, 0);",
+        "best_practices": "Activer le modificateur `readonly` sur les collections pour garantir l'immuabilité au niveau des types.",
+        "pitfalls": "Perte de précision des types dans des compositions complexes sans Predicates explicites.",
+        "notes": "Programmation fonctionnelle fortement typée."
+      },
+      "php": {
+        "minimal": "$res = array_reduce(array_map(fn($x)=>$x**2, array_filter($n, fn($x)=>$x%2==0)), fn($a,$b)=>$a+$b, 0);",
+        "complete": "<?php\n$valeurs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\n\n$pairs = array_filter($valeurs, fn($x) => $x % 2 === 0);\n$carres = array_map(fn($x) => $x ** 2, $pairs);\n$somme = array_reduce($carres, fn($acc, $val) => $acc + $val, 0);",
+        "best_practices": "Utiliser les fonctions fléchées `fn()` (PHP 7.4+) pour des closures concises.",
+        "pitfalls": "Incohérence historique de l'ordre des arguments dans les fonctions d'array PHP (ex: `array_map` vs `array_filter`).",
+        "notes": "Nécessite souvent l'empaquetage ou l'utilisation de bibliothèques externes pour le chaînage fluide."
+      },
+      "csharp": {
+        "minimal": "var res = nums.Where(x => x%2==0).Select(x => x*x).Sum();",
+        "complete": "using System.Linq;\nusing System.Collections.Generic;\n\nList<int> valeurs = new() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };\nint somme = valeurs\n    .Where(x => x % 2 == 0)\n    .Select(x => x * x)\n    .Aggregate(0, (acc, val) => acc + val);\n// Ou plus simplement .Sum()",
+        "best_practices": "Utiliser l'API LINQ (Language Integrated Query) pour les traitements fonctionnels.",
+        "pitfalls": "Garder à l'esprit l'exécution différée (Deferred Execution) de LINQ lors des itérations multiples.",
+        "notes": "LINQ est l'une des meilleures implémentations fonctionnelles dans un langage orienté objet."
+      },
+      "java": {
+        "minimal": "int res = nums.stream().filter(x -> x%2==0).map(x -> x*x).reduce(0, Integer::sum);",
+        "complete": "import java.util.List;\n\nList<Integer> valeurs = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);\nint somme = valeurs.stream()\n    .filter(x -> x % 2 == 0)\n    .map(x -> x * x)\n    .reduce(0, Integer::sum);",
+        "best_practices": "Utiliser les références de méthodes (`Integer::sum`) pour raccourcir les lambdas.",
+        "pitfalls": "Ne pas réutiliser un `Stream` consommé (lève un `IllegalStateException`).",
+        "notes": "L'API Stream (Java 8+) apporte l'immuabilité et le traitement déclaratif."
+      },
+      "cpp": {
+        "minimal": "// C++20 Ranges & Views",
+        "complete": "#include <vector>\n#include <numeric>\n#include <ranges>\n#include <iostream>\n\nstd::vector<int> vals = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};\nauto pairs_carres = vals \n    | std::views::filter([](int x){ return x % 2 == 0; })\n    | std::views::transform([](int x){ return x * x; });\n\nint somme = std::accumulate(pairs_carres.begin(), pairs_carres.end(), 0);",
+        "best_practices": "Utiliser les `std::views` (C++20) pour composer des pipelines paresseux sans allocation intermédiaire.",
+        "pitfalls": "Complexité des signatures d'erreurs de compilation avec les templates.",
+        "notes": "Approche fonctionnelle zéro-surcoût (Zero-cost abstractions)."
+      },
+      "c": {
+        "minimal": "// Passage de pointeurs de fonctions à une boucle impérative",
+        "complete": "#include <stdio.h>\n\ntypedef int (*Predicat)(int);\ntypedef int (*Mapper)(int);\n\nint traiter(int* arr, int len, Predicat p, Mapper m) {\n    int acc = 0;\n    for(int i=0; i<len; i++) {\n        if(p(arr[i])) acc += m(arr[i]);\n    }\n    return acc;\n}",
+        "best_practices": "Créer des structures génériques avec pointeurs `void*` pour passer des états aux callbacks.",
+        "pitfalls": "Absence totale de closures ou de gestion mémoire automatique.",
+        "notes": "Paradigme impératif simulé par pointeurs de fonctions."
+      },
+      "vb": {
+        "minimal": "Dim res = nums.Where(Function(x) x Mod 2 = 0).Select(Function(x) x * x).Sum()",
+        "complete": "Dim valeurs As New List(Of Integer) From {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}\nDim somme = valeurs.Where(Function(x) x Mod 2 = 0) _\n                   .Select(Function(x) x * x) _\n                   .Aggregate(0, Function(acc, val) acc + val)",
+        "best_practices": "Employer les expressions Lambda VB.NET et LINQ.",
+        "pitfalls": "Syntaxe verbeuse avec la déclaration `Function(x)`.",
+        "notes": "Bénéficie de l'écosystème fonctionnel .NET LINQ."
+      },
+      "vba": {
+        "minimal": "' Pas d'API fonctionnelle native : itération manuelle obligatoire",
+        "complete": "Public Function TraiterFonctionnel(arr As Variant) As Long\n    Dim i As Long, acc As Long\n    For i = LBound(arr) To UBound(arr)\n        If arr(i) Mod 2 = 0 Then\n            acc = acc + (arr(i) * arr(i))\n        End If\n    Next i\n    TraiterFonctionnel = acc\nEnd Function",
+        "best_practices": "Isoler la logique de transformation dans des fonctions pures dédiées.",
+        "pitfalls": "Impossibilité de passer des fonctions anonymes ou lambdas.",
+        "notes": "Obligation d'écrire des boucles impératives classiques."
+      }
+    }
+  },
+  {
+    "id": "py_modular_architecture_01",
+    "level": 2,
+    "chapter": "3. Programmation Modulaire & Packages",
+    "category": "Architecture & Organisation",
+    "name": "Modules, Importations, Packages et Espaces de Noms (`__init__.py`, `__all__`)",
+    "description": "Structure de projet modulaire, encapsulation de packages, gestion du chemin d'importation (`sys.path`) et contrôle de l'API publique via `__all__`.",
+    "related_concepts": ["js_modules_import_export_01"],
+    "languages": {
+      "python": {
+        "minimal": "from .mon_module import MaClasse; __all__ = ['MaClasse']",
+        "complete": "# Structure de package Python :\n# mon_package/\n# ├── __init__.py\n# ├── core.py\n# └── utils.py\n\n# Dans mon_package/__init__.py\nfrom .core import Calculateur\n\n# Définition stricte de l'API publique exportée lors d'un 'from mon_package import *'\n__all__ = [\"Calculateur\"]\n\n# Dans le fichier principal :\nfrom mon_package import Calculateur\ncalc = Calculateur()",
+        "best_practices": "Définir `__all__` pour masquer les détails d'implémentation internes et garder des `__init__.py` épurés.",
+        "pitfalls": "Créer des dépendances circulaires entre modules (`import A` dans B et `import B` dans A).",
+        "notes": "Les modules Python sont exécutés une seule fois lors du premier import (mise en cache dans `sys.modules`)."
+      },
+      "javascript": {
+        "minimal": "import { MaClasse } from './monModule.js'; export { MaClasse };",
+        "complete": "// monModule.js\nexport class Calculateur {}\nexport const VERSION = '1.0';\n\n// index.js (Re-exportation / Barrel Pattern)\nexport { Calculateur } from './monModule.js';\n\n// main.js\nimport { Calculateur } from './index.js';",
+        "best_practices": "Utiliser ES Modules (`import/export`) plutôt que le système CommonJS (`require`).",
+        "pitfalls": "Oublier l'extension `.js` dans les imports relatifs natifs en navigateur ou avec Node.js ESM.",
+        "notes": "Système de modules officiel ECMAScript."
+      },
+      "typescript": {
+        "minimal": "import type { Interface } from './types'; export * from './module';",
+        "complete": "// module.ts\nexport interface Config { timeout: number; }\nexport class Service {}\n\n// main.ts\nimport type { Config } from './module';\nimport { Service } from './module';",
+        "best_practices": "Utiliser `import type` pour s'assurer que les imports de types sont totalement effacés au runtime.",
+        "pitfalls": "Conflits de résolution de chemins avec les `paths` de `tsconfig.json` à la compilation.",
+        "notes": "Gestion granulaire des exports de code et de types."
+      },
+      "php": {
+        "minimal": "namespace MonPackage; use AutreNamespace\\MaClasse;",
+        "complete": "<?php\nnamespace MonPackage\\Services;\n\nuse MonPackage\\Interfaces\\CalculateurInterface;\n\nclass Calculateur implements CalculateurInterface {\n    public function calculer(): void {}\n}",
+        "best_practices": "Respecter la norme d'autoloading PSR-4 (namespaces alignés sur la structure des dossiers avec Composer).",
+        "pitfalls": "Oublier d'exécuter `composer dump-autoload` après l'ajout de nouvelles classes.",
+        "notes": "L'écosystème Composer / PSR-4 gère automatiquement l'importation."
+      },
+      "csharp": {
+        "minimal": "namespace MonApplication.Services; using System.IO;",
+        "complete": "// Fichier Calculateur.cs\nnamespace MonApplication.Services;\n\npublic class Calculateur {\n    // Portée 'internal' pour limiter l'accès à l'assembly courant\n    internal void ExecuterInterne() {}\n    public void Executer() {}\n}",
+        "best_practices": "Utiliser les `file-scoped namespaces` (C# 10+) pour réduire l'indentation globale du code.",
+        "pitfalls": "Abuser de `using static` rendant l'origine des méthodes floue.",
+        "notes": "Organisation par Namespaces et Assemblies (DLL)."
+      },
+      "java": {
+        "minimal": "package com.monapp.services; import com.monapp.models.*;",
+        "complete": "// module-info.java (Java 9+ JPMS)\nmodule com.monapp {\n    exports com.monapp.services;\n}\n\n// Fichier Calculateur.java\npackage com.monapp.services;\n\npublic class Calculateur {}",
+        "best_practices": "Utiliser le système de modules JPMS (`module-info.java`) pour encapsuler le code au niveau du JAR.",
+        "pitfalls": "Conflits de dépendances sur le Classpath ('Classpath Hell').",
+        "notes": "Encapsulation stricte par packages et modules."
+      },
+      "cpp": {
+        "minimal": "// C++20 Modules : export module mon_module; import mon_module;",
+        "complete": "// mon_module.ixx (C++20 Module)\nexport module MonModule;\n\nexport namespace MonModule {\n    class Calculateur {\n    public:\n        void calculer();\n    };\n}",
+        "best_practices": "Privilégier les modules C++20 pour accélérer les temps de compilation par rapport aux headers `.h`.",
+        "pitfalls": "Incompatibilités d'outillage selon les compilateurs avec la transition des fichiers d'en-tête vers les modules.",
+        "notes": "Révolution majeure remplaçant l'inclusion textuelle `#include`."
+      },
+      "c": {
+        "minimal": "#include \"mon_module.h\" // Header Guard avec #ifndef MON_MODULE_H",
+        "complete": "// mon_module.h\n#ifndef MON_MODULE_H\n#define MON_MODULE_H\n\ntypedef struct Calculateur Calculateur;\nvoid calculateur_initialiser(Calculateur* c);\n\n#endif\n\n// mon_module.c\n#include \"mon_module.h\"\nstruct Calculateur { int etat; };",
+        "best_practices": "Utiliser les structures opaques (Pimpl Pattern) dans les fichiers `.h` pour cacher l'implémentation.",
+        "pitfalls": "Oublier les Header Guards (`#ifndef`/`#define`) provoquant des erreurs de double re-déclaration.",
+        "notes": "Découpage manuel par fichiers d'en-tête et unités de compilation."
+      },
+      "vb": {
+        "minimal": "Imports System.IO : Namespace Services ... End Namespace",
+        "complete": "Imports System.IO\nNamespace MonApplication.Services\n    Public Class Calculateur\n    End Class\nEnd Namespace",
+        "best_practices": "Organiser les namespaces de manière cohérente dans tout le projet.",
+        "pitfalls": "Imports globaux masquant l'origine des types.",
+        "notes": "Géré au niveau du compilateur .NET."
+      },
+      "vba": {
+        "minimal": "' Pas de namespaces : exportation / importation manuelle des modules (.bas / .cls)",
+        "complete": "' Dans un module standard 'ModUtils.bas'\nOption Explicit\n\n' Portée Publique accessible dans tout le projet VBA\nPublic Sub ExecuterTraitement()\n    Debug.Print \"Traitement\"\nEnd Sub\n' Portée Privée visible uniquement dans ce module\nPrivate Sub SecuriteInterne()\nEnd Sub",
+        "best_practices": "Nommer les modules avec des préfixes explicites (`mod_`, `cls_`) pour simuler un espace de noms.",
+        "pitfalls": "Tous les éléments `Public` partagent un espace de noms plat, risquant des collisions de noms de procédures.",
+        "notes": "Pas de concept natif de namespace ou de package."
+      }
+    }
+  },
+  {
+    "id": "py_oop_advanced_01",
+    "level": 3,
+    "chapter": "4. Programmation Orientée Objet Avancée",
+    "category": "POO & Architecture",
+    "name": "Héritage Multiple, C3 Linearization (MRO), Interfaces Abstrait (ABC) et Polymorphisme",
+    "description": "Résolution du problème du diamant via l'algorithme MRO, définition de contrats d'interfaces avec le module `abc` et méthodes virtuelles.",
+    "related_concepts": ["java_oop_interfaces_polymorphism_01"],
+    "languages": {
+      "python": {
+        "minimal": "from abc import ABC, abstractmethod; class Plugin(ABC): @abstractmethod def run(self): pass",
+        "complete": "from abc import ABC, abstractmethod\n\nclass ComposantReseau(ABC):\n    @abstractmethod\n    def connecter(self) -> bool:\n        pass\n\nclass LoggerMixin:\n    def log(self, msg: str):\n        print(f\"[LOG]: {msg}\")\n\n# Héritage multiple (Classe de base + Mixin)\nclass ClientHTTP(ComposantReseau, LoggerMixin):\n    def connecter(self) -> bool:\n        self.log(\"Connexion HTTP en cours...\")\n        return True\n\nclient = ClientHTTP()\nclient.connecter()\nprint(ClientHTTP.__mro__) # Affichage de l'ordre de résolution des méthodes",
+        "best_practices": "Préférer la composition à l'héritage, et restreindre l'héritage multiple à l'usage de Mixins légers sans état.",
+        "pitfalls": "Modifier l'ordre des classes mères dans la définition sans comprendre l'impact sur l'ordre MRO (`__mro__`).",
+        "notes": "Python résout le problème du diamant de l'héritage multiple grâce à l'algorithme C3 Linearization."
+      },
+      "javascript": {
+        "minimal": "class Plugin { run() { throw new Error('Abstract'); } }",
+        "complete": "class ComposantReseau {\n    connecter() {\n        throw new Error(\"Méthode abstraite !\");\n    }\n}\n// Simulation de Mixin par composition d'objets\nconst LoggerMixin = Base => class extends Base {\n    log(msg) { console.log(`[LOG]: ${msg}`); }\n};\n\nclass ClientHTTP extends LoggerMixin(ComposantReseau) {\n    connecter() {\n        this.log(\"Connexion HTTP\");\n        return true;\n    }\n}",
+        "best_practices": "Utiliser des fonctions génératrices de classes pour composer des Mixins.",
+        "pitfalls": "L'héritage multiple direct (`class A extends B, C`) est strictement interdit en JS.",
+        "notes": "Héritage basé sur la chaîne de prototypes (Prototypes Chain)."
+      },
+      "typescript": {
+        "minimal": "interface Plugin { run(): void; } class App implements Plugin { run() {} }",
+        "complete": "interface ComposantReseau {\n    connecter(): boolean;\n}\ninterface Logger {\n    log(msg: string): void;\n}\n// Implémentation multiple d'interfaces\nclass ClientHTTP implements ComposantReseau, Logger {\n    log(msg: string): void { console.log(msg); }\n    connecter(): boolean {\n        this.log(\"Connexion HTTP\");\n        return true;\n    }\n}",
+        "best_practices": "Privilégier les interfaces pour définir les contrats d'architecture.",
+        "pitfalls": "L'héritage multiple de classes est interdit, seule l'implémentation multiple d'interfaces est autorisée.",
+        "notes": "Système de types structurel très flexible."
+      },
+      "php": {
+        "minimal": "abstract class Plugin { abstract public function run(): void; }",
+        "complete": "<?php\ninterface ComposantReseau {\n    public function connecter(): bool;\n}\ntrait LoggerTrait {\n    public function log(string $msg): void { echo \"[LOG]: $msg\"; }\n}\n\nclass ClientHTTP implements ComposantReseau {\n    use LoggerTrait; // Réutilisation de code via Trait\n    public function connecter(): bool {\n        $this->log(\"Connexion HTTP\");\n        return true;\n    }\n}",
+        "best_practices": "Utiliser les `Traits` pour partager du code horizontalement entre classes sans héritage multiple.",
+        "pitfalls": "Conflits de noms de méthodes entre plusieurs Traits importés dans une même classe.",
+        "notes": "PHP interdit l'héritage multiple de classes mais propose les Traits."
+      },
+      "csharp": {
+        "minimal": "public interface IPlugin { void Run(); }",
+        "complete": "public interface IComposantReseau {\n    bool Connecter();\n}\npublic interface ILogger {\n    void Log(string msg) => Console.WriteLine($\"[LOG]: {msg}\"); // Méthode par défaut\n}\npublic class ClientHTTP : IComposantReseau, ILogger {\n    public bool Connecter() {\n        ((ILogger)this).Log(\"Connexion HTTP\");\n        return true;\n    }\n}",
+        "best_practices": "Utiliser les implémentations par défaut dans les interfaces (C# 8+) avec précaution.",
+        "pitfalls": "L'héritage multiple de classes est impossible (héritage simple de classe + interfaces multiples).",
+        "notes": "Architecture Orientée Objet robuste basée sur le CLR."
+      },
+      "java": {
+        "minimal": "public abstract class Plugin { public abstract void run(); }",
+        "complete": "public interface ComposantReseau {\n    boolean connecter();\n}\npublic interface Logger {\n    default void log(String msg) {\n        System.out.println(\"[LOG]: \" + msg);\n    }\n}\npublic class ClientHTTP implements ComposantReseau, Logger {\n    @Override\n    public boolean connecter() {\n        log(\"Connexion HTTP\");\n        return true;\n    }\n}",
+        "best_practices": "Utiliser les méthodes `default` d'interfaces pour étendre les API sans briser le code existant.",
+        "pitfalls": "Conflit si deux interfaces possèdent la même méthode `default` (résolution explicite requise).",
+        "notes": "Polymorphisme d'interface strict."
+      },
+      "cpp": {
+        "minimal": "class Plugin { public: virtual void run() = 0; }; // Classe abstraite pure",
+        "complete": "#include <iostream>\n\nclass ComposantReseau {\npublic:\n    virtual bool connecter() = 0; // Méthode virtuelle pure\n    virtual ~ComposantReseau() = default;\n};\nclass LoggerMixin {\npublic:\n    void log(const std::string& msg) { std::cout << \"[LOG]: \" << msg; }\n};\n\n// Héritage multiple de classes natif\nclass ClientHTTP : public ComposantReseau, public LoggerMixin {\npublic:\n    bool connecter() override {\n        log(\"Connexion HTTP\");\n        return true;\n    }\n};",
+        "best_practices": "Toujours déclarer le destructeur `virtual` dans une classe de base possédant des méthodes virtuelles.",
+        "pitfalls": "Le problème du diamant en héritage multiple nécessite l'héritage virtuel (`virtual public Base`).",
+        "notes": "Support natif et complet de l'héritage multiple complexe."
+      },
+      "c": {
+        "minimal": "// Polymorphisme via tables de pointeurs de fonctions (VTable manuelle)",
+        "complete": "#include <stdio.h>\n\ntypedef struct {\n    bool (*connecter)(void* self);\n} ComposantReseauVTable;\n\ntypedef struct {\n    ComposantReseauVTable* vtable;\n    char url[50];\n} ClientHTTP;",
+        "best_practices": "Simuler des interfaces en créant des structures ne contenant que des pointeurs de fonctions.",
+        "pitfalls": "Gestion manuelle de la vtable rigide et vulnérable aux erreurs de déréférencement.",
+        "notes": "Nécessite la reconstruction explicite des mécanismes orientés objet."
+      },
+      "vb": {
+        "minimal": "Public Interface IPlugin : Sub Run() : End Interface",
+        "complete": "Public Interface IComposantReseau\n    Function Connecter() As Boolean\nEnd Interface\nPublic Class ClientHTTP\n    Implements IComposantReseau\n    Public Function Connecter() As Boolean Implements IComposantReseau.Connecter\n        Return True\n    End Function\nEnd Class",
+        "best_practices": "Implémenter explicitement chaque méthode d'interface via la clause `Implements`.",
+        "pitfalls": "Héritage multiple de classes non supporté.",
+        "notes": "Modèle objet .NET standard."
+      },
+      "vba": {
+        "minimal": "' Interface simulée dans un Module de Classe via des méthodes vides",
+        "complete": "' Fichier clsIPlugin.cls (Classe Interface)\nPublic Sub Executer()\nEnd Sub\n\n' Fichier clsMaPlugin.cls\nImplements clsIPlugin\nPrivate Sub clsIPlugin_Executer()\n    Debug.Print \"Exécution du plugin VBA\"\nEnd Sub",
+        "best_practices": "Utiliser le mot-clé `Implements` pour créer un polymorphisme d'interface propre.",
+        "pitfalls": "Impossible d'avoir de l'héritage de code ou de réutiliser du code de classe mère.",
+        "notes": "Supporte uniquement le polymorphisme d'interface (Pas d'héritage de classe)."
+      }
+    }
+  },
+  {
+    "id": "py_concurrency_multiprocessing_01",
+    "level": 4,
+    "chapter": "5. Concurrence & Parallélisme",
+    "category": "Performance & Threads",
+    "name": "GIL (Global Interpreter Lock), Multi-threading et Multi-processus",
+    "description": "Contournement des limitations du GIL Python pour les calculs lourds CPU via `multiprocessing` et `concurrent.futures`.",
+    "related_concepts": ["java_threads_executors_01"],
+    "languages": {
+      "python": {
+        "minimal": "from concurrent.futures import ProcessPoolExecutor; res = list(executor.map(func, data))",
+        "complete": "from concurrent.futures import ProcessPoolExecutor\nimport time\n\ndef calcul_lourd_cpu(n: int) -> int:\n    return sum(i * i for i in range(n))\n\nif __name__ == \"__main__\":\n    donnees = [10_000_000, 10_000_000, 10_000_000]\n    \n    # Bypass du GIL en utilisant de vrais processus OS séparés\n    with ProcessPoolExecutor() as executor:\n        resultats = list(executor.map(calcul_lourd_cpu, donnees))\n    \n    print(f\"Résultats calculés sur plusieurs cœurs CPU : {resultats}\")",
+        "best_practices": "Utiliser `ThreadPoolExecutor` pour les tâches I/O-bound (réseau, disque) et `ProcessPoolExecutor` pour les tâches CPU-bound (calculs).",
+        "pitfalls": "Oublier la protection `if __name__ == '__main__':` provoquant une boucle infinie de spagettification de processus sous Windows/macOS.",
+        "notes": "Le GIL empêche l'exécution simultanée de bytecode Python sur plusieurs cœurs au sein d'un même processus."
+      },
+      "javascript": {
+        "minimal": "const worker = new Worker('worker.js');",
+        "complete": "// Utilisation des Worker Threads en Node.js / Web Workers\nconst { Worker, isMainThread, parentPort, workerData } = require('worker_threads');\n\nif (isMainThread) {\n    const worker = new Worker(__filename, { workerData: 1000000 });\n    worker.on('message', res => console.log('Résultat:', res));\n} else {\n    let s = 0; for(let i=0; i<workerData; i++) s += i;\n    parentPort.postMessage(s);\n}",
+        "best_practices": "Utiliser `SharedArrayBuffer` pour partager de la mémoire de façon atomique entre workers.",
+        "pitfalls": "Le transfert d'objets volumineux par copie entre workers peut dégrader les performances.",
+        "notes": "JavaScript contourne le modèle mono-thread via l'isolation en Workers."
+      },
+      "typescript": {
+        "minimal": "const w = new Worker(new URL('./worker.ts', import.meta.url));",
+        "complete": "import { Worker } from 'worker_threads';\n\nfunction executerWorker(data: number): Promise<number> {\n    return new Promise((resolve) => {\n        const worker = new Worker('./dist/worker.js', { workerData: data });\n        worker.on('message', resolve);\n    });\n}",
+        "best_practices": "Typer les messages échangés entre le thread principal et les workers.",
+        "pitfalls": "Complexité de la compilation des fichiers sources de workers séparés.",
+        "notes": "Multi-threading par passage de messages typés."
+      },
+      "php": {
+        "minimal": "// Utilisation des extensions Parallel / pthreads ou processus enfants proc_open",
+        "complete": "<?php\n// Via l'extension CLI modern 'parallel'\nuse parallel\\Runtime;\n\n$runtime = new Runtime();\n$future = $runtime->run(function() {\n    return sum(range(0, 1000000));\n});\n echo $future->value();",
+        "best_practices": "Préférer l'architecture Shared-Nothing avec gestionnaire de files de messages (RabbitMQ/Redis) au multi-threading PHP.",
+        "pitfalls": "L'extension `parallel` nécessite une version de PHP compilée avec ZTS (Zend Thread Safety).",
+        "notes": "PHP est traditionnellement basé sur un modèle de processus isolés (Shared-Nothing)."
+      },
+      "csharp": {
+        "minimal": "Parallel.For(0, 10, i => DoWork(i));",
+        "complete": "using System.Threading.Tasks;\n\nint[] donnees = new int[] { 1000000, 1000000, 1000000 };\n\n// Parallélisation native multi-threads sur tous les cœurs CPU disponibles\nParallel.ForEach(donnees, item => {\n    long sum = 0;\n    for (int i = 0; i < item; i++) sum += i;\n});",
+        "best_practices": "Utiliser la bibliothèque TPL (Task Parallel Library) et `Parallel.ForEach`.",
+        "pitfalls": "Gare aux conditions de concurrence (Race Conditions) lors de l'accès à des variables partagées non thread-safe.",
+        "notes": "Support du multi-threading de très haut niveau géré par le ThreadPool."
+      },
+      "java": {
+        "minimal": "ExecutorService executor = Executors.newFixedThreadPool(4);",
+        "complete": "import java.util.concurrent.*;\nimport java.util.List;\n\npublic class Program {\n    public static void main(String[] args) throws Exception {\n        ExecutorService executor = Executors.newFixedThreadPool(4);\n        Callable<Long> task = () -> {\n            long s = 0; for(int i=0; i<1000000; i++) s+=i; return s;\n        };\n        List<Future<Long>> results = executor.invokeAll(List.of(task, task));\n        executor.shutdown();\n    }\n}",
+        "best_practices": "Utiliser les `Executors` et le framework Fork/Join plutôt que d'instancier des `Thread` manuellement.",
+        "pitfalls": "Oublier de fermer l' `ExecutorService` (`shutdown()`), ce qui empêche la JVM de s'arrêter.",
+        "notes": "Gestion native puissante du multi-threading préemptif."
+      },
+      "cpp": {
+        "minimal": "std::thread t([]{ DoWork(); }); t.join();",
+        "complete": "#include <iostream>\n#include <vector>\n#include <thread>\n#include <future>\n\nlong calcul(long n) {\n    long s = 0; for(long i=0; i<n; i++) s+=i; return s;\n}\n\nint main() {\n    // Exécution asynchrone sur un nouveau thread matériel\n    std::future<long> f1 = std::async(std::launch::async, calcul, 10000000);\n    std::cout << \"Résultat : \" << f1.get() << std::endl;\n}",
+        "best_practices": "Utiliser `std::async` ou `std::jthread` (C++20 qui auto-join à la destruction).",
+        "pitfalls": "Créer un Data Race en accédant à une variable sans `std::mutex` ou type `std::atomic`.",
+        "notes": "Accès direct aux threads matériels du système d'exploitation."
+      },
+      "c": {
+        "minimal": "pthread_t t; pthread_create(&t, NULL, func, NULL); pthread_join(t, NULL);",
+        "complete": "#include <stdio.h>\n#include <pthread.h>\n\nvoid* calcul(void* arg) {\n    long* n = (long*)arg;\n    // Traitement\n    return NULL;\n}\nint main() {\n    pthread_t thread1;\n    long val = 1000000;\n    pthread_create(&thread1, NULL, calcul, &val);\n    pthread_join(thread1, NULL);\n}",
+        "best_practices": "S'assurer de verrouiller l'accès aux zones critiques avec `pthread_mutex_t`.",
+        "pitfalls": "Les fuites de mémoire et verrous morts (Deadlocks) sont très fréquents en C bas niveau.",
+        "notes": "Spécification POSIX Threads (pthreads)."
+      },
+      "vb": {
+        "minimal": "Parallel.For(0, 10, Sub(i) DoWork(i))",
+        "complete": "Imports System.Threading.Tasks\nPublic Module Module1\n    Sub Main()\n        Parallel.For(0, 10, Sub(i)\n                                ' Exécution parallèle sur plusieurs threads\n                            End Sub)\n    End Sub\nEnd Module",
+        "best_practices": "Utiliser les outils de la TPL .NET (`Parallel`).",
+        "pitfalls": "Mêmes risques de Race Conditions que C#.",
+        "notes": "Accès complet aux fonctionnalités de parallélisme .NET."
+      },
+      "vba": {
+        "minimal": "' Multi-threading non supporté nativement (Mono-thread strict)",
+        "complete": "' Simulation de parallélisme via exécution de sous-processus externes cachés\nPublic Sub LancerTacheParallele()\n    Dim shell As Object\n    Set shell = CreateObject(\"WScript.Shell\")\n    ' Lancement d'un script externe VBScript ou PowerShell en tâche de fond non bloquante\n    shell.Run \"powershell -Command \"\"Start-Sleep -s 5\"\"\", 0, False\nEnd Sub",
+        "best_practices": "Déporter les calculs lourds vers des DLLs C/C++ externes compilées multithreadées ou des scripts PowerShell.",
+        "pitfalls": "L'environnement d'exécution COM/VBA est fondamentalement mono-thread.",
+        "notes": "Impossible d'instancier de vrais threads natifs en VBA."
+      }
+    }
+  },
+  {
+    "id": "py_memory_pointers_management_01",
+    "level": 3,
+    "chapter": "6. Gestion Mémoire & Modèle Objet",
+    "category": "Système & Bas Niveau",
+    "name": "Comptage de Références, Garbage Collector, Références Faibles et Slots",
+    "description": "Modèle mémoire Python (Reference Counting + GC cyclique), optimisation mémoire avec `__slots__` et évitement des fuites de mémoire via `weakref`.",
+    "related_concepts": ["cpp_raii_smart_pointers_01"],
+    "languages": {
+      "python": {
+        "minimal": "import weakref; ref = weakref.ref(obj)",
+        "complete": "import sys\nimport weakref\n\nclass MonObjet:\n    # Optimisation : supprime le __dict__ de l'instance pour économiser de la RAM\n    __slots__ = ['valeur', '__weakref__']\n    def __init__(self, val):\n        self.valeur = val\n\nobj = MonObjet(42)\nprint(f\"Nombre de références : {sys.getrefcount(obj) - 1}\")\n\n# Création d'une référence faible qui n'empêche pas le Garbage Collector de détruire l'objet\nref_faible = weakref.ref(obj)\nprint(f\"Valeur via ref faible : {ref_faible().valeur}\")",
+        "best_practices": "Utiliser `__slots__` sur les classes instanciées des millions de fois pour réduire drastiquement l'empreinte mémoire.",
+        "pitfalls": "Créer des références cycliques complexes dans des objets redéfinissant `__del__`, risquant de gêner le Collector.",
+        "notes": "Python libère immédiatement la mémoire dès que le compteur de références d'un objet tombe à zéro."
+      },
+      "javascript": {
+        "minimal": "const refFaible = new WeakRef(obj);",
+        "complete": "let obj = { donnee: \"test\" };\n// WeakRef permet au Garbage Collector (Mark-and-Sweep) de nettoyer l'objet si nécessaire\nconst refFaible = new WeakRef(obj);\n\nconsole.log(refFaible.deref()?.donnee);\nobj = null; // L'objet devient éligible au Garbage Collection",
+        "best_practices": "Utiliser `WeakMap` ou `WeakSet` pour associer des métadonnées à des objets sans créer de fuites mémoire.",
+        "pitfalls": "Ne pas se fier au timing exact du nettoyage par le Garbage Collector de V8.",
+        "notes": "Gestion mémoire automatique par Mark-and-Sweep."
+      },
+      "typescript": {
+        "minimal": "const cache = new WeakMap<object, string>();",
+        "complete": "let element: object | null = { id: 1 };\nconst cacheMetadonnees = new WeakMap<object, string>();\ncacheMetadonnees.set(element, \"Infos\");\n\nelement = null; // Permet le nettoyage dans la WeakMap",
+        "best_practices": "Mettre en cache des données temporaires liées aux instances avec `WeakMap`.",
+        "pitfalls": "Les primitives (string, number) ne peuvent pas être des clés de `WeakMap`.",
+        "notes": "Garbage Collector identique au moteur JS sous-jacent."
+      },
+      "php": {
+        "minimal": "$ref = WeakReference::create($obj);",
+        "complete": "<?php\n$obj = new stdClass();\n$ref = WeakReference::create($obj);\n\nunset($obj); // Destruction immédiate (Reference Counting)\nvar_dump($ref->get()); // NULL",
+        "best_practices": "Utiliser `WeakReference` pour les caches ou le pattern Observer afin d'éviter la rétention d'objets.",
+        "pitfalls": "Les cycles de références entre objets nécessitent le passage du ZEND GC cyclic collector.",
+        "notes": "PHP combine comptage de références et collecteur de cycles."
+      },
+      "csharp": {
+        "minimal": "WeakReference<MonType> refFaible = new(obj);",
+        "complete": "using System;\n\nvar obj = new object();\nWeakReference<object> refFaible = new(obj);\n\nobj = null;\nGC.Collect(); // Force la collecte (Non recommandé en prod)\n\nif (!refFaible.TryGetTarget(out var target)) {\n    Console.WriteLine(\"Objet nettoyé par le GC .NET\");\n}",
+        "best_practices": "Laisser le Garbage Collector Generational (G0, G1, G2) gérer la mémoire et implémenter `IDisposable` pour les ressources non-managées.",
+        "pitfalls": "Appeler `GC.Collect()` manuellement dégrade globalement les performances de l'application.",
+        "notes": "Garbage Collector générationnel très performant."
+      },
+      "java": {
+        "minimal": "WeakReference<MonObjet> ref = new WeakReference<>(obj);",
+        "complete": "import java.lang.ref.WeakReference;\n\nMonObjet obj = new MonObjet();\nWeakReference<MonObjet> refFaible = new WeakReference<>(obj);\n\nobj = null; // Éligible au Garbage Collector (G1/ZGC)\nSystem.gc();",
+        "best_practices": "Utiliser `WeakHashMap` pour la mise en cache dynamique.",
+        "pitfalls": "Garder des références fortes non voulues dans des collections statiques ('Fuite mémoire Java').",
+        "notes": "Garbage Collector multi-algorithmes (G1, Parallel, ZGC)."
+      },
+      "cpp": {
+        "minimal": "std::weak_ptr<T> wRef = sharedRef; // Pointeur intelligent faible",
+        "complete": "#include <memory>\n#include <iostream>\n\nstruct Node {\n    std::shared_ptr<Node> suivant;\n    std::weak_ptr<Node> parent; // Évite les fuites par référence circulaire !\n};\n\nint main() {\n    auto ptrIntelligent = std::make_shared<Node>();\n    std::weak_ptr<Node> ptrFaible = ptrIntelligent;\n    \n    if (auto locked = ptrFaible.lock()) {\n        std::cout << \"Objet toujours en mémoire\\n\";\n    }\n}",
+        "best_practices": "Utiliser systématiquement `std::unique_ptr` par défaut, et `std::shared_ptr`/`std::weak_ptr` uniquement si le partage de propriété est nécessaire.",
+        "pitfalls": "Employer des pointeurs bruts `new`/`delete` manuels (source principale de fuites et segfaults).",
+        "notes": "Gestion mémoire déterministe sans Garbage Collector grâce au RAII."
+      },
+      "c": {
+        "minimal": "int* p = malloc(sizeof(int)); free(p);",
+        "complete": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct {\n    int* donnees;\n} Tableau;\n\nTableau* creer(size_t taille) {\n    Tableau* t = malloc(sizeof(Tableau));\n    t->donnees = malloc(taille * sizeof(int));\n    return t;\n}\n\nvoid detruire(Tableau* t) {\n    free(t->donnees); // Nettoyage de la mémoire allouée dynamiquement\n    free(t);\n}",
+        "best_practices": "Toujours associer chaque `malloc`/`calloc` à un `free` explicite et vérifier si le pointeur retourné n'est pas `NULL`.",
+        "pitfalls": "Déréférencement de pointeur nul ou accès à de la mémoire libérée ('Use-After-Free').",
+        "notes": "Gestion 100% manuelle sur le Tas (Heap) et la Pile (Stack)."
+      },
+      "vb": {
+        "minimal": "Dim refFaible As New WeakReference(obj)",
+        "complete": "Dim obj As New Object()\nDim refFaible As New WeakReference(obj)\nobj = Nothing\n' L'objet sera collecté par le Garbage Collector .NET",
+        "best_practices": "Libérer les ressources volumineuses en affectant `Nothing`.",
+        "pitfalls": "Ne pas nettoyer les événements non abonnés.",
+        "notes": "Modèle mémoire managé .NET."
+      },
+      "vba": {
+        "minimal": "Set obj = Nothing ' Libération immédiate via Reference Counting",
+        "complete": "' VBA utilise un compteur de références strict (Reference Counting)\nPublic Sub GestionMemoire()\n    Dim cls As New ClasseVecteur2D\n    ' Utilisation de la classe...\n    \n    Set cls = Nothing ' Décrémente le compteur. L'événement Class_Terminate() est levé immédiatement !\nEnd Sub",
+        "best_practices": "Définir explicitement les objets à `Nothing` dès qu'ils ne sont plus utilisés.",
+        "pitfalls": "Créer des références circulaires entre deux objets VBA (A pointe sur B et B pointe sur A) bloque leur libération.",
+        "notes": "Libération mémoire déterministe grâce au comptage de références COM."
+      }
+    }
+  }
+]

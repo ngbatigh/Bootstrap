@@ -1,0 +1,83 @@
+[
+  {
+    "id": "c_pointers_arithmetic_01",
+    "level": 4,
+    "chapter": "4. Gestion Mémoire et Bas Niveau",
+    "category": "Pointeurs",
+    "name": "Arithmétique des Pointeurs et Mémoire Brute",
+    "description": "Manipulation directe des adresses mémoire, déplacement d'octets et réinterprétation de type.",
+    "related_concepts": ["mem_references_02"],
+    "languages": {
+      "c": {
+        "minimal": "int arr[3] = {10, 20, 30};\nint* p = arr + 1; // p pointe sur 20",
+        "complete": "#include <stdio.h>\n\nint main() {\n    int buffer[5] = {100, 200, 300, 400, 500};\n    int *ptr = buffer;\n    for(int i = 0; i < 5; i++) {\n        printf(\"Index %d: val=%d, addr=%p\\n\", i, *(ptr + i), (void*)(ptr + i));\n    }\n    return 0;\n}",
+        "best_practices": "L'incrémentation d'un pointeur dépend de la taille du type pointé (sizeof).",
+        "pitfalls": "Dépassement de tampon ou accès à des adresses non alignées (Segmentation Fault).",
+        "notes": "Concept fondamental au cœur des langages procéduraux bas niveau."
+      },
+      "cpp": {
+        "minimal": "int arr[3] = {10, 20, 30};\nint* p = arr + 1;",
+        "complete": "#include <iostream>\n#include <span >\n\nint main() {\n    int buffer[5] = {100, 200, 300, 400, 500};\n    int* ptr = buffer;\n    for(int i = 0; i < 5; i++) {\n        std::cout << *(ptr + i) << \" \";\n    }\n    return 0;\n}",
+        "best_practices": "Préférer les itérateurs ou std::span (C++20) à l'arithmétique de pointeurs brute.",
+        "pitfalls": "Perte de sécurité mémoire lors de casts pointeurs violents (reinterpret_cast).",
+        "notes": "Hérité directement du C pour la compatibilité descendante."
+      },
+      "csharp": {
+        "minimal": "unsafe {\n    int* p = stackalloc int[3];\n    p++;\n}",
+        "complete": "using System;\n\nclass Program {\n    unsafe static void Main() {\n        int[] arr = { 10, 20, 30 };\n        fixed (int* p = arr) {\n            int* ptr = p + 1;\n            Console.WriteLine(*ptr); // 20\n        }\n    }\n}",
+        "best_practices": "Restreindre l'usage des blocs unsafe aux besoins d'interopérabilité ou d'optimisation critique.",
+        "pitfalls": "Oublier de verrouiller les tableaux managés avec 'fixed' avant d'en extraire un pointeur.",
+        "notes": "Nécessite le drapeau de compilation /unsafe."
+      },
+      "python": {
+        "minimal": "import ctypes\np = (ctypes.c_int * 3)(10, 20, 30)",
+        "complete": "import ctypes\nArrayType = ctypes.c_int * 3\narr = ArrayType(10, 20, 30)\nptr = ctypes.cast(arr, ctypes.POINTER(ctypes.c_int))\nprint(ptr[1]) # 20",
+        "best_practices": "Passer par le module ctypes ou memoryview pour interagir avec le C.",
+        "pitfalls": "Manipuler des adresses ctypes invalides qui provoquent un crash CPython.",
+        "notes": "Python masque complètement la mémoire; ctypes simule le bas niveau."
+      },
+      "java": {
+        "minimal": "// Simulé via Unsafe ou ByteBuffer",
+        "complete": "import java.nio.ByteBuffer;\n\npublic class Main {\n    public static void main(String[] args) {\n        ByteBuffer buf = ByteBuffer.allocateDirect(12);\n        buf.putInt(10);\n        buf.putInt(20);\n        buf.putInt(30);\n        System.out.println(buf.getInt(4)); // Offset 4 octets -> 20\n    }\n}",
+        "best_practices": "Utiliser DirectByteBuffer ou l'API Foreign Function & Memory (Java 22+).",
+        "pitfalls": "Absence totale de pointeurs explicites accessibles au niveau du langage.",
+        "notes": "La JVM gère strictement les adresses mémoire pour des raisons de sécurité."
+      },
+      "javascript": {
+        "minimal": "const buf = new Int32Array([10, 20, 30]);",
+        "complete": "const buffer = new ArrayBuffer(12);\nconst view = new DataView(buffer);\nview.setInt32(0, 10);\nview.setInt32(4, 20);\nconsole.log(view.getInt32(4)); // 20",
+        "best_practices": "Utiliser TypedArrays pour la manipulation efficace de données binaires.",
+        "pitfalls": "Confondre l'indexation d'un TypedArray (par éléments) et de DataView (par octets).",
+        "notes": "L'arithmétique de pointeur brute n'existe pas en JavaScript."
+      },
+      "typescript": {
+        "minimal": "const buf: Int32Array = new Int32Array([10, 20, 30]);",
+        "complete": "const buffer: ArrayBuffer = new ArrayBuffer(12);\nconst view: DataView = new DataView(buffer);\nview.setInt32(4, 20);\nconsole.log(view.getInt32(4));",
+        "best_practices": "Typer explicitement les structures d'ArrayBuffer.",
+        "pitfalls": "Incompatibilité de types lors de manipulation binaire.",
+        "notes": "Règles identiques à JavaScript."
+      },
+      "php": {
+        "minimal": "// Pas de pointeurs explicites en PHP.",
+        "complete": "<?php\n// Simulation via chaîne de caractères ou FFI\n$ffi = FFI::cdef(\"struct Data { int x[3]; };\");\n$data = $ffi->new(\"struct Data\");\n$data->x[0] = 10;\n$data->x[1] = 20;\necho $data->x[1];",
+        "best_practices": "Utiliser l'extension FFI (PHP 7.4+) uniquement pour communiquer avec des lib C.",
+        "pitfalls": "Créer des fuites mémoire C non managées depuis PHP via FFI.",
+        "notes": "PHP gère ses variables sous forme de structures ZVAL internes."
+      },
+      "vb": {
+        "minimal": "Dim ptr As IntPtr = Marshal.AllocHGlobal(12)",
+        "complete": "Imports System.Runtime.InteropServices\n\nModule Program\n    Sub Main()\n        Dim ptr As IntPtr = Marshal.AllocHGlobal(12)\n        Marshal.WriteInt32(ptr, 0, 10)\n        Marshal.WriteInt32(ptr, 4, 20)\n        Console.WriteLine(Marshal.ReadInt32(ptr, 4)) ' 20\n        Marshal.FreeHGlobal(ptr)\n    End Sub\nEnd Module",
+        "best_practices": "Libérer impérativement la mémoire non managée allouée par AllocHGlobal.",
+        "pitfalls": "Ne pas geler la mémoire managée avant les opérations d'interopérabilité.",
+        "notes": "Passe par la classe Marshal du .NET."
+      },
+      "vba": {
+        "minimal": "CopyMemory ByVal VarPtr(dest), ByVal VarPtr(src), 4",
+        "complete": "#If VBA7 Then\n    Private Declare PtrSafe Sub CopyMemory Lib \"kernel32\" Alias \"RtlMoveMemory\" (ByVal Destination As LongPtr, ByVal Source As LongPtr, ByVal Length As Long)\n#End If\n\nPublic Sub TestPtr()\n    Dim x As Long, y As Long\n    x = 42\n    CopyMemory VarPtr(y), VarPtr(x), 4\n    Debug.Print y ' 42\nEnd Sub",
+        "best_practices": "Déclarer PtrSafe et utiliser LongPtr pour assurer la compatibilité 32/64 bits.",
+        "pitfalls": "Un mauvais décalage dans VarPtr plante instantanément l'application hôte (Excel).",
+        "notes": "Accès à l'API Windows via CopyMemory et VarPtr."
+      }
+    }
+  }
+]

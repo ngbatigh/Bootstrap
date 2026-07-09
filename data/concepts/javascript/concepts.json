@@ -1,0 +1,650 @@
+[
+  {
+    "id": "js_variables_scope_01",
+    "level": 1,
+    "chapter": "1. Bases du Langage",
+    "category": "Variables",
+    "name": "Déclaration, Portée et Hoisting (var, let, const)",
+    "description": "Gestion de la portée des variables (bloc vs fonction) et comportement de remontée (hoisting) à l'initialisation.",
+    "related_concepts": ["base_variables_02", "js_closures_lexical_scope_01"],
+    "languages": {
+      "javascript": {
+        "minimal": "let x = 10; const Y = 20; var z = 30;",
+        "complete": "if (true) {\n    var varVariable = \"portée fonction\";\n    let letVariable = \"portée bloc\";\n    const CONST_VAR = \"immuable (référence)\";\n}\nconsole.log(varVariable); // Accessible\n// letVariable n'est pas accessible ici (ReferenceError)",
+        "best_practices": "Bannir 'var', privilégier 'const' par défaut et 'let' uniquement si une réaffectation est nécessaire.",
+        "pitfalls": "La Zone Temporelle Morte (TDZ) avec 'let' et 'const' empêche toute utilisation avant la déclaration.",
+        "notes": "Fondement du système de gestion des variables en JS modernisé avec ES6."
+      },
+      "typescript": {
+        "minimal": "let x: number = 10; const Y: string = \"20\";",
+        "complete": "if (true) {\n    let letVariable: string = \"portée bloc\";\n    const CONST_VAR: number = 42;\n}",
+        "best_practices": "Laisser l'inférence de type agir quand la valeur initiale est évidente.",
+        "pitfalls": "Confondre l'immuabilité de 'const' et le type immuable Readonly<T>.",
+        "notes": "Applique le même comportement scopique avec contrôle de type statique."
+      },
+      "python": {
+        "minimal": "x = 10\nY = 20 # Constante par convention",
+        "complete": "if True:\n    variable_bloc = \"accessible hors du bloc\"\n\ndef ma_fonction():\n    local_var = \"portée fonction\"\n\n# Pas de mot-clé const natif",
+        "best_practices": "Utiliser des majuscules pour les constantes (convention PEP 8) ou typing.Final.",
+        "pitfalls": "Penser que les blocs 'if' ou 'for' créent une portée locale isolée (portée de fonction uniquement).",
+        "notes": "Portée régie par la règle LEGB (Local, Enclosing, Global, Built-in)."
+      },
+      "csharp": {
+        "minimal": "int x = 10; const int Y = 20; var z = 30;",
+        "complete": "if (true) {\n    int blocVar = 10;\n    const int CONST_VAR = 20;\n}\n// blocVar n'est pas accessible ici",
+        "best_practices": "Utiliser 'var' uniquement lorsque le type est explicite à droite de l'affectation.",
+        "pitfalls": "Confondre 'const' (évaluation compilation) et 'readonly' (évaluation exécution).",
+        "notes": "Portée de bloc stricte typée statiquement."
+      },
+      "java": {
+        "minimal": "int x = 10; final int Y = 20; var z = 30;",
+        "complete": "if (true) {\n    int blocVar = 10;\n    final int CONST_VAR = 20;\n}",
+        "best_practices": "Utiliser 'final' pour garantir l'immuabilité des références de variables.",
+        "pitfalls": "'var' (Java 10+) nécessite une initialisation immédiate pour l'inférence.",
+        "notes": "Portée de bloc classique issue du modèle C/C++."
+      },
+      "cpp": {
+        "minimal": "int x = 10; constexpr int Y = 20; auto z = 30;",
+        "complete": "if (true) {\n    int blocVar = 10;\n    const int CONST_VAR = 20;\n    constexpr int EXPR_VAR = 30;\n}",
+        "best_practices": "Utiliser 'constexpr' pour les valeurs immuables évaluables à la compilation.",
+        "pitfalls": "Confondre 'const' (valeur non modifiable) et 'constexpr' (évalué à la compilation).",
+        "notes": "Portée de bloc gérée par l'ouverture et la fermeture d'accolades."
+      },
+      "c": {
+        "minimal": "int x = 10; const int Y = 20;",
+        "complete": "{\n    int blocVar = 10;\n    const int CONST_VAR = 20;\n}",
+        "best_practices": "Déclarer les variables au début du bloc (norme C89) ou au plus près (C99+).",
+        "pitfalls": "Modifier une variable 'const' via un cast de pointeur (comportement indéfini).",
+        "notes": "Gestion directe des blocs de pile mémoire."
+      },
+      "php": {
+        "minimal": "$x = 10; const Y = 20;",
+        "complete": "if (true) {\n    $variable = \"accessible hors du bloc\";\n}\nfunction maFonction() {\n    $local = \"portée fonction uniquement\";\n}",
+        "best_practices": "Définir les constantes globales avec 'const' plutôt que 'define()'.",
+        "pitfalls": "Les variables globales ne sont pas accessibles dans les fonctions sans 'global' ou 'use'.",
+        "notes": "Pas de portée de bloc pour les structures de contrôle."
+      },
+      "vb": {
+        "minimal": "Dim x As Integer = 10 : Const Y As Integer = 20",
+        "complete": "If True Then\n    Dim blocVar As Integer = 10\n    Const CONST_VAR As Integer = 20\nEnd If",
+        "best_practices": "Toujours déclarer le type de variable avec Option Strict On.",
+        "pitfalls": "La réutilisation d'un même nom de variable dans un sous-bloc provoque une erreur.",
+        "notes": "Portée de bloc explicite dans le runtime .NET."
+      },
+      "vba": {
+        "minimal": "Dim x As Long : Const Y As Long = 20",
+        "complete": "Sub TestScope()\n    Dim fonctionVar As Long\n    Const CONST_VAR As Long = 20\n    If True Then\n        ' Pas de portée de bloc, portée de procédure uniquement\n        fonctionVar = 10\n    End If\nEnd Sub",
+        "best_practices": "Activer 'Option Explicit' en haut de chaque module pour forcer la déclaration.",
+        "pitfalls": "Les variables déclarées dans une boucle ou un 'If' ont une portée 'Sub/Function' globale.",
+        "notes": "Pas de portée de bloc au niveau de la syntaxe VBA."
+      }
+    }
+  },
+  {
+    "id": "js_operators_destructuring_spread_01",
+    "level": 3,
+    "chapter": "3. Opérateurs et Décomposition",
+    "category": "Opérateurs Avancés",
+    "name": "Décomposition (Destructuring) et Opérateur Spread/Rest (...)",
+    "description": "Extraction syntaxique d'éléments de tableaux ou d'objets et étalement de collections.",
+    "related_concepts": ["base_variables_02"],
+    "languages": {
+      "javascript": {
+        "minimal": "const [a, ...rest] = [1, 2, 3]; const { x, ...o } = { x: 1, y: 2 };",
+        "complete": "const user = { id: 1, nom: \"Alice\", ville: \"Paris\" };\nconst { nom, ...reste } = user;\nconst nums = [10, 20, 30];\nconst nouveauTableau = [...nums, 40];\nconsole.log(nom, reste, nouveauTableau);",
+        "best_practices": "Utiliser la décomposition dans les paramètres de fonction pour un code plus lisible.",
+        "pitfalls": "L'opérateur Spread fait une copie superficielle (Shallow Copy) et non une copie profonde.",
+        "notes": "Fonctionnalité ES6 majeure extrêmement répandue."
+      },
+      "typescript": {
+        "minimal": "const [a, b]: [number, string] = [1, \"a\"];",
+        "complete": "interface User { id: number; nom: string; ville: string; }\nconst user: User = { id: 1, nom: \"Alice\", ville: \"Paris\" };\nconst { nom, ...reste }: { nom: string; [key: string]: any } = user;",
+        "best_practices": "Combiner la décomposition avec les types tuples pour une extraction sécurisée.",
+        "pitfalls": "Incompatibilité si l'objet source contient des propriétés optionnelles manquantes.",
+        "notes": "Conserve la syntaxe JS avec vérification stricte du modèle de données."
+      },
+      "python": {
+        "minimal": "a, *rest = [1, 2, 3]; o = {**d1, **d2}",
+        "complete": "user = {\"id\": 1, \"nom\": \"Alice\", \"ville\": \"Paris\"}\n# Unpacking de dictionnaire\n{ \"nom\": nom, **reste } = user # Simulé via dict comprehension\nhead, *tail = [10, 20, 30]\n fusion = {**user, \"age\": 30}",
+        "best_practices": "Utiliser l'unpacking `*args` et `**kwargs` dans la définition et l'appel de fonctions.",
+        "pitfalls": "Tenter d'unpacker plus d'éléments qu'il n'en existe sans l'opérateur `*`.",
+        "notes": "Connu sous le nom d'Unpacking ou Sequence Unpacking."
+      },
+      "csharp": {
+        "minimal": "var (a, b) = (1, 2); // Déconstruction de Tuples / Positional Records",
+        "complete": "var tuple = (Id: 1, Nom: \"Alice\");\nvar (id, nom) = tuple;\n// Pattern matching déconstructeur sur Record\npublic record User(int Id, string Nom);\nvar user = new User(1, \"Alice\");\nvar (uId, uNom) = user;",
+        "best_practices": "Utiliser la déconstruction avec les Records C# 9+.",
+        "pitfalls": "Nécessite la définition d'une méthode 'Deconstruct' pour les classes personnalisées.",
+        "notes": "Basé sur les Tuples et le Pattern Matching."
+      },
+      "java": {
+        "minimal": "// Record Patterns (Java 21+)",
+        "complete": "public record User(int id, String nom) {}\n// Utilisation dans un switch / pattern matching\nObject obj = new User(1, \"Alice\");\nif (obj instanceof User(int id, String nom)) {\n    System.out.println(nom);\n}",
+        "best_practices": "Utiliser les Record Patterns de Java 21 pour extraire les composants.",
+        "pitfalls": "Impossible de décomposer directement des tableaux simples de manière syntaxique.",
+        "notes": "Introduit récemment via le projet Amber."
+      },
+      "cpp": {
+        "minimal": "auto [a, b] = std::make_tuple(1, 2); // Structured Binding (C++17)",
+        "complete": "#include <iostream>\n#include <tuple>\n\nstruct Point { int x; int y; };\n\nint main() {\n    Point p = {10, 20};\n    auto [x, y] = p; // Liaisoin structurée\n    std::cout << x << \", \" << y;\n    return 0;\n}",
+        "best_practices": "Utiliser les liaisons structurées avec `auto&` si des modifications directes sont requises.",
+        "pitfalls": "Les liaisons structurées ne créent pas de véritables variables mais des alias de membres.",
+        "notes": "Introduit dans la norme C++17."
+      },
+      "c": {
+        "minimal": "// Pas de décomposition native",
+        "complete": "#include <stdio.h>\n\ntypedef struct { int x; int y; } Point;\n\nint main() {\n    Point p = {10, 20};\n    int x = p.x;\n    int y = p.y;\n    return 0;\n}",
+        "best_practices": "Accéder aux membres de structures manuellement ou via des macros utilitaires.",
+        "pitfalls": "Aucun support du préprocesseur pour la décomposition automatique.",
+        "notes": "Assignations manuelles membre par membre."
+      },
+      "php": {
+        "minimal": "[$a, $b] = [1, 2]; [\"nom\" => $n] = $array;",
+        "complete": "<?php\n$user = [\"id\" => 1, \"nom\" => \"Alice\", \"ville\" => \"Paris\"];\n[\"nom\" => $nom, \"ville\" => $ville] = $user;\n$nums = [10, 20];\n$nouveau = [...$nums, 30, 40]; // Spread operator (PHP 7.4+)\necho $nom;",
+        "best_practices": "Utiliser la syntaxe courte `[...]` au lieu de `list()` pour la décomposition.",
+        "pitfalls": "Le Spread operator sur les tableaux associatifs à clés textuelles requiert PHP 8.1+.",
+        "notes": "Syntaxe moderne introduite progressivement."
+      },
+      "vb": {
+        "minimal": "' Pas de décomposition native directe",
+        "complete": "Dim tuple = (Id:=1, Nom:=\"Alice\")\nDim id As Integer = tuple.Id\nDim nom As String = tuple.Nom",
+        "best_practices": "Utiliser les propriétés nommees des Tuples .NET.",
+        "pitfalls": "Pas d'opérateur d'étalement (Spread) natif pour les collections.",
+        "notes": "Nécessite des affectations explicites."
+      },
+      "vba": {
+        "minimal": "' Pas de décomposition",
+        "complete": "Public Sub Test() \n    Dim arr As Variant\n    arr = Array(10, 20)\n    Dim a As Long, b As Long\n    a = arr(0)\n    b = arr(1)\nEnd Sub",
+        "best_practices": "Décompresser les tableaux manuellement via leurs index.",
+        "pitfalls": "Accès hors limites si la taille du tableau est mal évaluée.",
+        "notes": "Syntaxe procédurale classique."
+      }
+    }
+  },
+  {
+    "id": "js_nullish_coalescing_optional_chaining_01",
+    "level": 2,
+    "chapter": "2. Opérateurs de Sécurité",
+    "category": "Opérateurs",
+    "name": "Chaînage Optionnel (?.) et Fusion Nulle (??)",
+    "description": "Accès sécurisé aux propriétés profondes d'objets et affectation de valeurs par défaut uniquement sur null/undefined.",
+    "related_concepts": ["base_variables_02", "js_type_coercion_truthy_falsy_01"],
+    "languages": {
+      "javascript": {
+        "minimal": "const val = obj?.prop ?? \"valeur par défaut\";",
+        "complete": "const user = { profil: { nom: \"Alice\" } };\nconst age = user?.profil?.details?.age ?? 18;\nconsole.log(age); // 18 (sécurisé sans erreur)",
+        "best_practices": "Préférer '??' à '||' pour préserver les valeurs légitimes Falsy comme 0 ou '' (chaîne vide).",
+        "pitfalls": "Surcharger les expressions avec '?.' au lieu de corriger les schémas de données imprévisibles.",
+        "notes": "Introduit dans ES2020 pour éradiquer les TypeError de lecture de 'undefined'."
+      },
+      "typescript": {
+        "minimal": "const val: string = obj?.prop ?? \"défaut\";",
+        "complete": "type User = { profil?: { details?: { age?: number } } };\nconst user: User = {};\nconst age: number = user?.profil?.details?.age ?? 18;",
+        "best_practices": "Permet d'éliminer les vérifications manuelles 'strictNullChecks'.",
+        "pitfalls": "Ne pas utiliser '!' (non-null assertion) si la propriété est optionnelle.",
+        "notes": "Parfaitement intégré dans le système de types."
+      },
+      "csharp": {
+        "minimal": "var val = obj?.Prop ?? \"valeur par défaut\";",
+        "complete": "public class Profil { public string Nom { get; set; } }\npublic class User { public Profil Profil { get; set; } }\n\nUser user = null;\nstring nom = user?.Profil?.Nom ?? \"Anonyme\";",
+        "best_practices": "Combiner avec l'affectation sur valeur nulle `??=` (C# 8+).",
+        "pitfalls": "Incompatible avec les types valeurs non nuls sans 'Nullable<T>'.",
+        "notes": "Opérateurs Null-conditional `?.` et Null-coalescing `??` intégrés nativement."
+      },
+      "python": {
+        "minimal": "# Pas de ?. natif : utilisation de getattr ou expressions 'or'",
+        "complete": "user = {\"profil\": None}\n# Utilisation d'expressions conditionnelles en ligne ou dict.get()\nnom = user.get(\"profil\", {}).get(\"nom\") if user.get(\"profil\") else \"Anonyme\"\nval = False or \"défaut\" # Attention: 'or' utilise le test truthy",
+        "best_practices": "Utiliser `dict.get(cle, defaut)` pour la lecture sécurisée de dictionnaires.",
+        "pitfalls": "L'opérateur 'or' remplace 0 ou False par la valeur par défaut (comportement de '||').",
+        "notes": "Pas d'opérateur `?.` syntaxique natif dans le langage."
+      },
+      "java": {
+        "minimal": "String val = Optional.ofNullable(user).map(User::getNom).orElse(\"Défaut\");",
+        "complete": "import java.util.Optional;\n\npublic class Main {\n    public static void main(String[] args) {\n        User user = null;\n        String nom = Optional.ofNullable(user)\n                             .map(User::getProfil)\n                             .map(Profil::getNom)\n                             .orElse(\"Anonyme\");\n    }\n}",
+        "best_practices": "Utiliser la classe `java.util.Optional` pour les valeurs de retour potentiellement nulles.",
+        "pitfalls": "Éviter d'utiliser `Optional` comme type de paramètre de méthode.",
+        "notes": "Approche fonctionnelle monadique au lieu d'opérateurs syntaxiques."
+      },
+      "cpp": {
+        "minimal": "std::optional<int> opt; int val = opt.value_or(18);",
+        "complete": "#include <iostream>\n#include <optional>\n\nstruct User { std::optional<std::string> nom; };\n\nint main() {\n    std::optional<User> u;\n    std::string nom = u.has_value() && u->nom.has_value() ? u->nom.value() : \"Anonyme\";\n    std::cout << nom;\n    return 0;\n}",
+        "best_practices": "Employer `std::optional` (C++17) et la méthode `value_or()`.",
+        "pitfalls": "Appeler `.value()` sur un optional vide lève une exception `std::bad_optional_access`.",
+        "notes": "Types optionnels explicites introduits en C++17."
+      },
+      "c": {
+        "minimal": "int val = ptr ? ptr->val : 0;",
+        "complete": "#include <stdio.h>\n\ntypedef struct { int val; } Data;\n\nint main() {\n    Data* d = NULL;\n    int v = (d != NULL) ? d->val : -1;\n    printf(\"%d\", v);\n    return 0;\n}",
+        "best_practices": "Tester la non-nullité des pointeurs avant toute déréférenciation.",
+        "pitfalls": "Déréférencer un pointeur NULL provoque un crash (Segmentation Fault).",
+        "notes": "Nécessite des expressions ternaires manuelles."
+      },
+      "php": {
+        "minimal": "$val = $obj?->prop ?? 'défaut';",
+        "complete": "<?php\n$user = null;\n// Opérateur Nullsafe (?->) (PHP 8.0+) et Null Coalescing (??) (PHP 7.0+)\n$nom = $user?->profil?->nom ?? 'Anonyme';\necho $nom;",
+        "best_practices": "Combiner l'opérateur Nullsafe `?->` avec l'opérateur Coalescing `??`.",
+        "pitfalls": "L'opérateur Nullsafe ne fonctionne pas sur la lecture de clés de tableaux associatifs (utiliser `??`).",
+        "notes": "Intégration moderne complète depuis PHP 8.0."
+      },
+      "vb": {
+        "minimal": "Dim val = If(obj?.Prop, \"défaut\")",
+        "complete": "Dim user As User = Nothing\n' Opérateur de condition nulle ?. et fonction ternaire If()\nDim nom As String = If(user?.Profil?.Nom, \"Anonyme\")",
+        "best_practices": "Utiliser la fonction binaire `If(a, b)` (équivalent du Coalescing).",
+        "pitfalls": "Ne pas confondre la fonction `If(a, b)` et la fonction legacy `IIf(a, b, c)`.",
+        "notes": "Opérateur Null-conditional natif en VB.NET."
+      },
+      "vba": {
+        "minimal": "' Pas d'opérateurs de sécurité optionnels",
+        "complete": "Public Function GetNom(user As Object) As String\n    If Not user Is Nothing Then\n        If Not user.Profil Is Nothing Then\n            GetNom = user.Profil.Nom\n            Exit Function\n        End If\n    End If\n    GetNom = \"Anonyme\"\nEnd Function",
+        "best_practices": "Encapsuler les vérifications d'objets dans des fonctions de garde.",
+        "pitfalls": "Évaluer `user.Profil.Nom` sans vérifier `user` déclenche l'erreur 91 (Variable objet non définie).",
+        "notes": "Vérifications manuelles imbriquées obligatoires."
+      }
+    }
+  },
+  {
+    "id": "js_loops_iterators_generators_01",
+    "level": 4,
+    "chapter": "4. Structures de Contrôle et Itération",
+    "category": "Boucles",
+    "name": "Itérateurs, Générateurs et Boucles (for...of vs for...in)",
+    "description": "Itération sur les propriétés d'objets (for...in) vs itération sur les valeurs de collections (for...of) et flux de données paresseux avec generator functions (yield).",
+    "related_concepts": ["ctrl_loops_02"],
+    "languages": {
+      "javascript": {
+        "minimal": "for (const v of arr) {} function* gen() { yield 1; }",
+        "complete": "const items = [10, 20, 30];\nfor (const val of items) { console.log(val); }\n\nfunction* genererIds() {\n    let id = 1;\n    while(true) yield id++;\n}\nconst g = genererIds();\nconsole.log(g.next().value); // 1",
+        "best_practices": "Utiliser 'for...of' pour les tableaux et 'for...in' uniquement pour inspecter les clés d'objets.",
+        "pitfalls": "For...in parcourt également les propriétés héritées de la chaîne de prototypes.",
+        "notes": "Protocole d'itérateurs [Symbol.iterator] natif dans ES6."
+      },
+      "typescript": {
+        "minimal": "function* gen(): Generator<number> { yield 1; }",
+        "complete": "const items: number[] = [10, 20];\nfor (const val of items) { console.log(val); }\n\nfunction* genererIds(): Generator<number, void, unknown> {\n    let id = 1;\n    while(true) yield id++;\n}",
+        "best_practices": "Typer l'interface `Generator<TReturn, TNext, TYield>` explicitement.",
+        "pitfalls": "Attention au ciblage de transpilation ES3/ES5 qui génère du code polyfill lourd pour les générateurs.",
+        "notes": "Protocole d'itération typé."
+      },
+      "python": {
+        "minimal": "for x in items: pass\ndef gen(): yield 1",
+        "complete": "items = [10, 20, 30]\nfor val in items:\n    print(val)\n\ndef generer_ids():\n    val_id = 1\n    while True:\n        yield val_id\n        val_id += 1\n\ng = generer_ids()\nprint(next(g)) # 1",
+        "best_practices": "Utiliser les expressions génératrices `(x for x in ...)` pour économiser la mémoire.",
+        "pitfalls": "Tenter de réitérer sur un générateur déjà épuisé.",
+        "notes": "Générateurs et protocole d'itération (`__iter__`, `__next__`) fondamentaux en Python."
+      },
+      "csharp": {
+        "minimal": "foreach (var x in items) {} IEnumerable<int> Gen() { yield return 1; }",
+        "complete": "using System;\nusing System.Collections.Generic;\n\nclass Program {\n    static IEnumerable<int> GenererIds() {\n        int id = 1;\n        while (true) yield return id++;\n    }\n    static void Main() {\n        foreach (var val in new[] { 10, 20 }) Console.WriteLine(val);\n        var enumObj = GenererIds().GetEnumerator();\n        enumObj.MoveNext();\n        Console.WriteLine(enumObj.Current); // 1\n    }\n}",
+        "best_practices": "S'appuyer sur 'yield return' pour produire des flux de données évalués paresseusement.",
+        "pitfalls": "Effets de bord liés à l'évaluation différée de LINQ et des énumérateurs.",
+        "notes": "Protocole IEnumerable / IEnumerator du CLR."
+      },
+      "java": {
+        "minimal": "for (var x : items) {}",
+        "complete": "import java.util.List;\nimport java.util.Iterator;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> items = List.of(10, 20, 30);\n        for (int val : items) {\n            System.out.println(val);\n        }\n    }\n}",
+        "best_practices": "Implémenter `Iterable<T>` pour permettre l'usage de la boucle for-each améliorée.",
+        "pitfalls": "Java ne possède pas de mot-clé natif 'yield' pour les générateurs (simulation via Stream ou bibliothèques).",
+        "notes": "Boucle foreach basée sur `java.lang.Iterable`."
+      },
+      "cpp": {
+        "minimal": "for (const auto& x : items) {} // Range-based for loop",
+        "complete": "#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> items = {10, 20, 30};\n    for (const auto& val : items) {\n        std::cout << val << \"\\n\";\n    }\n    return 0;\n}",
+        "best_practices": "Capturer par référence constante `const auto&` pour éviter les copies inutiles.",
+        "pitfalls": "Modifier un conteneur pendant qu'on l'incrémente dans une boucle range-based invalide les itérateurs.",
+        "notes": "Les coroutines C++20 apportent le support officiel des générateurs (std::generator)."
+      },
+      "c": {
+        "minimal": "for (int i = 0; i < size; i++) { arr[i]; }",
+        "complete": "#include <stdio.h>\n\nint main() {\n    int items[] = {10, 20, 30};\n    size_t count = sizeof(items) / sizeof(items[0]);\n    for (size_t i = 0; i < count; i++) {\n        printf(\"%d\\n\", items[i]);\n    }\n    return 0;\n}",
+        "best_practices": "Calculer la taille du tableau de manière sécurisée.",
+        "pitfalls": "Dépassement de bornes (Out-of-bounds array access).",
+        "notes": "Itération impérative par indexation brute."
+      },
+      "php": {
+        "minimal": "foreach ($items as $val) {} function gen() { yield 1; }",
+        "complete": "<?php\n$items = [10, 20, 30];\nforeach ($items as $key => $val) {\n    echo \"$key => $val\\n\";\n}\nfunction genererIds() {\n    $id = 1;\n    while(true) yield $id++;\n}\n$g = genererIds();\necho $g->current(); // 1",
+        "best_practices": "Utiliser `foreach` avec l'opérateur `yield` pour parcourir de gros volumes de données sans explosion mémoire.",
+        "pitfalls": "Oublier de libérer la référence si un `foreach` est fait par référence `foreach ($arr as &$val)`.",
+        "notes": "Prise en charge native des générateurs via la classe Generator."
+      },
+      "vb": {
+        "minimal": "For Each x In items : Next",
+        "complete": "Imports System.Collections.Generic\n\nModule Program\n    Iterator Function GenererIds() As IEnumerable(Of Integer)\n        Dim id As Integer = 1\n        While True\n            Yield id\n            id += 1\n        End While\n    End Function\n    Sub Main()\n        For Each val In New Integer() {10, 20}\n            Console.WriteLine(val)\n        Next\n    End Sub\nEnd Module",
+        "best_practices": "Utiliser le mot-clé `Iterator` combiné avec `Yield`.",
+        "pitfalls": "Modification d'une collection pendant son parcours dans un 'For Each'.",
+        "notes": "Modèle d'énumération .NET classique."
+      },
+      "vba": {
+        "minimal": "For Each x In collection : Next",
+        "complete": "Public Sub TestBoucle()\n    Dim items As Variant, val As Variant\n    items = Array(10, 20, 30)\n    For Each val In items\n        Debug.Print val\n    Next val\nEnd Sub",
+        "best_practices": "Utiliser 'For Each' pour parcourir les Collections d'objets COM Excel.",
+        "pitfalls": "Incapacité de créer des fonctions génératrices réutilisables ou coroutines.",
+        "notes": "Parcours séquentiel de tableaux Variant ou de Collections COM."
+      }
+    }
+  },
+  {
+    "id": "js_modules_import_export_01",
+    "level": 3,
+    "chapter": "3. Modularité et Architecture",
+    "category": "Modules",
+    "name": "Modules ES (import / export) vs CommonJS (require)",
+    "description": "Système de modularisation du code JavaScript statique (ESM) ou dynamique (CommonJS/Node.js).",
+    "related_concepts": ["base_variables_02"],
+    "languages": {
+      "javascript": {
+        "minimal": "import { math } from './math.js'; export const x = 10;",
+        "complete": "// math.js\nexport const additionner = (a, b) => a + b;\nexport default class Calculateur {}\n\n// main.js\nimport Calculateur, { additionner } from './math.js';\nconsole.log(additionner(2, 3));",
+        "best_practices": "Privilégier les ES Modules (ESM) officiels plutôt que CommonJS (`require`).",
+        "pitfalls": "Mélanger sans configuration appropriée la syntaxe ESM et CommonJS dans Node.js.",
+        "notes": "Spécification standard ES6 pour l'organisation modulaire."
+      },
+      "typescript": {
+        "minimal": "import { MathUtil } from './math';",
+        "complete": "export interface Calculable { val: number; }\nexport const additionner = (a: number, b: number): number => a + b;\n\nimport { Calculable, additionner } from './math';",
+        "best_practices": "Utiliser 'import type' lors de l'importation exclusive d'interfaces pour optimiser la compilation.",
+        "pitfalls": "Erreurs de résolution de modules entre le paramétrage `tsconfig.json` et le runtime Node.js.",
+        "notes": "Permet la vérification de type aux frontières des modules."
+      },
+      "python": {
+        "minimal": "from math_utils import additionner",
+        "complete": "# math_utils.py\ndef additionner(a, b): return a + b\n\n# main.py\nfrom math_utils import additionner\nprint(additionner(2, 3))",
+        "best_practices": "Utiliser des imports explicites et éviter `from module import *`.",
+        "pitfalls": "Imports circulaires entre deux fichiers Python provoquant une `ImportError`.",
+        "notes": "Système de packages basés sur des fichiers et répertoires `__init__.py`."
+      },
+      "csharp": {
+        "minimal": "using System.Text; // Espaces de noms",
+        "complete": "namespace MonApp.Utils {\n    public static class MathUtils {\n        public static int Additionner(int a, int b) => a + b;\n    }\n}\n// main.cs\nusing MonApp.Utils;\nvar res = MathUtils.Additionner(2, 3);",
+        "best_practices": "Utiliser les 'file-scoped namespaces' (C# 10) pour réduire la renfonciation de renfoncement.",
+        "pitfalls": "Confondre les espaces de noms (logiciel) et les références d'assemblies DLL (physique).",
+        "notes": "Organisation du code basée sur les `namespaces`."
+      },
+      "java": {
+        "minimal": "import java.util.List; package com.app.utils;",
+        "complete": "// package com/app/utils/MathUtils.java\npackage com.app.utils;\npublic class MathUtils {\n    public static int additionner(int a, int b) { return a + b; }\n}\n\n// Main.java\nimport com.app.utils.MathUtils;\npublic class Main {\n    public static void main(String[] args) { MathUtils.additionner(2, 3); }\n}",
+        "best_practices": "Respecter strictement la correspondance entre le nom du package et l'arborescence des dossiers.",
+        "pitfalls": "Utiliser des imports avec wildcard `import com.app.utils.*` masquant les dépendances.",
+        "notes": "Système de packages et modules JPMS (Java Platform Module System - Java 9+)."
+      },
+      "cpp": {
+        "minimal": "import std; // Modules C++20 ou #include <header.hpp>",
+        "complete": "// Module C++20 : math.ixx\nexport module math;\nexport int additionner(int a, int b) { return a + b; }\n\n// main.cpp\nimport math;\nint main() { additionner(2, 3); return 0; }",
+        "best_practices": "Adopter les modules C++20 à la place des fichiers d'en-tête `.hpp` historiques.",
+        "pitfalls": "Inclusion multiple d'en-têtes classiques sans directive `#pragma once` ou 'include guards'.",
+        "notes": "Évolution historique majeure de la compilation C++20."
+      },
+      "c": {
+        "minimal": "#include \"math_utils.h\"",
+        "complete": "// math_utils.h\n#ifndef MATH_UTILS_H\n#define MATH_UTILS_H\nint additionner(int a, int b);\n#endif\n\n// math_utils.c\n#include \"math_utils.h\"\nint additionner(int a, int b) { return a + b; }",
+        "best_practices": "Protéger systématiquement les fichiers `.h` avec des garde-fous `#ifndef`.",
+        "pitfalls": "Définir le corps de fonctions non 'inline' directement dans le fichier d'en-tête (erreurs de symboles dupliqués au linkage).",
+        "notes": "Inclusion brute de texte par le préprocesseur."
+      },
+      "php": {
+        "minimal": "use App\\Utils\\MathUtils; require 'vendor/autoload.php';",
+        "complete": "<?php\nnamespace App\\Utils;\nclass MathUtils {\n    public static function additionner(int $a, int $b): int { return $a + $b; }\n}\n\n// main.php\nuse App\\Utils\\MathUtils;\nrequire_once 'vendor/autoload.php';\necho MathUtils::additionner(2, 3);",
+        "best_practices": "Respecter la norme d'autoloading PSR-4 gérée par Composer.",
+        "pitfalls": "Multiplier les `require_once` manuels au lieu de configurer l'autoloader.",
+        "notes": "Espaces de noms et chargement automatique PSR-4."
+      },
+      "vb": {
+        "minimal": "Imports System.Math",
+        "complete": "Namespace Utils\n    Public Module MathUtils\n        Public Function Additionner(a As Integer, b As Integer) As Integer\n            Return a + b\n        End Function\n    End Module\nEnd Namespace\n\nImports Utils\nModule Program\n    Sub Main()\n        MathUtils.Additionner(2, 3)\n    End Sub\nEnd Module",
+        "best_practices": "Structure les espaces de noms de manière hiérarchique.",
+        "pitfalls": "Conflit de noms si deux modules ont des membres statiques identiques.",
+        "notes": "Espaces de noms intégrés au framework .NET."
+      },
+      "vba": {
+        "minimal": "' Pas de modules exportables dynamiquement : chargement par référence de projet",
+        "complete": "' Dans un module standard nommé ModMath\nPublic Function Additionner(a As Long, b As Long) As Long\n    Additionner = a + b\nEnd Function\n\n' Dans un autre module du même projet\nPublic Sub Test()\n    MsgBox ModMath.Additionner(2, 3)\nEnd Sub",
+        "best_practices": "Préfixer l'appel avec le nom du module pour clarifier l'origine de la méthode.",
+        "pitfalls": "Impossibilité d'importer directement un fichier `.bas` ou `.cls` au runtime sans passer par le VBE Object Model.",
+        "notes": "Tout symbole 'Public' d'un module est global à l'ensemble du projet VBA."
+      }
+    }
+  },
+  {
+    "id": "js_v8_memory_garbage_collection_01",
+    "level": 7,
+    "chapter": "7. Gestion Mémoire et Moteur V8",
+    "category": "Interne / Performance",
+    "name": "Garbage Collector (Scavenger / Mark-Sweep) et Fuites Mémoire",
+    "description": "Fonctionnement de l'allocation dans le tas (Heap), gestion par générations (Young/Old generation) et prévention des fuites mémoire.",
+    "related_concepts": ["mem_references_02", "c_pointers_arithmetic_01"],
+    "languages": {
+      "javascript": {
+        "minimal": "let obj = { data: 1 }; obj = null; // Éligible au Garbage Collection",
+        "complete": "// Fuite mémoire courante : closures conservant des références ou écouteurs non supprimés\nconst elements = [];\nfunction fuite() {\n    const grandTableau = new Array(1000000);\n    window.addEventListener('resize', () => {\n        console.log(grandTableau.length); // Empêche le GC de libérer grandTableau\n    });\n}",
+        "best_practices": "Supprimer les écouteurs d'événements (`removeEventListener`) et nettoyer les minutages (`clearInterval`).",
+        "pitfalls": "Utiliser des Map/Set standards au lieu de WeakMap/WeakSet pour stocker des métadonnées sur des objets DOM.",
+        "notes": "Le moteur V8 utilise l'algorithme Generational GC (Orinoco)."
+      },
+      "typescript": {
+        "minimal": "let obj: { data?: number } | null = { data: 1 }; obj = null;",
+        "complete": "const weakStorage = new WeakMap<object, string>();\nlet element: object | null = { id: 1 };\nweakStorage.set(element, \"Métadonnées\");\nelement = null; // L'entrée sera libérée par le GC automatiquement",
+        "best_practices": "Employer `WeakMap` et `WeakRef` pour autoriser la collecte automatique par le GC.",
+        "pitfalls": "La gestion mémoire TS est strictement identique à celle du runtime JS.",
+        "notes": "Types TypeScript analysés uniquement à la compilation."
+      },
+      "python": {
+        "minimal": "import gc; gc.collect()",
+        "complete": "import weakref\nclass GrandObjet:\n    pass\n\nobj = GrandObjet()\nref_faible = weakref.ref(obj)\nobj = None # Libération par comptage de références\nprint(ref_faible()) # None",
+        "best_practices": "Utiliser `weakref` pour casser les références cycliques.",
+        "pitfalls": "Le comptage de références ne peut pas libérer immédiatement les références cycliques complexes (gérées par le GC cyclique).",
+        "notes": "Gestion hybride basée sur le comptage de références et un GC cyclique par générations."
+      },
+      "csharp": {
+        "minimal": "GC.Collect();",
+        "complete": "using System;\n\npublic class Ressource : IDisposable {\n    public void Dispose() {\n        // Libération explicite de ressources non managées\n    }\n}\n// Utilisation du bloc 'using' pour la libération garantie\nusing (var r = new Ressource()) {\n    // Traitement\n}",
+        "best_practices": "Implémenter le pattern `IDisposable` et utiliser les instructions `using`.",
+        "pitfalls": "Conserver des références actives dans des événements statiques empêche le GC .NET de collecter l'objet.",
+        "notes": "Garbage Collector par générations .NET très performant (Gen 0, Gen 1, Gen 2)."
+      },
+      "java": {
+        "minimal": "System.gc(); // Indication au GC",
+        "complete": "import java.lang.ref.WeakReference;\n\npublic class Main {\n    public static void main(String[] args) {\n        Object obj = new Object();\n        WeakReference<Object> weak = new WeakReference<>(obj);\n        obj = null; // Éligible au prochain passage du Garbage Collector\n    }\n}",
+        "best_practices": "Choisir le GC adapté aux besoins de l'application (G1GC, ZGC, Shenandoah).",
+        "pitfalls": "Conserver des objets dans des collections 'static' indéfiniment crée des fuites mémoire majeures.",
+        "notes": "JVM équipée de plusieurs algorithmes de Garbage Collection haute performance."
+      },
+      "cpp": {
+        "minimal": "std::unique_ptr<int> p = std::make_unique<int>(10); // Libération RAII automatique",
+        "complete": "#include <memory>\n#include <iostream>\n\nstruct Data {};\n\nint main() {\n    // Pas de Garbage Collector : gestion deterministe RAII\n    std::shared_ptr<Data> sp1 = std::make_shared<Data>();\n    std::weak_ptr<Data> wp = sp1; // Référence faible pour éviter les cycles\n    return 0;\n}",
+        "best_practices": "Utiliser l'idiome RAII et les pointeurs intelligents (`std::unique_ptr`, `std::shared_ptr`).",
+        "pitfalls": "Fuites mémoire massives avec 'new' sans 'delete', ou cycles de 'std::shared_ptr'.",
+        "notes": "Gestion mémoire manuelle déterministe ou gérée par les smart pointers (aucun GC)."
+      },
+      "c": {
+        "minimal": "int* p = malloc(sizeof(int)); free(p);",
+        "complete": "#include <stdlib.h>\n\nvoid traiter() {\n    int* buffer = (int*)malloc(100 * sizeof(int));\n    // Traitement\n    free(buffer); // Libération manuelle impérative\n}",
+        "best_practices": "Toujours associer chaque `malloc`/`calloc` à un `free` dans le bon chemin d'exécution.",
+        "pitfalls": "Pointeurs pendant (Dangling Pointers), double libération (Double Free) et fuites mémoire.",
+        "notes": "Aucune gestion automatique de la mémoire."
+      },
+      "php": {
+        "minimal": "unset($variable); // Libération du symbole ZVAL",
+        "complete": "<?php\nclass Noeud {\n    public ?Noeud $suivant = null;\n}\n$a = new Noeud();\n$b = new Noeud();\n$a->suivant = $b;\n$b->suivant = $a; // Référence cyclique\nunset($a, $b);\ngc_collect_cycles(); // Nettoyage du collecteur de cycles",
+        "best_practices": "Forcer `unset()` sur les grosses structures de données lors d'exécutions en ligne de commande (CLI).",
+        "pitfalls": "Accumulation de mémoire sur les scripts PHP longue durée (Swoole, Worker).",
+        "notes": "Moteur Zend basé sur le comptage de références et un garbage collector de cycles."
+      },
+      "vb": {
+        "minimal": "GC.Collect()",
+        "complete": "Module Program\n    Sub Main()\n        Dim obj As New Object()\n        Dim weak As New WeakReference(obj)\n        obj = Nothing ' Éligible au Garbage Collector .NET\n    End Sub\nEnd Module",
+        "best_practices": "Libérer les ressources non managées via 'Using'.",
+        "pitfalls": "Conserver des gestionnaires d'événements attachés à des objets longue durée.",
+        "notes": "Même moteur Garbage Collector que C#."
+      },
+      "vba": {
+        "minimal": "Set obj = Nothing",
+        "complete": "Public Sub TestGC()\n    Dim obj As Object\n    Set obj = CreateObject(\"Scripting.Dictionary\")\n    ' Libération immédiate par décrémentation du compteur de références\n    Set obj = Nothing\nEnd Sub",
+        "best_practices": "Définir explicitement les variables objets à 'Nothing' à la fin des procédures.",
+        "pitfalls": "Les références cycliques entre deux instances de classe VBA ne sont jamais libérées par COM.",
+        "notes": "Système de comptage de références COM strict sans Garbage Collector de cycles."
+      }
+    }
+  },
+  {
+    "id": "js_fetch_ajax_web_apis_01",
+    "level": 4,
+    "chapter": "4. Communications et Réseau",
+    "category": "API Web",
+    "name": "Requêtes HTTP Asynchrones (Fetch API / XMLHttpRequest)",
+    "description": "Récupération de ressources réseau de manière asynchrone sans rechargement de page.",
+    "related_concepts": ["js_async_await_promises_01"],
+    "languages": {
+      "javascript": {
+        "minimal": "const res = await fetch('https://api.com/data'); const data = await res.json();",
+        "complete": "async function chargerDonnees() {\n    try {\n        const reponse = await fetch('https://jsonplaceholder.typicode.com/todos/1');\n        if (!reponse.ok) throw new Error(`HTTP: ${reponse.status}`);\n        const json = await reponse.json();\n        console.log(json);\n    } catch (erreur) {\n        console.error(\"Erreur réseau :\", erreur);\n    }\n}\nchargerDonnees();",
+        "best_practices": "Toujours vérifier `reponse.ok` car `fetch()` ne rejette pas la promesse sur les codes 404 ou 500.",
+        "pitfalls": "Oublier d'attendre la résolution du body avec `.json()` ou `.text()`.",
+        "notes": "Standard Web moderne disponible dans les navigateurs et Node.js 18+."
+      },
+      "typescript": {
+        "minimal": "const res = await fetch(url); const data: Todo = await res.json();",
+        "complete": "interface Todo { userId: number; id: number; title: string; completed: boolean; }\nasync function chargerDonnees(): Promise<Todo> {\n    const reponse = await fetch('https://jsonplaceholder.typicode.com/todos/1');\n    const json: Todo = await reponse.json();\n    return json;\n}",
+        "best_practices": "Valider le schéma JSON reçu avec des bibliothèques de validation (Zod) avant le casting de type.",
+        "pitfalls": "Croire que `await res.json(): Promise<Todo>` valide les données à l'exécution.",
+        "notes": "Typage de la structure de la réponse HTTP."
+      },
+      "python": {
+        "minimal": "import requests; data = requests.get(url).json()",
+        "complete": "import requests\n\ntry:\n    reponse = requests.get('https://jsonplaceholder.typicode.com/todos/1')\n    reponse.raise_for_status()\n    data = reponse.json()\n    print(data)\nexcept requests.RequestException as e:\n    print(\"Erreur :\", e)",
+        "best_practices": "Utiliser `httpx` ou `aiohttp` pour des appels HTTP asynchrones avec `asyncio`.",
+        "pitfalls": "Utiliser `requests` (synchrone bloquant) au milieu d'une boucle d'événements `asyncio`.",
+        "notes": "Client HTTP Python très populaire."
+      },
+      "csharp": {
+        "minimal": "var json = await httpClient.GetStringAsync(url);",
+        "complete": "using System;\nusing System.Net.Http;\nusing System.Text.Json;\nusing System.Threading.Tasks;\n\nclass Program {\n    private static readonly HttpClient client = new HttpClient();\n    static async Task Main() {\n        HttpResponseMessage response = await client.GetAsync(\"https://jsonplaceholder.typicode.com/todos/1\");\n        response.EnsureSuccessStatusCode();\n        string body = await response.Content.ReadAsStringAsync();\n        Console.WriteLine(body);\n    }\n}",
+        "best_practices": "Réutiliser une instance unique de `HttpClient` ou utiliser `IHttpClientFactory`.",
+        "pitfalls": "Instancier un `HttpClient` dans un bloc `using` court-circuité génère un épuisement des sockets TCP.",
+        "notes": "Gestion performante des requêtes sous .NET."
+      },
+      "java": {
+        "minimal": "var res = client.send(req, HttpResponse.BodyHandlers.ofString());",
+        "complete": "import java.net.http.HttpClient;\nimport java.net.http.HttpRequest;\nimport java.net.http.HttpResponse;\nimport java.net.URI;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        HttpClient client = HttpClient.newHttpClient();\n        HttpRequest request = HttpRequest.newBuilder()\n                .uri(URI.create(\"https://jsonplaceholder.typicode.com/todos/1\"))\n                .GET().build();\n        HttpResponse<String> reponse = client.send(request, HttpResponse.BodyHandlers.ofString());\n        System.out.println(reponse.body());\n    }\n}",
+        "best_practices": "Utiliser le nouveau `java.net.http.HttpClient` introduit dans Java 11.",
+        "pitfalls": "Employer l'ancienne classe bloquante `HttpURLConnection`.",
+        "notes": "Client HTTP asynchrone natif moderne dans le JDK."
+      },
+      "cpp": {
+        "minimal": "// Utilisation de libcurl",
+        "complete": "#include <iostream>\n#include <curl/curl.h>\n\nint main() {\n    CURL *curl = curl_easy_init();\n    if(curl) {\n        curl_easy_setopt(curl, CURLOPT_URL, \"https://jsonplaceholder.typicode.com/todos/1\");\n        CURLcode res = curl_easy_perform(curl);\n        curl_easy_cleanup(curl);\n    }\n    return 0;\n}",
+        "best_practices": "Utiliser des bibliothèques C++ modernes haut niveau (`cpr` ou `boost.beast`).",
+        "pitfalls": "Gestion complexe des tampons mémoire de réception avec libcurl en C.",
+        "notes": "Nécessite une bibliothèque réseau tierce."
+      },
+      "c": {
+        "minimal": "// Libcurl C bas niveau",
+        "complete": "#include <stdio.h>\n#include <curl/curl.h>\n\nint main() {\n    CURL *curl = curl_easy_init();\n    if (curl) {\n        curl_easy_setopt(curl, CURLOPT_URL, \"https://jsonplaceholder.typicode.com/todos/1\");\n        curl_easy_perform(curl);\n        curl_easy_cleanup(curl);\n    }\n    return 0;\n}",
+        "best_practices": "Vérifier le code de retour `CURLcode` pour chaque opération.",
+        "pitfalls": "Pas de parsing JSON natif : coupler impérativement avec `cJSON`.",
+        "notes": "Intégration manuelle des protocoles réseau."
+      },
+      "php": {
+        "minimal": "$json = file_get_contents(url);",
+        "complete": "<?php\n$ch = curl_init('https://jsonplaceholder.typicode.com/todos/1');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$reponse = curl_exec($ch);\nif (curl_errno($ch)) {\n    echo 'Erreur :' . curl_error($ch);\n} else {\n    $data = json_decode($reponse, true);\n    print_r($data);\n}\ncurl_close($ch);",
+        "best_practices": "Utiliser le package `guzzlehttp/guzzle` pour la gestion des appels HTTP.",
+        "pitfalls": "`file_get_contents` échoue violemment en cas de code d'erreur HTTP si le contexte n'est pas configuré.",
+        "notes": "Intégration cURL très répandue."
+      },
+      "vb": {
+        "minimal": "Dim json As String = Await httpClient.GetStringAsync(url)",
+        "complete": "Imports System.Net.Http\nImports System.Threading.Tasks\n\nModule Program\n    Private ReadOnly client As New HttpClient()\n    Async Function Main() As Task\n        Dim reponse As String = Await client.GetStringAsync(\"https://jsonplaceholder.typicode.com/todos/1\")\n        Console.WriteLine(reponse)\n    End Function\nEnd Module",
+        "best_practices": "Employer `HttpClient` asynchrone.",
+        "pitfalls": "Ne pas bloquer avec `.Result`.",
+        "notes": "Accès au sous-système réseau .NET."
+      },
+      "vba": {
+        "minimal": "Set http = CreateObject(\"MSXML2.ServerXMLHTTP.6.0\")",
+        "complete": "Public Sub ChargerDonneesHTTP()\n    Dim http As Object\n    Set http = CreateObject(\"MSXML2.ServerXMLHTTP.6.0\")\n    http.Open \"GET\", \"https://jsonplaceholder.typicode.com/todos/1\", False\n    http.send\n    If http.Status = 200 Then\n        Debug.Print http.responseText\n    End If\nEnd Sub",
+        "best_practices": "Utiliser `MSXML2.ServerXMLHTTP` plutôt que `WinHttp.WinHttpRequest` pour une meilleure stabilité.",
+        "pitfalls": "Les requêtes sont bloquantes et synchrones (freeze de l'IHM Excel pendant le transfert).",
+        "notes": "Automatisation basée sur le composant COM MSXML."
+      }
+    }
+  },
+  {
+    "id": "js_prototypal_inheritance_class_syntax_01",
+    "level": 4,
+    "chapter": "4. Programmation Orientée Objet",
+    "category": "Classes",
+    "name": "Classes, Héritage (extends/super) et Champs Privés (#)",
+    "description": "Encapsulation orientée objet, héritage de classes et masquage de membres via le préfixe dièse (#).",
+    "related_concepts": ["poo_classes_01", "js_prototypes_01"],
+    "languages": {
+      "javascript": {
+        "minimal": "class Animal { #secret = 42; constructor(nom) { this.nom = nom; } }",
+        "complete": "class Animal {\n    #privatif = \"donnée cachée\";\n    constructor(nom) {\n        this.nom = nom;\n    }\n    parler() {\n        console.log(`${this.nom} fait un bruit.`);\n    }\n}\n\nclass Chien extends Animal {\n    constructor(nom, race) {\n        super(nom);\n        this.race = race;\n    }\n    parler() {\n        super.parler();\n        console.log(`${this.nom} aboie.`);\n    }\n}\nconst c = new Chien(\"Rox\", \"Labrador\");\nc.parler();",
+        "best_practices": "Utiliser les vrais champs privés `#champ` au lieu de la convention par souligné `_champ`.",
+        "pitfalls": "Oublier de faire appel à `super()` dans le constructeur d'une classe dérivée avant d'accéder à `this`.",
+        "notes": "Sucre syntaxique moderne ES6+ construit par-dessus le système prototypal."
+      },
+      "typescript": {
+        "minimal": "class Animal { private secret: number = 42; constructor(public nom: string) {} }",
+        "complete": "class Animal {\n    #vraiPrive: string = \"privé au runtime\";\n    private priveTS: string = \"privé à la compilation\";\n    constructor(public nom: string) {}\n    parler(): void {\n        console.log(`${this.nom} fait un bruit.`);\n    }\n}\nclass Chien extends Animal {\n    constructor(nom: string, public race: string) {\n        super(nom);\n    }\n}",
+        "best_practices": "Combiner `#` (runtime) et `private` (compile-time) selon le besoin de sécurité.",
+        "pitfalls": "Savoir que le mot-clé `private` de TS est effacé à la compilation JS (accessible au runtime si non préfixé par `#`).",
+        "notes": "Enrichit la déclaration avec des modificateurs d'accès statiques."
+      },
+      "python": {
+        "minimal": "class Animal:\n    def __init__(self, nom):\n        self._prive = 42\n        self.nom = nom",
+        "complete": "class Animal:\n    def __init__(self, nom):\n        self.__secret = \"champ privé (mangled)\"\n        self.nom = nom\n    def parler(self):\n        print(f\"{self.nom} fait un bruit.\")\n\nclass Chien(Animal):\n    def __init__(self, nom, race):\n        super().__init__(nom)\n        self.race = race\n    def parler(self):\n        super().parler()\n        print(f\"{self.nom} aboie.\")\n\nc = Chien(\"Rox\", \"Labrador\")\nc.parler()",
+        "best_practices": "Utiliser le préfixe double souligné `__champ` pour déclencher le Name Mangling.",
+        "pitfalls": "Penser qu'un champ `__champ` est totalement inaccessible (accessible via `_Classe__champ`).",
+        "notes": "Classes dynamiques basées sur le dictionnaire `__dict__`."
+      },
+      "csharp": {
+        "minimal": "public class Animal { private int _secret = 42; public string Nom { get; set; } }",
+        "complete": "public class Animal {\n    private string _secret = \"privé\";\n    public string Nom { get; set; }\n    public Animal(string nom) => Nom = nom;\n    public virtual void Parler() => Console.WriteLine($\"{Nom} fait un bruit.\");\n}\npublic class Chien : Animal {\n    public string Race { get; set; }\n    public Chien(string nom, string race) : base(nom) => Race = race;\n    public override void Parler() {\n        base.Parler();\n        Console.WriteLine($\"{Nom} aboie.\");\n    }\n}",
+        "best_practices": "Déclarer explicitement `virtual` et `override` pour autoriser la redéfinition polymorphique.",
+        "pitfalls": "Oublier le mot-clé `override` masque la méthode parente (`new`).",
+        "notes": "Classes managées strictes sur le runtime .NET."
+      },
+      "java": {
+        "minimal": "public class Animal { private int secret = 42; protected String nom; }",
+        "complete": "public class Animal {\n    private String secret = \"privé\";\n    protected String nom;\n    public Animal(String nom) { this.nom = nom; }\n    public void parler() { System.out.println(nom + \" fait un bruit.\"); }\n}\nclass Chien extends Animal {\n    private String race;\n    public Chien(String nom, String race) {\n        super(nom);\n        this.race = race;\n    }\n    @Override\n    public void parler() {\n        super.parler();\n        System.out.println(nom + \" aboie.\");\n    }\n}",
+        "best_practices": "Systématiquement ajouter l'annotation `@Override`.",
+        "pitfalls": "Par défaut, les méthodes Java sont virtuelles (redéfinissables) sauf si déclarées `final`.",
+        "notes": "Modèle orienté objet classique par excellence."
+      },
+      "cpp": {
+        "minimal": "class Animal { private: int secret; public: std::string nom; };",
+        "complete": "#include <iostream>\n#include <string>\n\nclass Animal {\nprivate:\n    std::string secret = \"privé\";\nprotected:\n    std::string nom;\npublic:\n    Animal(std::string n) : nom(n) {}\n    virtual void parler() { std::cout << nom << \" fait un bruit.\\n\"; }\n};\n\nclass Chien : public Animal {\npublic:\n    Chien(std::string n) : Animal(n) {}\n    void parler() override { std::cout << nom << \" aboie.\\n\"; }\n};",
+        "best_practices": "Déclarer le destructeur `virtual ~Animal()` dans toute classe de base abstraite.",
+        "pitfalls": "Oublier le mot-clé `virtual` empêche le polymorphisme lors d'appels via un pointeur de la classe de base.",
+        "notes": "Héritage statique avec résolution par vtable."
+      },
+      "c": {
+        "minimal": "// Structures et pointeurs d'encapsulation isolés",
+        "complete": "#include <stdio.h>\n\ntypedef struct {\n    const char* nom;\n    void (*parler)(void* self);\n} Animal;\n\nvoid parlerAnimal(void* self) {\n    Animal* a = (Animal*)self;\n    printf(\"%s fait un bruit.\\n\", a->nom);\n}\n\nint main() {\n    Animal a = {\"Rox\", parlerAnimal};\n    a.parler(&a);\n    return 0;\n}",
+        "best_practices": "Masquer les données privées dans des fichiers source `.c` via des structures opaques (Opaque Pointers).",
+        "pitfalls": "Gestion manuelle fastidieuse du pointeur d'instance `self`.",
+        "notes": "POO simulée via composition de structures et pointeurs de fonctions."
+      },
+      "php": {
+        "minimal": "class Animal { private int $secret = 42; public function __construct(public string $nom) {} }",
+        "complete": "<?php\nclass Animal {\n    private string $secret = \"privé\";\n    public function __construct(public string $nom) {}\n    public function parler(): void {\n        echo \"{$this->nom} fait un bruit.\\n\";\n    }\n}\nclass Chien extends Animal {\n    public function __construct(string $nom, public string $race) {\n        parent::__construct($nom);\n    }\n    public function parler(): void {\n        parent::parler();\n        echo \"{$this->nom} aboie.\\n\";\n    }\n}",
+        "best_practices": "Utiliser la promotion de propriétés dans le constructeur (PHP 8.0+).",
+        "pitfalls": "Confondre l'accès `private` (accessible uniquement par la classe exacte) et `protected` (accessible par les enfants).",
+        "notes": "Modèle de classe complet et mûr."
+      },
+      "vb": {
+        "minimal": "Public Class Animal : Private secret As Integer : End Class",
+        "complete": "Public Class Animal\n    Private secret As String = \"privé\"\n    Public Property Nom As String\n    Public Sub New(nom As String)\n        Me.Nom = nom\n    End Sub\n    Public Overridable Sub Parler()\n        Console.WriteLine(Nom & \" fait un bruit.\")\n    End Sub\nEnd Class\nPublic Class Chien : Inherits Animal\n    Public Sub New(nom As String) : MyBase.New(nom) : End Sub\n    Public Overrides Sub Parler()\n        MyBase.Parler()\n        Console.WriteLine(Nom & \" aboie.\")\n    End Sub\nEnd Class",
+        "best_practices": "Utiliser `Overridable` et `Overrides` explicitement.",
+        "pitfalls": "Oublier d'appeler `MyBase.New()` dans le constructeur enfant.",
+        "notes": "Orienté objet complet basé sur le CLR."
+      },
+      "vba": {
+        "minimal": "' Modules de classe séparés (Animal.cls)",
+        "complete": "' Fichier Animal.cls\nPrivate m_secret As String\nPublic Nom As String\n\nPublic Sub Parler()\n    Debug.Print Nom & \" fait un bruit.\"\nEnd Sub\n\n' Pas d'héritage d'implémentation (extends)\n' Utilisation d'interfaces (Implements Animal)",
+        "best_practices": "Utiliser 'Implements' pour réaliser du polymorphisme d'interface.",
+        "pitfalls": "Absence totale d'héritage de code (pas de mot-clé 'extends' ou de 'super').",
+        "notes": "POO basée uniquement sur les interfaces et l'encapsulation COM."
+      }
+    }
+  }
+]

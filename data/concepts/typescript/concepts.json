@@ -1,0 +1,407 @@
+[
+  {
+    "id": "ts_control_declarations_01",
+    "level": 1,
+    "chapter": "1. Syntaxe, Typage & Contrôle de Flux",
+    "category": "Briques Fondamentales",
+    "name": "Typage Statique, Discriminated Unions et Narrowing",
+    "description": "Système de types structurel avec types unions discriminés, typage strict (`strictNullChecks`), expressions ternaires et contrôle de flux avec affinement de types (`Type Narrowing`).",
+    "related_concepts": ["js_control_declarations_01"],
+    "languages": {
+      "typescript": {
+        "minimal": "type Statut = 'actif' | 'inactif'; const res = val > 0 ? 'actif' : 'inactif';",
+        "complete": "type ActionState = \n  | { type: 'VALIDE'; payload: { action: string; val: number } }\n  | { type: 'ERREUR'; message: string };\n\nfunction analyserCommande(state: ActionState): string {\n  // Type Narrowing automatique via Discriminated Union\n  switch (state.type) {\n    case 'VALIDE': {\n      const statut = state.payload.val > 0 ? 'Actif' : 'Inactif';\n      if (state.payload.val <= 0) return 'Valeur négative ou nulle';\n      if (state.payload.val <= 10) return `Commande '${state.payload.action}' (${statut})`;\n      return 'Commande standard';\n    }\n    case 'ERREUR':\n      return `Erreur : ${state.message}`;\n  }\n}",
+        "best_practices": "Activer `strict: true` dans `tsconfig.json` et utiliser des Discriminated Unions pour modeler des états mutuellement exclusifs sans ambiguïté.",
+        "pitfalls": "Abuser du type `any` qui désactive complètement la vérification du compilateur et annule les bénéfices de TypeScript.",
+        "notes": "Langage pivot orienté typage structurel au-dessus du runtime JavaScript."
+      },
+      "javascript": {
+        "minimal": "const res = val > 0 ? 'actif' : 'inactif';",
+        "complete": "function analyserCommande(state) {\n    if (state.type === 'ERREUR') return `Erreur : ${state.message}`;\n    const { action, val } = state.payload;\n    const statut = val > 0 ? 'Actif' : 'Inactif';\n    if (val <= 0) return 'Valeur négative ou nulle';\n    if (val <= 10) return `Commande '${action}' (${statut})`;\n    return 'Commande standard';\n}",
+        "best_practices": "Valider la structure des objets dynamiquement à l'exécution.",
+        "pitfalls": "Absence de vérification des types à la compilation (découverte des erreurs au runtime).",
+        "notes": "Même syntaxe d'exécution que TypeScript mais sans annotations de types."
+      },
+      "python": {
+        "minimal": "from typing import Literal; Statut = Literal['actif', 'inactif']",
+        "complete": "from dataclasses import dataclass\nfrom typing import Union\n\n@dataclass\nclass Valide:\n    action: str\n    val: int\n\n@dataclass\nclass Erreur:\n    message: str\n\nActionState = Union[Valide, Erreur]\n\ndef analyser_commande(state: ActionState) -> str:\n    match state:\n        case Valide(action, val):\n            statut = \"Actif\" if val > 0 else \"Inactif\"\n            if val <= 0: return \"Valeur négative ou nulle\"\n            return f\"Commande '{action}' ({statut})\"\n        case Erreur(msg):\n            return f\"Erreur : {msg}\"",
+        "best_practices": "Combiner type hints (mypy/pyright) et Structural Pattern Matching (`match/case`).",
+        "pitfalls": "Les annotations de types Python n'ont aucun impact à l'exécution.",
+        "notes": "Typage statique optionnel via annotations."
+      },
+      "csharp": {
+        "minimal": "string res = val > 0 ? \"Actif\" : \"Inactif\";",
+        "complete": "public abstract record ActionState;\npublic record Valide(string Action, int Val) : ActionState;\npublic record Erreur(string Message) : ActionState;\n\npublic static class Program {\n    public static string AnalyserCommande(ActionState state) => state switch {\n        Valide { Val: <= 0 } => \"Valeur négative ou nulle\",\n        Valide v when v.Val <= 10 => $\"Commande '{v.Action}' ({(v.Val > 0 ? \"Actif\" : \"Inactif\")})\",\n        Valide => \"Commande standard\",\n        Erreur e => $\"Erreur : {e.Message}\",\n        _ => throw new ArgumentOutOfRangeException()\n    };\n}",
+        "best_practices": "Utiliser les `records` et le pattern matching exhaustif C#.",
+        "pitfalls": "Typage nominal strict (deux classes de même structure ne sont pas interchangeables).",
+        "notes": "Typage statique nominal et compilé."
+      },
+      "php": {
+        "minimal": "$res = $val > 0 ? 'Actif' : 'Inactif';",
+        "complete": "<?php\nreadonly class Valide {\n    public function __construct(public string $action, public int $val) {}\n}\nreadonly class Erreur {\n    public function __construct(public string $message) {}\n}\n\nfunction analyserCommande(Valide|Erreur $state): string {\n    return match(true) {\n        $state instanceof Erreur => \"Erreur : {$state->message}\",\n        $state->val <= 0 => 'Valeur négative ou nulle',\n        $state->val <= 10 => \"Commande '{$state->action}'\",\n        default => 'Commande standard'\n    };\n}",
+        "best_practices": "Utiliser les Union Types natifs de PHP 8+ (`Valide|Erreur`).",
+        "pitfalls": "Vérifications faites au runtime et non à la compilation.",
+        "notes": "Typage dynamique progressivement typé."
+      },
+      "vba": {
+        "minimal": "Dim res As String : res = IIf(val > 0, \"Actif\", \"Inactif\")",
+        "complete": "Option Explicit\n\nPublic Function AnalyserCommande(action As String, val As Long) As String\n    Dim statut As String\n    statut = IIf(val > 0, \"Actif\", \"Inactif\")\n    Select Case val\n        Case Is <= 0 : AnalyserCommande = \"Valeur négative ou nulle\"\n        Case 1 To 10 : AnalyserCommande = \"Commande '\" & action & \"' (\" & statut & \")\"\n        Case Else : AnalyserCommande = \"Commande standard\"\n    End Select\nEnd Function",
+        "best_practices": "Déclarer toutes les variables avec `Option Explicit` pour simuler un typage strict.",
+        "pitfalls": "Aucune notion de types unions ou de discriminated unions natifs.",
+        "notes": "Typage statique/dynamique basique (Variant)."
+      },
+      "java": {
+        "minimal": "String res = val > 0 ? \"Actif\" : \"Inactif\";",
+        "complete": "public sealed interface ActionState permits Valide, Erreur {}\nrecord Valide(String action, int val) implements ActionState {}\nrecord Erreur(String message) implements ActionState {}\n\npublic class Program {\n    public String analyser(ActionState state) {\n        return switch (state) {\n            case Valide v -> v.val() <= 0 ? \"Négatif\" : \"Commande \" + v.action();\n            case Erreur e -> \"Erreur : \" + e.message();\n        };\n    }\n}",
+        "best_practices": "Exploiter les Sealed Interfaces et Records (Java 17+).",
+        "pitfalls": "Lourdeur syntaxique par rapport au typage structurel de TS.",
+        "notes": "Typage statique nominal avec pattern matching récent."
+      },
+      "cpp": {
+        "minimal": "std::string res = val > 0 ? \"Actif\" : \"Inactif\";",
+        "complete": "#include <variant>\n#include <string>\n\nstruct Valide { std::string action; int val; };\nstruct Erreur { std::string message; };\nusing ActionState = std::variant<Valide, Erreur>;\n\nstd::string analyser(const ActionState& state) {\n    if (auto e = std::get_if<Erreur>(&state)) return \"Erreur: \" + e->message;\n    auto v = std::get<Valide>(state);\n    return v.val <= 0 ? \"Négatif\" : \"Commande \" + v.action;\n}",
+        "best_practices": "Utiliser `std::variant` et `std::visit` pour créer des types sommes.",
+        "pitfalls": "Gestion manuelle complexe de la récupération du type actif.",
+        "notes": "Types sommes via `std::variant`."
+      },
+      "c": {
+        "minimal": "const char* res = val > 0 ? \"Actif\" : \"Inactif\";",
+        "complete": "#include <stdio.h>\n\ntypedef enum { TYPE_VALIDE, TYPE_ERREUR } Type;\ntypedef struct {\n    Type type;\n    union {\n        struct { const char* action; int val; } valide;\n        struct { const char* message; } erreur;\n    } data;\n} ActionState;\n\nvoid analyser(ActionState s) {\n    if (s.type == TYPE_ERREUR) printf(\"Erreur: %s\\n\", s.data.erreur.message);\n}",
+        "best_practices": "Encapsuler une `union` dans une `struct` avec un tag d'énumération.",
+        "pitfalls": "Pas de contrôle du compilateur en cas d'accès au mauvais membre de l'union.",
+        "notes": "Unions étiquetées manuelles."
+      },
+      "vb": {
+        "minimal": "Dim res As String = If(val > 0, \"Actif\", \"Inactif\")",
+        "complete": "Public Module Program\n    Public Function Analyser(action As String, val As Integer) As String\n        Return If(val <= 0, \"Négatif\", $\"Commande {action}\")\n    End Function\nEnd Module",
+        "best_practices": "Utiliser `Option Strict On` pour imposer un typage statique strict.",
+        "pitfalls": "Pas de types unions natifs.",
+        "notes": "Typage statique .NET."
+      }
+    }
+  },
+  {
+    "id": "ts_functional_array_01",
+    "level": 2,
+    "chapter": "2. Collections, Inférence & Transformations",
+    "category": "Paradigmes Fonctionnels",
+    "name": "Transformations Immuables d'Arrays, Génériques et Méthodes d'Ordre Supérieur",
+    "description": "Manipulation de tableaux par chaînage déclaratif (`map`, `filter`, `reduce`), immutabilité via types `readonly` et contraintes de génériques.",
+    "related_concepts": ["js_functional_array_01"],
+    "languages": {
+      "typescript": {
+        "minimal": "const res: readonly number[] = nums.filter(x => x % 2 === 0).map(x => x ** 2);",
+        "complete": "function traiterDonnees<T extends number>(valeurs: readonly T[]): number {\n  return valeurs\n    .filter((x): x is T => x % 2 === 0)\n    .map(x => x * x)\n    .reduce((acc, x) => acc + x, 0);\n}\n\n// Usage avec immutabilité garantie à la compilation\nconst donnees: readonly number[] = [1, 2, 3, 4, 5, 6];\nconst resultat = traiterDonnees(donnees);",
+        "best_practices": "Annoter les collections en `readonly T[]` pour éviter les mutations accidentelles et utiliser des Type Guards dans `.filter()`.",
+        "pitfalls": "Utiliser `.reduce()` sans donner de type explicite ou de valeur initiale, ce qui risque de produire un type `any` ou des erreurs d'inférence.",
+        "notes": "Paradigme fonctionnel immuable avec support complet des génériques."
+      },
+      "javascript": {
+        "minimal": "const res = nums.filter(x => x % 2 === 0).map(x => x ** 2);",
+        "complete": "function traiterDonnees(valeurs) {\n  return valeurs\n    .filter(x => x % 2 === 0)\n    .map(x => x * x)\n    .reduce((acc, x) => acc + x, 0);\n}",
+        "best_practices": "Éviter de muter le tableau d'origine dans les callbacks.",
+        "pitfalls": "Absence de garantie d'immutabilité à la compilation.",
+        "notes": "API Array identique à TypeScript mais sans contrôle de types."
+      },
+      "python": {
+        "minimal": "res = [x**2 for x in nums if x % 2 == 0]",
+        "complete": "from typing import Sequence\n\ndef traiter_donnees(valeurs: Sequence[int]) -> int:\n    pairs = filter(lambda x: x % 2 == 0, valeurs)\n    carres = map(lambda x: x * x, pairs)\n    return sum(carres)",
+        "best_practices": "Privilégier les expressions génératrices ou les compréhensions.",
+        "pitfalls": "Les itérateurs `map`/`filter` natifs s'épuisent après une seule lecture.",
+        "notes": "Style fonctionnel via générateurs et compréhensions."
+      },
+      "csharp": {
+        "minimal": "var res = nums.Where(x => x % 2 == 0).Select(x => x * x);",
+        "complete": "using System.Collections.Generic;\nusing System.Linq;\n\npublic static class Traitement {\n    public static int TraiterDonnees(IReadOnlyList<int> valeurs) {\n        return valeurs\n            .Where(x => x % 2 == 0)\n            .Select(x => x * x)\n            .Sum();\n    }\n}",
+        "best_practices": "Utiliser `IReadOnlyList<T>` pour garantir l'immutabilité de l'IHM.",
+        "pitfalls": "Évaluation différée (Deferred Execution) de LINQ non anticipée.",
+        "notes": "API LINQ déclarative très proche des méthodes JS/TS."
+      },
+      "php": {
+        "minimal": "$res = array_map(fn($x)=>$x**2, array_filter($nums, fn($x)=>$x%2==0));",
+        "complete": "<?php\nfunction traiterDonnees(array $valeurs): int {\n    $pairs = array_filter($valeurs, fn(int $x) => $x % 2 === 0);\n    $carres = array_map(fn(int $x) => $x ** 2, $pairs);\n    return array_sum($carres);\n}",
+        "best_practices": "Découper le code avec des fonctions fléchées `fn()`.",
+        "pitfalls": "Incohérence de l'ordre des arguments (`array_map` vs `array_filter`).",
+        "notes": "Fonctions d'ordre supérieur natives sur tableaux PHP."
+      },
+      "java": {
+        "minimal": "int res = nums.stream().filter(x -> x%2==0).map(x -> x*x).reduce(0, Integer::sum);",
+        "complete": "import java.util.List;\n\npublic class Program {\n    public int traiterDonnees(List<Integer> valeurs) {\n        return valeurs.stream()\n            .filter(x -> x % 2 == 0)\n            .mapToInt(x -> x * x)\n            .sum();\n    }\n}",
+        "best_practices": "Utiliser `mapToInt` pour éviter le surcoût de boxing.",
+        "pitfalls": "Incapacité de réutiliser un Stream déjà fermé.",
+        "notes": "API Stream Java."
+      },
+      "vba": {
+        "minimal": "For i = LBound(arr) To UBound(arr) : If arr(i) Mod 2 = 0 Then acc = acc + arr(i)^2",
+        "complete": "Public Function TraiterDonnees(valeurs As Variant) As Long\n    Dim i As Long, somme As Long\n    somme = 0\n    For i = LBound(valeurs) To UBound(valeurs)\n        If valeurs(i) Mod 2 = 0 Then somme = somme + (valeurs(i) * valeurs(i))\n    Next i\n    TraiterDonnees = somme\nEnd Function",
+        "best_practices": "Sécuriser les bornes avec `LBound` et `UBound`.",
+        "pitfalls": "Absence totale de fonctions d'ordre supérieur natifs (map/filter).",
+        "notes": "Parcours impératif strict."
+      },
+      "cpp": {
+        "minimal": "// C++20 Ranges\nauto res = nums | std::views::filter([](int x){return x%2==0;}) | std::views::transform([](int x){return x*x;});",
+        "complete": "#include <vector>\n#include <numeric>\n#include <ranges>\n\nint traiterDonnees(const std::vector<int>& vals) {\n    auto carres = vals | std::views::filter([](int x){ return x % 2 == 0; })\n                       | std::views::transform([](int x){ return x * x; });\n    return std::accumulate(carres.begin(), carres.end(), 0);\n}",
+        "best_practices": "Utiliser C++20 Ranges pour un pipeline sans allocation mémoire.",
+        "pitfalls": "Syntaxe complexe et temps de compilation plus élevés.",
+        "notes": "Composition fonctionnelle zéro surcoût."
+      },
+      "c": {
+        "minimal": "for(int i=0; i<len; i++) { if(arr[i]%2==0) sum += arr[i]*arr[i]; }",
+        "complete": "#include <stdio.h>\n\nint traiter_donnees(const int* arr, size_t len) {\n    int somme = 0;\n    for (size_t i = 0; i < len; i++) {\n        if (arr[i] % 2 == 0) somme += arr[i] * arr[i];\n    }\n    return somme;\n}",
+        "best_practices": "Passer un pointeur constant `const int*` pour garantir la non-mutation.",
+        "pitfalls": "Pas de vérification de dépassement de capacité d'indexation.",
+        "notes": "Boucle impérative bas niveau."
+      },
+      "vb": {
+        "minimal": "Dim res = nums.Where(Function(x) x Mod 2 = 0).Select(Function(x) x * x)",
+        "complete": "Imports System.Linq\n\nPublic Module Program\n    Public Function Traiter(valeurs As IEnumerable(Of Integer)) As Integer\n        Return valeurs.Where(Function(x) x Mod 2 = 0).Select(Function(x) x * x).Sum()\n    End Function\nEnd Module",
+        "best_practices": "Utiliser LINQ avec expressions lambda `Function(x)`.",
+        "pitfalls": "Confusion syntaxique entre `Function()` et boucles classiques.",
+        "notes": "Style déclaratif moderne sous VB.NET."
+      }
+    }
+  },
+  {
+    "id": "ts_oop_interfaces_01",
+    "level": 3,
+    "chapter": "3. Classes, Interfaces & Typage Structurel",
+    "category": "POO & Architecture",
+    "name": "Interfaces, Modificateurs d'Accès, Champs Privés (`#`) et Événements",
+    "description": "Implémentation d'interfaces, typage duck-typing, propriétés privées natives ECMAScript (`#`) et pattern émetteur d'événements typé.",
+    "related_concepts": ["js_oop_classes_01"],
+    "languages": {
+      "typescript": {
+        "minimal": "interface ICapteur { readonly id: string; temp: number; }\nclass Capteur implements ICapteur { #temp = 0; get temp() { return this.#temp; } }",
+        "complete": "export interface ICapteur {\n  readonly id: string;\n  temperature: number;\n}\n\ntype AlerteCallback = (temp: number) => void;\n\nexport class CapteurTemperature implements ICapteur {\n  readonly id: string;\n  #temp: number = 0; // Champ privé JS natif au runtime\n  private listeners: AlerteCallback[] = []; // Privé TypeScript à la compilation\n\n  constructor(id: string) {\n    this.id = id;\n  }\n\n  get temperature(): number {\n    return this.#temp;\n  }\n\n  set temperature(val: number) {\n    this.#temp = val;\n    if (val > 80) {\n      this.listeners.forEach(cb => cb(val));\n    }\n  }\n\n  public onAlerte(cb: AlerteCallback): void {\n    this.listeners.push(cb);\n  }\n}",
+        "best_practices": "Utiliser `#` pour une vraie confidentialité au runtime (JS) et `private` pour l'intention architecturale TS. Préférer les `interface` pour définir des contrats d'objets public.",
+        "pitfalls": "Croire que le mot-clé `private` de TS protège les données au runtime (il s'efface lors de la transpilation JS).",
+        "notes": "Typage structurel : deux objets ayant les mêmes membres satisfont la même interface sans déclaration `implements` explicite obligatoire."
+      },
+      "javascript": {
+        "minimal": "class Capteur { #temp = 0; get temp() { return this.#temp; } }",
+        "complete": "class CapteurTemperature {\n  #temp = 0;\n  #listeners = [];\n\n  constructor(id) { this.id = id; }\n  get temperature() { return this.#temp; }\n  set temperature(val) {\n    this.#temp = val;\n    if (val > 80) this.#listeners.forEach(cb => cb(val));\n  }\n  onAlerte(cb) { this.#listeners.push(cb); }\n}",
+        "best_practices": "Employer les champs privés `#` pour l'encapsulation.",
+        "pitfalls": "Pas de concept d'interface pour valider les contrats d'API à la compilation.",
+        "notes": "Classes ES6 avec vrais champs privés."
+      },
+      "python": {
+        "minimal": "class Capteur: \n    def __init__(self): self.__temp = 0",
+        "complete": "from typing import Protocol, Callable\n\nclass ICapteur(Protocol):\n    @property\n    def temperature(self) -> float: ...\n\nclass CapteurTemperature:\n    def __init__(self, id_capteur: str):\n        self.id = id_capteur\n        self.__temp = 0.0\n        self._listeners: list[Callable[[float], None]] = []\n\n    @property\n    def temperature(self) -> float:\n        return self.__temp\n\n    @temperature.setter\n    def temperature(self, val: float):\n        self.__temp = val\n        if val > 80.0:\n            for cb in self._listeners: cb(val)",
+        "best_practices": "Utiliser `typing.Protocol` pour obtenir un duck-typing structurel identique à TS.",
+        "pitfalls": "Les membres `__var` subissent seulement un Name Mangling (non 100% hermétique).",
+        "notes": "Support du typage structurel via `Protocol`."
+      },
+      "csharp": {
+        "minimal": "public interface ICapteur { double Temperature { get; } }",
+        "complete": "using System;\nusing System.Collections.Generic;\n\npublic interface ICapteur {\n    string Id { get; }\n    double Temperature { get; }\n}\n\npublic class CapteurTemperature : ICapteur {\n    public string Id {; }\n    private double _temp;\n    public event Action<double>? OnAlerte;\n\n    public CapteurTemperature(string id) => Id = id;\n\n    public double Temperature {\n        get => _temp;\n        set {\n            _temp = value;\n            if (_temp > 80.0) OnAlerte?.Invoke(_temp);\n        }\n    }\n}",
+        "best_practices": "Utiliser les événements natifs `event Action<T>`.",
+        "pitfalls": "Typage nominal strict (implémentation explicite d'interface requise).",
+        "notes": "POO classique fortement typée."
+      },
+      "java": {
+        "minimal": "public interface ICapteur { double getTemperature(); }",
+        "complete": "import java.util.*;\nimport java.util.function.Consumer;\n\npublic interface ICapteur {\n    double getTemperature();\n}\n\npublic class CapteurTemperature implements ICapteur {\n    private double temp;\n    private final List<Consumer<Double>> listeners = new ArrayList<>();\n\n    public double getTemperature() { return temp; }\n    public void setTemperature(double val) {\n        this.temp = val;\n        if (val > 80.0) listeners.forEach(l -> l.accept(val));\n    }\n}",
+        "best_practices": "Encapsuler via getters/setters selon JavaBeans.",
+        "pitfalls": "Absence de propriétés natives (nécessite des méthodes explicites).",
+        "notes": "POO nominale pure."
+      },
+      "vba": {
+        "minimal": "' Module de classe : clsCapteur.cls\nPublic Property Get Temperature() As Double : End Property",
+        "complete": "' Module de Classe clsCapteur.cls\nOption Explicit\nPublic Event SeuilDepasse(ByVal temp As Double)\nPrivate m_Temp As Double\n\nPublic Property Get Temperature() As Double\n    Temperature = m_Temp\nEnd Property\nPublic Property Let Temperature(ByVal val As Double)\n    m_Temp = val\n    If m_Temp > 80 Then RaiseEvent SeuilDepasse(m_Temp)\nEnd Property",
+        "best_practices": "Créer un module de classe distinct par interface.",
+        "pitfalls": "Différencier impérativement `Property Let` (valeurs) et `Property Set` (objets).",
+        "notes": "Interfaces COM via `Implements`."
+      },
+      "php": {
+        "minimal": "interface ICapteur { public function getTemp(): float; }",
+        "complete": "<?php\ninterface ICapteur {\n    public function getTemperature(): float;\n}\n\nclass CapteurTemperature implements ICapteur {\n    private float $temp = 0.0;\n    public function getTemperature(): float { return $this->temp; }\n    public function setTemperature(float $val): void {\n        $this->temp = $val;\n    }\n}",
+        "best_practices": "Promouvoir les propriétés constructeur PHP 8 (`private float $temp`).",
+        "pitfalls": "Typage nominal strict.",
+        "notes": "POO classique avec interfaces."
+      },
+      "cpp": {
+        "minimal": "class ICapteur { public: virtual double getTemp() const = 0; };",
+        "complete": "#include <vector>\n#include <functional>\n#include <string>\n\nclass ICapteur {\npublic:\n    virtual ~ICapteur() = default;\n    virtual double getTemperature() const = 0;\n};\n\nclass CapteurTemperature : public ICapteur {\n    std::string id;\n    double temp = 0.0;\n    std::vector<std::function<void(double)>> listeners;\npublic:\n    double getTemperature() const override { return temp; }\n};",
+        "best_practices": "Employer des classes abstraites pures comme interfaces.",
+        "pitfalls": "Oublier le destructeur virtuel `virtual ~ICapteur()`.",
+        "notes": "Interfaces via classes de base abstraites."
+      },
+      "c": {
+        "minimal": "typedef struct { double (*get_temp)(void* self); } ICapteur;",
+        "complete": "#include <stdio.h>\n\ntypedef struct {\n    void* instance;\n    double (*get_temperature)(void* self);\n} ICapteurInterface;",
+        "best_practices": "Construire une VTable manuelle avec des pointeurs de fonctions.",
+        "pitfalls": "Aucune vérification de type d'interface à la compilation.",
+        "notes": "Polymorphisme impératif via pointeurs de fonctions."
+      },
+      "vb": {
+        "minimal": "Public Interface ICapteur : Property Temperature As Double : End Interface",
+        "complete": "Public Interface ICapteur\n    ReadOnly Property Id As String\n    Property Temperature As Double\nEnd Interface",
+        "best_practices": "Implémenter explicitement les membres d'interface avec la clause `Implements`.",
+        "pitfalls": "Absence de typage structurel.",
+        "notes": "Interfaces sous le runtime .NET."
+      }
+    }
+  },
+  {
+    "id": "ts_async_promises_01",
+    "level": 4,
+    "chapter": "4. Asynchronisme & Modèle Événementiel",
+    "category": "Gestion de Concurrence",
+    "name": "Promesses, Async/Await et Gestion d'Annulations avec `AbortController`",
+    "description": "Exécution non bloquante sur boucle d'événements (Event Loop), chaînage de Promesses typées et annulation de flux asynchrones via `AbortSignal`.",
+    "related_concepts": ["js_async_promises_01"],
+    "languages": {
+      "typescript": {
+        "minimal": "const delay = (ms: number): Promise<void> => new Promise(r => setTimeout(r, ms));",
+        "complete": "async function telechargerDonnees(url: string, signal?: AbortSignal): Promise<string> {\n  try {\n    const response = await fetch(url, { signal });\n    if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);\n    const data: string = await response.text();\n    return data;\n  } catch (err: unknown) {\n    if (err instanceof Error && err.name === 'AbortError') {\n      console.warn('Requête annulée par l utilisateur');\n    }\n    throw err;\n  }\n}\n\n// Usage avec AbortController\nconst controller = new AbortController();\ntelechargerDonnees('https://api.example.com/data', controller.signal);\n// controller.abort(); // Annulation de la tâche",
+        "best_practices": "Toujours propager un `AbortSignal` pour les appels d'API annulables et typer les retours en `Promise<T>`.",
+        "pitfalls": "Déclarer une variable de capture d'erreur catch en type spécifique (dans TS modern, les erreurs interceptées sont obligatoirement de type `unknown`).",
+        "notes": "Modèle d'asynchronisme non bloquant mono-thread sur Event Loop."
+      },
+      "javascript": {
+        "minimal": "const delay = ms => new Promise(r => setTimeout(r, ms));",
+        "complete": "async function telechargerDonnees(url, signal) {\n  const response = await fetch(url, { signal });\n  return await response.text();\n}",
+        "best_practices": "Utiliser `async/await` au lieu des callbacks imbriqués (Callback Hell).",
+        "pitfalls": "Oublier de capturer les rejets de Promesses non gérés (`UnhandledPromiseRejection`).",
+        "notes": "Syntaxe `async/await` identique."
+      },
+      "python": {
+        "minimal": "import asyncio; await asyncio.sleep(1)",
+        "complete": "import asyncio\nimport aiohttp\n\nasync def telecharger_donnees(url: str) -> str:\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as response:\n            return await response.text()",
+        "best_practices": "Utiliser `asyncio` et des gestionnaires de contexte `async with`.",
+        "pitfalls": "Bloquer la boucle d'événements avec du code synchrone consommateur de CPU.",
+        "notes": "Boucle d'événements coopérative via `asyncio`."
+      },
+      "csharp": {
+        "minimal": "await Task.Delay(1000);",
+        "complete": "using System.Net.Http;\nusing System.Threading;\nusing System.Threading.Tasks;\n\npublic static async Task<string> TelechargerDonneesAsync(string url, CancellationToken ct) {\n    using var client = new HttpClient();\n    var response = await client.GetAsync(url, ct);\n    return await response.Content.ReadAsStringAsync(ct);\n}",
+        "best_practices": "Passer un `CancellationToken` équivalent de `AbortSignal`.",
+        "pitfalls": "Risque de Deadlock en faisant un `.Result` synchrone sur une Tâche.",
+        "notes": "Task Parallel Library (TPL) asynchrone."
+      },
+      "java": {
+        "minimal": "CompletableFuture.supplyAsync(() -> \"OK\");",
+        "complete": "import java.net.http.*;\nimport java.net.URI;\nimport java.util.concurrent.CompletableFuture;\n\npublic CompletableFuture<String> telechargerAsync(String url) {\n    HttpClient client = HttpClient.newHttpClient();\n    HttpRequest req = HttpRequest.newBuilder().uri(URI.create(url)).build();\n    return client.sendAsync(req, HttpResponse.BodyHandlers.ofString())\n                 .thenApply(HttpResponse::body);\n}",
+        "best_practices": "Employer `CompletableFuture` ou les Virtual Threads (Java 21+).",
+        "pitfalls": "Gestion complexe des annulations asynchrones.",
+        "notes": "Asynchronisme fluide nativement supporté."
+      },
+      "php": {
+        "minimal": "// Async via bibliothèques tierces (Amp / ReactPHP)",
+        "complete": "<?php\n// Modèle synchrone par défaut\nfunction telechargerDonnees(string $url): string {\n    return file_get_contents($url);\n}",
+        "best_practices": "Employer Swoole ou ReactPHP pour du vrai code I/O non-bloquant.",
+        "pitfalls": "PHP standard bloque le thread courant sur chaque I/O.",
+        "notes": "Exécution synchrone bloquante au niveau du langage de base."
+      },
+      "vba": {
+        "minimal": "Application.OnTime Now + TimeValue(\"00:00:01\"), \"Macro\"",
+        "complete": "Public Sub LancerAppel()\n    Dim http As Object\n    Set http = CreateObject(\"MSXML2.ServerXMLHTTP.6.0\")\n    http.Open \"GET\", \"https://api.example.com/data\", True ' Asynchrone\n    http.send\nEnd Sub",
+        "best_practices": "Préférer les appels réseau asynchrones via COM pour ne pas figer Excel.",
+        "pitfalls": "Absence totale de syntaxe `async/await` ou de promesses native.",
+        "notes": "Simulation de l'asynchronisme via callbacks COM."
+      },
+      "cpp": {
+        "minimal": "// std::async ou C++20 Coroutines",
+        "complete": "#include <future>\n#include <string>\n\nstd::future<std::string> telechargerAsync(std::string url) {\n    return std::async(std::launch::async, [url]() {\n        // Simulation d'attente I/O\n        return std::string(\"donnees\");\n    });\n}",
+        "best_practices": "Utiliser `std::future` ou les Coroutines C++20 (`co_await`).",
+        "pitfalls": "Destruction du `std::future` rendant l'appel synchrone par blocage.",
+        "notes": "Multithreading ou coroutines nativement intégrés."
+      },
+      "c": {
+        "minimal": "// Threads POSIX (pthreads)",
+        "complete": "#include <pthread.h>\n#include <stdio.h>\n\nvoid* reponse_thread(void* arg) {\n    printf(\"Requête en arrière-plan\\n\");\n    return NULL;\n}",
+        "best_practices": "Déporter les opérations sur des threads POSIX de fond.",
+        "pitfalls": "Complexité extrême de synchronisation mémoire et d'annulation.",
+        "notes": "Pas de concept d'Event Loop au niveau langage."
+      },
+      "vb": {
+        "minimal": "Await Task.Delay(1000)",
+        "complete": "Imports System.Net.Http\nImports System.Threading\n\nPublic Async Function TelechargerAsync(url As String, ct As CancellationToken) As Task(Of String)\n    Using client As New HttpClient()\n        Dim resp = Await client.GetAsync(url, ct)\n        Return Await resp.Content.ReadAsStringAsync()\n    End Using\nEnd Function",
+        "best_practices": "Appliquer le pattern `Async/Await` sous VB.NET.",
+        "pitfalls": "Confusion avec la planification `OnTime` de VBA.",
+        "notes": "Implémentation .NET identique à C#."
+      }
+    }
+  },
+  {
+    "id": "ts_type_system_generics_01",
+    "level": 5,
+    "chapter": "5. Metaprogramming & Type-Level Programming",
+    "category": "Système de Types Avancé",
+    "name": "Types Conditionnels, Mappés, Utility Types et Generics Constraints",
+    "description": "Transformation de types à la compilation (`Pick`, `Omit`, `Partial`), types conditionnels (`T extends U ? X : Y`) et inférence avec le mot-clé `infer`.",
+    "related_concepts": ["ts_advanced_types_01"],
+    "languages": {
+      "typescript": {
+        "minimal": "type Optional<T> = { [P in keyof T]?: T[P] };",
+        "complete": "// Extrait le type de retour d'une Promesse ou d'un type générique T\ntype UnpackPromise<T> = T extends Promise<infer U> ? U : T;\n\n// Metaprogramming au niveau des types\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n}\n\n// Type dérivé : rend tous les champs optionnels sauf l'ID\ntype UserUpdatePayload = Pick<User, 'id'> & Partial<Omit<User, 'id'>>;\n\nfunction mettreAJourUtilisateur(payload: UserUpdatePayload): void {\n  console.log(`Mise à jour pour l'ID : ${payload.id}`);\n}",
+        "best_practices": "Combinaison des Utility Types natifs (`Partial`, `Pick`, `Omit`) pour éviter la duplication de définitions de types dans le projet.",
+        "pitfalls": "Créer de la sur-ingénierie de types conditionnels complexes illisibles qui ralentissent le compilateur `tsc`.",
+        "notes": "TypeScript possède un langage de programmation à part entière exécuté au niveau de la compilation (Type-Level Programming)."
+      },
+      "javascript": {
+        "minimal": "// Aucun équivalent à la compilation",
+        "complete": "function mettreAJourUtilisateur(payload) {\n  if (!payload.id) throw new Error(\"ID requis\");\n  console.log(`Mise à jour pour l'ID : ${payload.id}`);\n}",
+        "best_practices": "Valider la présence des champs requis avec des schémas de validation au runtime (ex: Zod, Joi).",
+        "pitfalls": "Impossibilité de prévenir les erreurs de clés d'objets invalides avant l'exécution.",
+        "notes": "Toutes les notions de types conditionnels ou génériques s'effacent en JS."
+      },
+      "python": {
+        "minimal": "from typing import TypeVar, Generic; T = TypeVar('T')",
+        "complete": "from typing import TypeVar, Generic, Optional, TypedDict\n\nclass User(TypedDict):\n    id: int\n    name: str\n    email: str\n\nclass UserUpdatePayload(TypedDict, total=False):\n    id: int # Nécessite une manipulation spécifique pour mélanger optionnel/requis",
+        "best_practices": "Utiliser `TypedDict` et `Generic` pour la métaprogrammation statique avec Mypy.",
+        "pitfalls": "Le système de types Python n'a pas la puissance des Mapped/Conditional Types de TS.",
+        "notes": "Génériques et TypedDicts pour l'analyse statique."
+      },
+      "csharp": {
+        "minimal": "public class Repos<T> where T : class { }",
+        "complete": "public class Repositorium<T> where T : class, new() {\n    public T Creer() => new T();\n}",
+        "best_practices": "Appliquer des contraintes strictes sur les génériques (`where T : struct`).",
+        "pitfalls": "Impossibilité de dériver dynamiquement une structure de type à partir d'une autre au moment de la compilation.",
+        "notes": "Génériques conservés au runtime (Reified Generics)."
+      },
+      "java": {
+        "minimal": "public class Boite<T> { private T val; }",
+        "complete": "public class Boite<T extends Number> {\n    private T valeur;\n    public double doubleValue() { return valeur.doubleValue(); }\n}",
+        "best_practices": "Utiliser les wildcards bornés (`? extends T`, `? super T`).",
+        "pitfalls": "Effacement des types (Type Erasure) au moment de la compilation.",
+        "notes": "Génériques avec effacement de types."
+      },
+      "php": {
+        "minimal": "/** @template T */",
+        "complete": "<?php\n/**\n * @template T\n */\nclass Collection {\n    /** @var array<T> */\n    private array $items = [];\n}",
+        "best_practices": "Utiliser PHPDoc avec PHPStan/PSalm pour simuler des génériques complexes.",
+        "pitfalls": "Les génériques ne sont pas vérifiés par le moteur PHP au runtime.",
+        "notes": "Génériques gérés via analyseurs statiques externes."
+      },
+      "vba": {
+        "minimal": "' Pas de génériques natifs (utilisation du type Variant)",
+        "complete": "' VBA utilise le typage dynamique Variant pour simuler les génériques\nPublic Function Identite(val As Variant) As Variant\n    Identite = val\nEnd Function",
+        "best_practices": "Conserver le type Variant en limitant son usage aux fonctions utilitaires.",
+        "pitfalls": "Aucun contrôle de type à la compilation.",
+        "notes": "Absence totale de métaprogrammation par les types."
+      },
+      "cpp": {
+        "minimal": "template<typename T> concept Numerique = std::is_arithmetic_v<T>;",
+        "complete": "#include <concepts>\n\ntemplate<typename T>\nconcept Numerique = std::integral<T> || std::floating_point<T>;\n\ntemplate<Numerique T>\nT additionner(T a, T b) {\n    return a + b;\n}",
+        "best_practices": "Utiliser les Concepts (C++20) pour restreindre les modèles (templates).",
+        "pitfalls": "Messages d'erreurs du compilateur extrêmement verbeux sans concepts.",
+        "notes": "Métaprogrammation par Templates (puissance équivalente à TS au compile-time)."
+      },
+      "c": {
+        "minimal": "#define MAX(a, b) ((a) > (b) ? (a) : (b))",
+        "complete": "// Simulation de génériques via des macros préprocesseur\n#define DECLARE_LISTE(TYPE) \\\ntypedef struct { \\\n    TYPE* elements; \\\n    size_t taille; \\\n} Liste_##TYPE;",
+        "best_practices": "Limiter la métaprogrammation par macro pour conserver la lisibilité du code.",
+        "pitfalls": "Effets de bord multiples lors de l'évaluation des macros.",
+        "notes": "Métaprogrammation limitée au préprocesseur textuel C."
+      },
+      "vb": {
+        "minimal": "Public Class Boite(Of T) : End Class",
+        "complete": "Public Class Repositorium(Of T As Class)\n    Private item As T\nEnd Class",
+        "best_practices": "Restreindre les paramètres de types génériques avec la clause `As`.",
+        "pitfalls": "Pas de types mappés ou conditionnels dynamiques.",
+        "notes": "Génériques reifiés du framework .NET."
+      }
+    }
+  }
+]

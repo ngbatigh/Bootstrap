@@ -1,0 +1,488 @@
+[
+  {
+    "id": "java_syntax_basics_01",
+    "level": 1,
+    "chapter": "1. Syntaxe & Structure de Base",
+    "category": "Briques Fondamentales",
+    "name": "Point d'entrée, Déclaration de Variables et Primitifs vs Objets",
+    "description": "Structure minimale d'un programme (`main`), distinction stricte entre types primitifs (`int`, `double`, `boolean`) et types références (`Integer`, `String`), typage statique strict et déclaration `final`.",
+    "related_concepts": ["cs_syntax_basics_01"],
+    "languages": {
+      "java": {
+        "minimal": "public class Main { public static void main(String[] args) { int x = 10; final String msg = \"Hello\"; } }",
+        "complete": "public class Program {\n    // Point d'entrée standard (Java 21+ autorise le main simplifié)\n    public static void main(String[] args) {\n        // Types primitifs (stockés sur la pile)\n        int compteurPrimitif = 42;\n        boolean estActif = true;\n        \n        // Immutabilité de référence avec final\n        final double PI = 3.14159;\n        \n        // Types Références / Enveloppes (Wrapper classes sur le Tas)\n        Integer compteurObjet = Integer.valueOf(compteurPrimitif); // Autoboxing\n        String message = \"Valeur : \" + compteurObjet;\n        \n        // Inférence de type locale (depuis Java 10)\n        var autoType = \"Incapacité de changer de type après initialisation\";\n        \n        System.out.println(message);\n    }\n}",
+        "best_practices": "Préférer les types primitifs pour les calculs intensifs pour éviter le surcoût de boxing/unboxing, et utiliser `final` sur les variables locales non réassignées.",
+        "pitfalls": "Comparer des objets `String` ou `Integer` avec `==` au lieu de `.equals()`, ce qui compare les adresses mémoire au lieu des valeurs.",
+        "notes": "Langage pivot orienté typage statique nominal sur machine virtuelle (JVM)."
+      },
+      "typescript": {
+        "minimal": "const x: number = 10; const msg: string = \"Hello\";",
+        "complete": "function main(): void {\n    let compteur: number = 42;\n    const estActif: boolean = true;\n    const PI: number = 3.14159;\n    const message: string = `Valeur : ${compteur}`;\n    console.log(message);\n}\nmain();",
+        "best_practices": "Utiliser `const` par défaut et réserver `let` aux variables réassignées.",
+        "pitfalls": "Pas de distinction primitif/objet bas niveau comme en Java (tout dérive de number/string/boolean).",
+        "notes": "Typage statique compilé vers JavaScript sans distinction de mémoire pile/tas pour l'utilisateur."
+      },
+      "javascript": {
+        "minimal": "let x = 10; const msg = \"Hello\";",
+        "complete": "let compteur = 42;\nconst estActif = true;\nconst message = `Valeur : ${compteur}`;\nconsole.log(message);",
+        "best_practices": "Éviter `var` au profit de `const` et `let`.",
+        "pitfalls": "Coercion de type implicite (`42 + \"5\"` donne `\"425\"`).",
+        "notes": "Typage dynamique sans étape de compilation statique."
+      },
+      "python": {
+        "minimal": "x: int = 10; msg: str = \"Hello\"",
+        "complete": "def main() -> None:\n    compteur: int = 42\n    est_actif: bool = True\n    PI: float = 3.14159  # Convention majuscule pour les constantes\n    message: str = f\"Valeur : {compteur}\"\n    print(message)\n\nif __name__ == \"__main__\":\n    main()",
+        "best_practices": "Utiliser les Type Hints pour documenter le code.",
+        "pitfalls": "Les annotations de type sont ignorées à l'exécution.",
+        "notes": "Tout est objet en Python (pas de types primitifs dédiés sur la pile)."
+      },
+      "csharp": {
+        "minimal": "int x = 10; const string msg = \"Hello\";",
+        "complete": "using System;\n\npublic class Program {\n    public static void Main() {\n        int compteur = 42;\n        const double PI = 3.14159;\n        string message = $\"Valeur : {compteur}\";\n        var autoType = \"Inférence C#\";\n        Console.WriteLine(message);\n    }\n}",
+        "best_practices": "Exploiter l'interpolation de chaînes `$\"\"`.",
+        "pitfalls": "Confusion entre les types valeur (`struct`) et types référence (`class`).",
+        "notes": "Structure syntaxique et conceptuelle extrêmement proche de Java."
+      },
+      "cpp": {
+        "minimal": "int x = 10; const std::string msg = \"Hello\";",
+        "complete": "#include <iostream>\n#include <string>\n\nint main() {\n    int compteur = 42;\n    const double PI = 3.14159;\n    std::string message = \"Valeur : \" + std::to_string(compteur);\n    std::cout << message << std::endl;\n    return 0;\n}",
+        "best_practices": "Préférer `constexpr` à `const` pour l'évaluation à la compilation.",
+        "pitfalls": "Variables non initialisées contenant des valeurs indéterminées en mémoire.",
+        "notes": "Gestion directe de la mémoire et compilation native."
+      },
+      "c": {
+        "minimal": "int x = 10; const char* msg = \"Hello\";",
+        "complete": "#include <stdio.h>\n\nint main() {\n    int compteur = 42;\n    const double PI = 3.14159;\n    char message[50];\n    snprintf(message, sizeof(message), \"Valeur : %d\", compteur);\n    printf(\"%s\\n\", message);\n    return 0;\n}",
+        "best_practices": "Toujours spécifier la taille maximale des buffers pour éviter les débordements.",
+        "pitfalls": "Gestion manuelle des chaînes de caractères (pointeurs `char*`).",
+        "notes": "Langage impératif minimaliste sans runtime ni garbage collector."
+      },
+      "php": {
+        "minimal": "$x = 10; const MSG = \"Hello\";",
+        "complete": "<?php\n$compteur = 42;\n$estActif = true;\ndefine('PI', 3.14159);\n$message = \"Valeur : {$compteur}\";\necho $message;",
+        "best_practices": "Activer `declare(strict_types=1);` en haut de fichier.",
+        "pitfalls": "Conversions implicites imprévisibles avec l'opérateur `==`.",
+        "notes": "Langage de script progressivement typé depuis PHP 7/8."
+      },
+      "vba": {
+        "minimal": "Dim x As Long : x = 10 : Const MSG As String = \"Hello\"",
+        "complete": "Option Explicit\n\nPublic Sub Main()\n    Dim compteur As Long\n    Dim estActif As Boolean\n    Const PI As Double = 3.14159\n    \n    compteur = 42\n    estActif = True\n    \n    Dim message As String\n    message = \"Valeur : \" & CStr(compteur)\n    MsgBox message\nEnd Sub",
+        "best_practices": "Exiger `Option Explicit` pour forcer la déclaration de toutes les variables.",
+        "pitfalls": "Oublier de typer une variable qui devient alors un type `Variant` lourd.",
+        "notes": "Typage statique/dynamique basique sous l'environnement Office COM."
+      },
+      "vb": {
+        "minimal": "Dim x As Integer = 10 : Const MSG As String = \"Hello\"",
+        "complete": "Public Module Program\n    Public Sub Main()\n        Dim compteur As Integer = 42\n        Const PI As Double = 3.14159\n        Dim message As String = $\"Valeur : {compteur}\"\n        Console.WriteLine(message)\n    End Sub\nEnd Module",
+        "best_practices": "Définir `Option Strict On` pour désactiver les conversions implicites.",
+        "pitfalls": "Conserver les habitudes de typage lâche issues de VBA.",
+        "notes": "Langage .NET fortement typé à syntaxe historique Visual Basic."
+      }
+    }
+  },
+  {
+    "id": "java_control_flow_matching_01",
+    "level": 1,
+    "chapter": "2. Contrôle de Flux & Pattern Matching",
+    "category": "Briques Fondamentales",
+    "name": "Structures Conditionnelles, Expressions `switch` et Pattern Matching",
+    "description": "Contrôle de flux via `if...else`, évolution de l'instruction `switch` vers l'expression `switch` (Java 14+) et le Pattern Matching avec gardes `when` (Java 21+).",
+    "related_concepts": ["cs_control_flow_matching_01"],
+    "languages": {
+      "java": {
+        "minimal": "String res = switch(val) { case 1 -> \"Un\"; default -> \"Autre\"; };",
+        "complete": "public class Evaluation {\n    public static String analyserValeur(Object obj) {\n        // Switch Expression moderne avec Pattern Matching et clause guard (Java 21+)\n        return switch (obj) {\n            case Integer i when i <= 0 -> \"Entier négatif ou nul : \" + i;\n            case Integer i when i <= 10 -> \"Entier entre 1 et 10 : \" + i;\n            case Integer i -> \"Grand entier : \" + i;\n            case String s when s.isBlank() -> \"Chaîne vide\";\n            case String s -> \"Chaîne : \" + s.toUpperCase();\n            case null -> \"Valeur nulle détectée\";\n            default -> \"Type non supporté : \" + obj.getClass().getName();\n        };\n    }\n}",
+        "best_practices": "Privilégier la syntaxe à flèche `->` dans les `switch` pour éliminer le risque d'oubli de `break` (fallthrough).",
+        "pitfalls": "Mélanger l'ancienne syntaxe `case X:` avec la nouvelle syntaxe à flèche `case X ->` dans un même bloc.",
+        "notes": "Transformation majeure de Java : d'un switch impératif historique vers un Pattern Matching fonctionnel puissant."
+      },
+      "typescript": {
+        "minimal": "const res = val === 1 ? 'Un' : 'Autre';",
+        "complete": "function analyserValeur(obj: unknown): string {\n    if (typeof obj === 'number') {\n        if (obj <= 0) return `Entier négatif ou nul : ${obj}`;\n        if (obj <= 10) return `Entier entre 1 et 10 : ${obj}`;\n        return `Grand entier : ${obj}`;\n    }\n    if (typeof obj === 'string') {\n        return obj.trim() === '' ? 'Chaîne vide' : `Chaîne : ${obj.toUpperCase()}`;\n    }\n    return obj === null ? 'Valeur nulle' : 'Type non supporté';\n}",
+        "best_practices": "Utiliser le Type Narrowing natif de TypeScript dans les blocs conditionnels.",
+        "pitfalls": "Switch classique JS limité à l'égalité stricte sans pattern matching natif sur les types.",
+        "notes": "Affinement des types par garde de type (`typeof`, `instanceof`)."
+      },
+      "javascript": {
+        "minimal": "switch(val) { case 1: console.log('Un'); break; }",
+        "complete": "function analyserValeur(obj) {\n    if (typeof obj === 'number') return obj <= 0 ? 'Négatif' : 'Positif';\n    if (typeof obj === 'string') return `Chaîne : ${obj}`;\n    return 'Autre';\n}",
+        "best_practices": "Préférer les expressions ternaires ou les gardes explicites.",
+        "pitfalls": "Problèmes de fallthrough dans le `switch` traditionnel.",
+        "notes": "Pas de Pattern Matching natif dans le langage standard."
+      },
+      "python": {
+        "minimal": "match val: case 1: print('Un'); case _: print('Autre')",
+        "complete": "def analyser_valeur(obj: object) -> str:\n    match obj:\n        case int(i) if i <= 0:\n            return f\"Entier négatif ou nul : {i}\"\n        case int(i) if i <= 10:\n            return f\"Entier entre 1 et 10 : {i}\"\n        case int(i):\n            return f\"Grand entier : {i}\"\n        case str(s) if not s.strip():\n            return \"Chaîne vide\"\n        case str(s):\n            return f\"Chaîne : {s.upper()}\"\n        case None:\n            return \"Valeur nulle\"\n        case _:\n            return \"Autre type\"",
+        "best_practices": "Utiliser `match/case` (Python 3.10+) pour filtrer types et structures.",
+        "pitfalls": "Confusion entre comparaison de valeur et capture de variable dans un case.",
+        "notes": "Structural Pattern Matching très proche de la syntaxe moderne de Java."
+      },
+      "csharp": {
+        "minimal": "string res = val switch { 1 => \"Un\", _ => \"Autre\" };",
+        "complete": "public static string AnalyserValeur(object obj) => obj switch {\n    int i when i <= 0 => $\"Entier négatif ou nul : {i}\",\n    int i when i <= 10 => $\"Entier entre 1 et 10 : {i}\",\n    int i => $\"Grand entier : {i}\",\n    string s when string.IsNullOrWhiteSpace(s) => \"Chaîne vide\",\n    string s => $\"Chaîne : {s.ToUpper()}\",\n    null => \"Valeur nulle\",\n    _ => \"Autre type\"\n};",
+        "best_practices": "Employer les Switch Expressions avec les relational/property patterns.",
+        "pitfalls": "Oublier le cas par défaut `_` déclenchant une exception à l'exécution si non-exhaustif.",
+        "notes": "Pattern Matching très similaire à Java."
+      },
+      "cpp": {
+        "minimal": "switch(val) { case 1: break; default: break; }",
+        "complete": "#include <variant>\n#include <string>\n#include <iostream>\n\nusing VarType = std::variant<int, std::string>;\n\nstd::string analyser(const VarType& v) {\n    return std::visit([](auto&& arg) -> std::string {\n        using T = std::decay_t<decltype(arg)>;\n        if constexpr (std::is_same_v<T, int>) return \"Int : \" + std::to_string(arg);\n        else if constexpr (std::is_same_v<T, std::string>) return \"String : \" + arg;\n    }, v);\n}",
+        "best_practices": "Utiliser `std::visit` et `if constexpr` pour le dispatch par type à la compilation.",
+        "pitfalls": "`switch` natif limité aux types entiers et énumérations.",
+        "notes": "Dispatch de type manuel ou via `std::variant`."
+      },
+      "c": {
+        "minimal": "switch(val) { case 1: break; default: break; }",
+        "complete": "#include <stdio.h>\n\nvoid analyser(int val) {\n    switch (val) {\n        case 1: printf(\"Un\\n\"); break;\n        case 2: printf(\"Deux\\n\"); break;\n        default: printf(\"Autre\\n\"); break;\n    }\n}",
+        "best_practices": "Renseigner systématiquement la branche `default`.",
+        "pitfalls": "Impossible d'effectuer un `switch` sur des chaînes de caractères ou des types complexes.",
+        "notes": "Sauts conditionnels bas niveau par table de saut."
+      },
+      "php": {
+        "minimal": "$res = match($val) { 1 => 'Un', default => 'Autre' };",
+        "complete": "<?php\nfunction analyserValeur(mixed $obj): string {\n    return match(true) {\n        is_int($obj) && $obj <= 0 => \"Entier négatif : {$obj}\",\n        is_int($obj) => \"Entier : {$obj}\",\n        is_string($obj) => \"Chaîne : \" . strtoupper($obj),\n        is_null($obj) => \"Valeur nulle\",\n        default => \"Autre\"\n    };\n}",
+        "best_practices": "Privilégier l'expression `match` (PHP 8+) qui effectue des comparaisons strictes (`===`).",
+        "pitfalls": "`switch` classique PHP effectue des comparaisons lâches (`==`) source de bugs.",
+        "notes": "Expression `match` puissante pour le filtrage."
+      },
+      "vba": {
+        "minimal": "Select Case val : Case 1 : MsgBox \"Un\" : Case Else : End Select",
+        "complete": "Public Function AnalyserValeur(val As Variant) As String\n    Select Case VarType(val)\n        Case vbInteger, vbLong\n            If val <= 0 Then\n                AnalyserValeur = \"Entier négatif\"\n            Else\n                AnalyserValeur = \"Entier positif\"\n            End If\n        Case vbString\n            AnalyserValeur = \"Chaîne : \" & UCase(val)\n        Case vbNull, vbEmpty\n            AnalyserValeur = \"Nul\"\n        Case Else\n            AnalyserValeur = \"Autre\"\n    End Select\nEnd Function",
+        "best_practices": "Combiner `Select Case VarType()` pour inspecter les types dynamiques `Variant`.",
+        "pitfalls": "Pas de filtrage direct par type natif dans le `Select Case`.",
+        "notes": "Interrogation manuelle du type de données runtime."
+      },
+      "vb": {
+        "minimal": "Select Case val : Case 1 : Console.WriteLine(\"Un\") : End Select",
+        "complete": "Public Function AnalyserValeur(obj As Object) As String\n    Select Case True\n        Case TypeOf obj Is Integer AndAlso CInt(obj) <= 0\n            Return \"Entier négatif\"\n        Case TypeOf obj Is String\n            Return $\"Chaîne : {obj.ToString().ToUpper()}\"\n        Case Else\n            Return \"Autre\"\n    End Select\nEnd Function",
+        "best_practices": "Utiliser `Select Case True` pour évaluer des conditions complexes avec `TypeOf`.",
+        "pitfalls": "Syntaxe plus verbeuse que les switch expressions modernes C# ou Java.",
+        "notes": "Mise en œuvre du filtrage conditionnel sous .NET."
+      }
+    }
+  },
+  {
+    "id": "java_streams_collections_01",
+    "level": 2,
+    "chapter": "3. Collections, Streams & Traitement Déclaratif",
+    "category": "Paradigmes Fonctionnels",
+    "name": "API Stream, Collections Immuables et Opérations d'Ordre Supérieur",
+    "description": "Traitement de données séquentiel ou parallèle via `java.util.stream.Stream`, méthodes intermédiaires (`filter`, `map`) et terminales (`collect`, `reduce`), et collections immuables (`List.of()`).",
+    "related_concepts": ["cs_linq_collections_01"],
+    "languages": {
+      "java": {
+        "minimal": "List<Integer> carres = list.stream().filter(x -> x % 2 == 0).map(x -> x * x).toList();",
+        "complete": "import java.util.List;\nimport java.util.Map;\nimport java.util.stream.Collectors;\n\npublic class TraitementStream {\n    public static int calculerSommeCarresPairs(List<Integer> nombres) {\n        // Pipelines déclaratifs d'opérations sur collections\n        return nombres.stream()\n            .filter(n -> n != null)\n            .filter(n -> n % 2 == 0)\n            .mapToInt(n -> n * n) // Évite le boxing Integer inutile\n            .sum();\n    }\n    \n    public static Map<Boolean, List<Integer>> partitionner(List<Integer> nombres) {\n        // Création d'une collection immuable avec List.of() (Java 9+)\n        List<Integer> source = List.of(1, 2, 3, 4, 5, 6);\n        \n        return source.stream()\n            .collect(Collectors.partitioningBy(n -> n % 2 == 0));\n    }\n}",
+        "best_practices": "Utiliser les streams spécialisés (`IntStream`, `DoubleStream`) pour éviter le boxing d'objets et privilégier `.toList()` (Java 16+) au lieu de `.collect(Collectors.toList())`.",
+        "pitfalls": "Tenter de réutiliser un Stream déjà consommé, ce qui déclenche une `IllegalStateException`.",
+        "notes": "L'API Stream (Java 8+) a introduit le style fonctionnel déclaratif au cœur des collections Java."
+      },
+      "typescript": {
+        "minimal": "const carres = nums.filter(x => x % 2 === 0).map(x => x ** 2);",
+        "complete": "function calculerSommeCarresPairs(nombres: readonly number[]): number {\n    return nombres\n        .filter((n): n is number => n !== null && n % 2 === 0)\n        .map(n => n * n)\n        .reduce((acc, val) => acc + val, 0);\n}",
+        "best_practices": "Privilégier les méthodes natives d'Array et l'immutabilité avec `readonly`.",
+        "pitfalls": "Création de tableaux intermédiaires en mémoire à chaque étape du chaînage (contrairement à l'évaluation paresseuse des Streams Java).",
+        "notes": "Chaînage direct sur le prototype des tableaux JS."
+      },
+      "javascript": {
+        "minimal": "const carres = nums.filter(x => x % 2 === 0).map(x => x ** 2);",
+        "complete": "function calculerSommeCarresPairs(nombres) {\n    return nombres\n        .filter(n => n !== null && n % 2 === 0)\n        .map(n => n * n)\n        .reduce((acc, val) => acc + val, 0);\n}",
+        "best_practices": "Privilégier la clarté du chaînage à la boucle for impérative.",
+        "pitfalls": "Chaque méthode de tableau produit une nouvelle instance de tableau.",
+        "notes": "Transformations de collections natives."
+      },
+      "python": {
+        "minimal": "carres = [x**2 for x in nums if x % 2 == 0]",
+        "complete": "from typing import Sequence\n\ndef calculer_somme_carres_pairs(nombres: Sequence[int]) -> int:\n    # Utilisation d'une expression génératrice (évaluation paresseuse)\n    return sum(n * n for n in nombres if n is not None and n % 2 == 0)",
+        "best_practices": "Utiliser les compréhensions de listes ou générateurs plutôt que `map()` et `filter()`.",
+        "pitfalls": "Créer de grandes listes en mémoire inutilement si une évaluation paresseuse suffit.",
+        "notes": "Les générateurs fournissent l'évaluation paresseuse équivalente aux Streams Java."
+      },
+      "csharp": {
+        "minimal": "var carres = nums.Where(x => x % 2 == 0).Select(x => x * x).ToList();",
+        "complete": "using System.Collections.Generic;\nusing System.Linq;\n\npublic static class Traitement {\n    public static int CalculerSommeCarresPairs(IEnumerable<int> nombres) {\n        // LINQ (Language Integrated Query) offre une évaluation paresseuse native\n        return nombres\n            .Where(n => n % 2 == 0)\n            .Select(n => n * n)\n            .Sum();\n    }\n}",
+        "best_practices": "Utiliser `IEnumerable<T>` pour profiter de l'exécution différée.",
+        "pitfalls": "Multiple énumérations sur une même requête LINQ entraînant des surcoûts d'exécution.",
+        "notes": "LINQ est l'équivalent direct et ultra-intégré de l'API Stream de Java."
+      },
+      "cpp": {
+        "minimal": "// C++20 Ranges\nauto carres = nums | std::views::filter([](int x){return x%2==0;}) | std::views::transform([](int x){return x*x;});",
+        "complete": "#include <vector>\n#include <numeric>\n#include <ranges>\n\nint calculerSommeCarresPairs(const std::vector<int>& nombres) {\n    auto carres = nombres \n        | std::views::filter([](int n) { return n % 2 == 0; })\n        | std::views::transform([](int n) { return n * n; });\n    return std::accumulate(carres.begin(), carres.end(), 0);\n}",
+        "best_practices": "Utiliser C++20 Ranges pour composer des pipelines sans allocations.",
+        "pitfalls": "Accéder à une vue (Range View) dont le conteneur sous-jacent a été détruit.",
+        "notes": "Composition paresseuse zéro-allocation."
+      },
+      "c": {
+        "minimal": "for(int i=0; i<len; i++) { if(arr[i]%2==0) sum += arr[i]*arr[i]; }",
+        "complete": "#include <stdio.h>\n#include <stddef.h>\n\nint calculer_somme_carres_pairs(const int* nombres, size_t taille) {\n    int somme = 0;\n    for (size_t i = 0; i < taille; i++) {\n        if (nombres[i] % 2 == 0) {\n            somme += nombres[i] * nombres[i];\n        }\n    }\n    return somme;\n}",
+        "best_practices": "Passer un pointeur constant `const int*` pour s'assurer que le tableau n'est pas altéré.",
+        "pitfalls": "Pas d'abstractions de collections ni d'évaluation paresseuse native.",
+        "notes": "Modèle impératif pur sans bibliothèque standard orientée flux."
+      },
+      "php": {
+        "minimal": "$carres = array_map(fn($x)=>$x**2, array_filter($nums, fn($x)=>$x%2==0));",
+        "complete": "<?php\nfunction calculerSommeCarresPairs(array $nombres): int {\n    $pairs = array_filter($nombres, fn($n) => $n !== null && $n % 2 === 0);\n    $carres = array_map(fn($n) => $n * $n, $pairs);\n    return array_sum($carres);\n}",
+        "best_practices": "Utiliser les Arrow Functions (`fn() => ...`) introduites en PHP 7.4.",
+        "pitfalls": "L'ordre désordonné des arguments entre `array_filter` et `array_map`.",
+        "notes": "Fonctions de manipulation de tableaux basiques."
+      },
+      "vba": {
+        "minimal": "For i = LBound(arr) To UBound(arr) : If arr(i) Mod 2 = 0 Then sum = sum + arr(i)^2",
+        "complete": "Public Function CalculerSommeCarresPairs(nombres As Variant) As Long\n    Dim i As Long\n    Dim somme As Long\n    somme = 0\n    \n    If IsArray(nombres) Then\n        For i = LBound(nombres) To UBound(nombres)\n            If nombres(i) Mod 2 = 0 Then\n                somme = somme + (nombres(i) * nombres(i))\n            End If\n        Next i\n    End If\n    \n    CalculerSommeCarresPairs = somme\nEnd Function",
+        "best_practices": "Vérifier la validité du tableau avec `IsArray` avant d'extraire les bornes.",
+        "pitfalls": "Absence totale de fonctions d'ordre supérieur ou d'itérateurs déclaratifs.",
+        "notes": "Itération impérative manuelle via boucles `For`."
+      },
+      "vb": {
+        "minimal": "Dim carres = nums.Where(Function(x) x Mod 2 = 0).Select(Function(x) x * x)",
+        "complete": "Imports System.Linq\n\nPublic Module Traitement\n    Public Function CalculerSommeCarresPairs(nombres As IEnumerable(Of Integer)) As Integer\n        Return nombres.Where(Function(n) n Mod 2 = 0).Select(Function(n) n * n).Sum()\n    End Function\nEnd Module",
+        "best_practices": "Préférer la syntaxe de méthode LINQ avec expressions lambda.",
+        "pitfalls": "Méconnaissance de l'évaluation différée.",
+        "notes": "Accès complet à LINQ sous l'écosystème .NET."
+      }
+    }
+  },
+  {
+    "id": "java_oop_architecture_01",
+    "level": 3,
+    "chapter": "4. Modèle Orienté Objet & Encapuslation",
+    "category": "POO & Architecture",
+    "name": "Classes, Interfaces, Classes Scellées (`sealed`), Records et Abstraction",
+    "description": "Encapsulation par modificateurs (`private`, `protected`, `public`, package-private), interfaces avec méthodes par défaut (`default`), Records immuables (Java 14+) et hiérarchies de classes scellées (`sealed...permits`, Java 17+).",
+    "related_concepts": ["cs_oop_architecture_01"],
+    "languages": {
+      "java": {
+        "minimal": "public record Personne(String nom, int age) {}\npublic sealed interface Forme permits Cercle, Rectangle {}",
+        "complete": "// 1. Structure de données immuable automatique via Record (Java 14+)\npublic record CompteUtilisateur(String id, String email) {\n    // Constructeur compact pour validation\n    public CompteUtilisateur {\n        if (email == null || !email.contains(\"@\")) {\n            throw new IllegalArgumentException(\"Email invalide\");\n        }\n    }\n}\n\n// 2. Control de l'héritage strict via Sealed Interfaces (Java 17+)\npublic sealed interface ResultatOpération permits Succes, Echec {}\n\npublic final record Succes(String message) implements ResultatOpération {}\npublic final record Echec(String erreur, Throwable cause) implements ResultatOpération {}\n\n// 3. Classe classique démontrant l'encapsulation JavaBeans\npublic class ServiceUtilisateur {\n    private final String version = \"1.0\";\n    \n    public ResultatOpération exécuter() {\n        return new Succes(\"Opération réussie en v\" + version);\n    }\n}",
+        "best_practices": "Remplacer les classes de données verbeuses (DTOs) par des `record` et utiliser `sealed` pour créer des hiérarchies fermées sûres au niveau du typage.",
+        "pitfalls": "Déclarer toutes les variables de classe `public` ou abuser des setters mutateurs.",
+        "notes": "Java a évolué de la POO verbeuse classique vers un modèle hybride intégrant immutabilité native (Records) et contrôle d'héritage strict (Sealed Classes)."
+      },
+      "typescript": {
+        "minimal": "type Personne = { readonly nom: string; readonly age: number };",
+        "complete": "export type CompteUtilisateur = {\n    readonly id: string;\n    readonly email: string;\n};\n\nexport type ResultatOperation = \n    | { type: 'SUCCES'; message: string }\n    | { type: 'ECHEC'; erreur: string; cause?: Error };\n\nexport class ServiceUtilisateur {\n    private readonly version: string = '1.0';\n    \n    public executer(): ResultatOperation {\n        return { type: 'SUCCES', message: `Opération réussie en v${this.version}` };\n    }\n}",
+        "best_practices": "Privilégier les types unions discriminés plutôt que les hiérarchies de classes d'héritage.",
+        "pitfalls": "Les modificateurs d'accès TS (`private`) s'effacent à la transpilation (utiliser `#` pour de la vraie confidentialité runtime).",
+        "notes": "Modèle POO à typage structurel."
+      },
+      "javascript": {
+        "minimal": "class Personne { constructor(nom, age) { this.nom = nom; this.age = age; } }",
+        "complete": "class ServiceUtilisateur {\n    #version = '1.0'; // Champ privé natif ECMAScript\n    \n    executer() {\n        return { succes: true, message: `Opération réussie en v${this.#version}` };\n    }\n}",
+        "best_practices": "Utiliser les champs privés `#` pour l'encapsulation.",
+        "pitfalls": "Absence native de records immuables ou de contrôle d'héritage scellé.",
+        "notes": "POO basée sur le prototypage avec syntaxe sucre `class`."
+      },
+      "python": {
+        "minimal": "from dataclasses import dataclass\n@dataclass(frozen=True)\nclass Personne:\n    nom: str\n    age: int",
+        "complete": "from dataclasses import dataclass\nfrom typing import Union\n\n@dataclass(frozen=True)\nclass CompteUtilisateur:\n    id: str\n    email: str\n    \n    def __post_init__(self):\n        if \"@\" not in self.email:\n            raise ValueError(\"Email invalide\")\n\n@dataclass(frozen=True)\nclass Succes:\n    message: str\n\n@dataclass(frozen=True)\nclass Echec:\n    erreur: str\n\nResultatOperation = Union[Succes, Echec]",
+        "best_practices": "Utiliser `@dataclass(frozen=True)` pour créer des équivalents aux Records Java.",
+        "pitfalls": "L'encapsulation privée (`__var`) est conventionnelle et contournable.",
+        "notes": "POO dynamique avec support d'immutabilité via Dataclasses."
+      },
+      "csharp": {
+        "minimal": "public record Personne(string Nom, int Age);\npublic abstract record ResultatOperation;",
+        "complete": "public record CompteUtilisateur(string Id, string Email) {\n    public string Email { get; } = Email.Contains('@') ? Email : throw new ArgumentException(\"Email invalide\");\n}\n\n// Records de hiérarchie pour simuler Sealed Interfaces\npublic abstract record ResultatOperation;\npublic sealed record Succes(string Message) : ResultatOperation;\npublic sealed record Echec(string Erreur, Exception? Cause = null) : ResultatOperation;",
+        "best_practices": "Utiliser les `positional records` C# pour les DTOs immuables.",
+        "pitfalls": "Confusion entre `sealed class` (empoche tout héritage) et les `sealed interfaces` de Java.",
+        "notes": "Fonctionnalités de Records et de scellement virtuellement identiques à Java."
+      },
+      "cpp": {
+        "minimal": "struct Personne { std::string nom; int age; };",
+        "complete": "#include <string>\n#include <stdexcept>\n#include <variant>\n\nstruct CompteUtilisateur {\n    const std::string id;\n    const std::string email;\n    CompteUtilisateur(std::string i, std::string e) : id(i), email(e) {\n        if (e.find('@') == std::string::npos) throw std::invalid_argument(\"Email invalide\");\n    }\n};\n\nstruct Succes { std::string message; };\nstruct Echec { std::string erreur; };\nusing ResultatOperation = std::variant<Succes, Echec>;",
+        "best_practices": "Rendre les membres `const` ou utiliser `std::variant` pour représenter des types sommes.",
+        "pitfalls": "Absence de mots-clés de records automatiques (génération manuelle des constructeurs).",
+        "notes": "Implémentation manuelle de l'immutabilité et des types sommes."
+      },
+      "c": {
+        "minimal": "typedef struct { const char* nom; int age; } Personne;",
+        "complete": "#include <stdio.h>\n\ntypedef struct {\n    const char* id;\n    const char* email;\n} CompteUtilisateur;\n\ntypedef enum { TYPE_SUCCES, TYPE_ECHEC } TypeResultat;\ntypedef struct {\n    TypeResultat type;\n    union {\n        const char* message;\n        const char* erreur;\n    } payload;\n} ResultatOperation;",
+        "best_practices": "Utiliser des structures associées à des fonctions de fabrique.",
+        "pitfalls": "Aucune encapsulation au runtime : tous les membres de structures sont accessibles.",
+        "notes": "Procéural pur simulant les objets via `struct` et `union`."
+      },
+      "php": {
+        "minimal": "readonly class Personne { public function __construct(public string $nom) {} }",
+        "complete": "<?php\nreadonly class CompteUtilisateur {\n    public function __construct(public string $id, public string $email) {\n        if (!str_contains($email, '@')) throw new InvalidArgumentException(\"Email invalide\");\n    }\n}\n\nenum ResultatOperation {\n    case Succes;\n    case Echec;\n}",
+        "best_practices": "Utiliser les `readonly class` introduites en PHP 8.2 pour garantir l'immutabilité.",
+        "pitfalls": "Absence de Vrais Records auto-générateurs d'égalités/hashcode.",
+        "notes": "Immutabilité de classe via `readonly`."
+      },
+      "vba": {
+        "minimal": "' Module de classe clsPersonne.cls\nPrivate m_Nom As String\nPublic Property Get Nom() As String : Nom = m_Nom : End Property",
+        "complete": "' Module de Classe clsCompteUtilisateur.cls\nOption Explicit\nPrivate m_id As String\nPrivate m_email As String\n\nPublic Sub Init(id As String, email As String)\n    If InStr(email, \"@\") = 0 Then Err.Raise vbObjectError + 1, , \"Email invalide\"\n    m_id = id\n    m_email = email\nEnd Sub\n\nPublic Property Get Id() As String : Id = m_id : End Property\nPublic Property Get Email() As String : Email = m_email : End Property",
+        "best_practices": "Masquer les variables membres derrière des `Property Get` sans définir de `Property Let` pour simuler l'immutabilité.",
+        "pitfalls": "Obligation de passer par une méthode `Init` personnalisée car VBA n'a pas de constructeurs paramétrés.",
+        "notes": "POO basée sur les modules de classes `.cls` COM."
+      },
+      "vb": {
+        "minimal": "Public Record Personne(Nom As String, Age As Integer)",
+        "complete": "Public Record CompteUtilisateur(Id As String, Email As String)\n    Public Sub New(id As String, email As String)\n        Me.New(id, email)\n        If Not email.Contains(\"@\"c) Then Throw New ArgumentException(\"Email invalide\")\n    End Sub\nEnd Record",
+        "best_practices": "Utiliser le mot-clé `Record` disponible en VB.NET moderne.",
+        "pitfalls": "Mélanger les classes de mutateurs classiques avec la sémantique de valeur des Records.",
+        "notes": "Support des Records .NET sous syntaxe VB."
+      }
+    }
+  },
+  {
+    "id": "java_concurrency_threads_01",
+    "level": 4,
+    "chapter": "5. Concurrence, Asynchronisme & Threads Virtuels",
+    "category": "Gestion de Concurrence",
+    "name": "Threads Plateforme vs Virtuels (`Loom`), Executores et Futures",
+    "description": "Gestion de la concurrence via threads système lourds (`Thread`), exécution asynchrone non-bloquante (`CompletableFuture`), et parallélisme massif ultra-léger via les Threads Virtuels / Projet Loom (Java 21+).",
+    "related_concepts": ["cs_concurrency_async_01"],
+    "languages": {
+      "java": {
+        "minimal": "Thread.startVirtualThread(() -> System.out.println(\"Tâche légère\"));",
+        "complete": "import java.util.concurrent.Executors;\nimport java.util.concurrent.CompletableFuture;\n\npublic class ConcurrenceDemo {\n    public static void exécuterTâchesMassives() {\n        // Exploitation des Threads Virtuels (Projet Loom - Java 21+)\n        // Permet de lancer des millions de threads simultanés gérés par la JVM\n        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n            for (int i = 0; i < 10_000; i++) {\n                final int taskId = i;\n                executor.submit(() -> {\n                    Thread.sleep(1000); // Blocage non-coûteux sur Virtual Thread\n                    return \"Résultat : \" + taskId;\n                });\n            }\n        } // Fermeture automatique avec attente des tâches (Structured Concurrency)\n    }\n    \n    public static CompletableFuture<String> traiterAsynchrone() {\n        // Approche Asynchrone réactive classique\n        return CompletableFuture.supplyAsync(() -> \"Données chargées\")\n            .thenApply(res -> res + \" -> Traitées\");\n    }\n}",
+        "best_practices": "Utiliser `Executors.newVirtualThreadPerTaskExecutor()` pour les opérations d'I/O bloquantes au lieu de gérer des pools de threads plateformes complexes.",
+        "pitfalls": "Utiliser `synchronized` à l'intérieur d'un thread virtuel s'il effectue des I/O lourdes, ce qui risque de bloquer le thread porteur (Thread Pinning) ; préférer `ReentrantLock`.",
+        "notes": "Java réinvente sa concurrence avec les Virtual Threads : le code reste synchrone et très simple à lire, mais s'exécute avec les performances de l'asynchrone non-bloquant."
+      },
+      "typescript": {
+        "minimal": "const delay = (ms: number) => new Promise(r => setTimeout(r, ms));",
+        "complete": "async function exécuterTâchesMassives(): Promise<string[]> {\n    const promesses = Array.from({ length: 10_000 }, async (_, i) => {\n        await new Promise(resolve => setTimeout(resolve, 1000));\n        return `Résultat : ${i}`;\n    });\n    return Promise.all(promesses);\n}",
+        "best_practices": "Privilégier `Promise.all` ou les Web Workers si du calcul CPU intensif est requis.",
+        "pitfalls": "Confondre l'asynchronisme mono-thread sur Event Loop avec le vrai multithreading d'arrière-plan.",
+        "notes": "Modèle mono-thread asynchrone non-bloquant guidé par l'Event Loop."
+      },
+      "javascript": {
+        "minimal": "setTimeout(() => console.log('Tâche'), 1000);",
+        "complete": "async function exécuterTâchesMassives() {\n    const taches = Array.from({ length: 1000 }, (_, i) => \n        new Promise(r => setTimeout(() => r(`Tâche ${i}`), 1000))\n    );\n    return Promise.all(taches);\n}",
+        "best_practices": "Utiliser `async/await` pour maintenir un code lisible.",
+        "pitfalls": "Bloquer la boucle d'événements avec des boucles de calcul intensif.",
+        "notes": "Event Loop coopératif mono-thread."
+      },
+      "python": {
+        "minimal": "import asyncio; await asyncio.sleep(1)",
+        "complete": "import asyncio\n\nasync def tache(task_id: int) -> str:\n    await asyncio.sleep(1)\n    return f\"Résultat : {task_id}\"\n\nasync def exécuter_massif():\n    results = await asyncio.gather(*(tache(i) for i in range(10_000)))\n    return results",
+        "best_practices": "Utiliser `asyncio` pour l'I/O et `multiprocessing` pour le calcul lourd (contournement du GIL).",
+        "pitfalls": "Bloquer la boucle d'événements `asyncio` avec un appel synchrone.",
+        "notes": "Boucle d'événements coopérative similaire au modèle JS."
+      },
+      "csharp": {
+        "minimal": "await Task.Delay(1000);",
+        "complete": "using System.Threading.Tasks;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static async Task<string[]> ExecuterTachesMassivesAsync() {\n    var taches = Enumerable.Range(0, 10_000).Select(async i => {\n        await Task.Delay(1000);\n        return $\"Résultat : {i}\";\n    });\n    return await Task.WhenAll(taches);\n}",
+        "best_practices": "Utiliser `Task.Run` pour déporter du travail CPU sur le ThreadPool .NET.",
+        "pitfalls": "Appeler `.Result` ou `.Wait()` créant des risques de deadlocks.",
+        "notes": "Asynchronisme fluide basé sur les Tâches (TPL) et le mot-clé `await`."
+      },
+      "cpp": {
+        "minimal": "std::thread t([]{ ... }); t.join();",
+        "complete": "#include <iostream>\n#include <vector>\n#include <future>\n#include <chrono>\n\nvoid executerMultiThreads() {\n    std::vector<std::future<std::string>> futures;\n    for (int i = 0; i < 100; ++i) {\n        futures.push_back(std::async(std::launch::async, [i]() {\n            std::this_thread::sleep_for(std::chrono::seconds(1));\n            return \"Résultat : \" + std::to_string(i);\n        }));\n    }\n}",
+        "best_practices": "Utiliser des pools de threads plutôt que d'instancier manuellement `std::thread`.",
+        "pitfalls": "Détruire un `std::thread` sans l'avoir joint (`join()`) ou détaché (`detach()`).",
+        "notes": "Multithreading natif OS bas niveau."
+      },
+      "c": {
+        "minimal": "pthread_t thread; pthread_create(&thread, NULL, func, NULL);",
+        "complete": "#include <pthread.h>\n#include <stdio.h>\n#include <unistd.h>\n\nvoid* travail(void* arg) {\n    sleep(1);\n    printf(\"Tâche exécutée\\n\");\n    return NULL;\n}\n\nint main() {\n    pthread_t thread;\n    pthread_create(&thread, NULL, travail, NULL);\n    pthread_join(thread, NULL);\n    return 0;\n}",
+        "best_practices": "Protéger rigoureusement toutes les zones de mémoire partagées via `pthread_mutex_t`.",
+        "pitfalls": "Créer trop de threads OS épuisant les ressources de mémoire du système.",
+        "notes": "Threads POSIX natifs bas niveau."
+      },
+      "php": {
+        "minimal": "// Fibers PHP 8.1+",
+        "complete": "<?php\n// Modèle d'exécution séquentiel mono-requête synchrone par défaut\nsleep(1);\necho \"Tâche terminée\";",
+        "best_practices": "Passer par un serveur d'application comme Swoole pour gérer de l'I/O asynchrone concurrente.",
+        "pitfalls": "Tenter de faire du multithreading partagé natif en PHP Web standard.",
+        "notes": "Exécution synchrone par requête."
+      },
+      "vba": {
+        "minimal": "Application.OnTime Now + TimeValue(\"00:00:01\"), \"Macro\"",
+        "complete": "Public Sub ExecuterDiffere()\n    ' Simulation de tâche asynchrone non-bloquante\n    Application.OnTime Now + TimeValue(\"00:00:01\"), \"TraiterRappel\"\nEnd Sub\n\nPublic Sub TraiterRappel()\n    MsgBox \"Tâche exécutée\"\nEnd Sub",
+        "best_practices": "Libérer l'IHM avec `DoEvents` lors de boucles de traitement très longues.",
+        "pitfalls": "VBA est strictement mono-thread ; aucun vrai parallélisme n'est possible.",
+        "notes": "Mono-thread strict sous environnement COM Office."
+      },
+      "vb": {
+        "minimal": "Dim t = Task.Run(Sub() Console.WriteLine(\"OK\"))",
+        "complete": "Imports System.Threading.Tasks\n\nPublic Module Concurrence\n    Public Async Function ExecuterMassifAsync() As Task\n        Await Task.Delay(1000)\n        Console.WriteLine(\"Tâche terminée\")\n    End Function\nEnd Module",
+        "best_practices": "Exploiter le modèle `Async/Await` de .NET.",
+        "pitfalls": "Confusion avec l'ancienne planification `OnTime` de VBA.",
+        "notes": "Support multithreading complet sous .NET."
+      }
+    }
+  },
+  {
+    "id": "java_generics_reflection_01",
+    "level": 5,
+    "chapter": "6. Génériques, Réflexion & Métaprogrammation",
+    "category": "Système de Types Avancé",
+    "name": "Génériques (Wildcards), Effacement de Types (Erasure) et Réflexion/Annotations",
+    "description": "Programmation générique rehaussée par les variances (`? extends T`, `? super T`), contrainte d'effacement de type au runtime (Type Erasure), et introspection via l'API Reflection et Annotations.",
+    "related_concepts": ["cs_generics_reflection_01"],
+    "languages": {
+      "java": {
+        "minimal": "public class Boite<T> { private T contenu; }\nList<? extends Number> list = new ArrayList<Integer>();",
+        "complete": "import java.lang.annotation.*;\nimport java.lang.reflect.Field;\nimport java.util.List;\n\n// 1. Annotation personnalisée pour la métaprogrammation\n@Retention(RetentionPolicy.RUNTIME)\n@Target(ElementType.FIELD)\n@interface ValiderLongueur { int max(); }\n\n// 2. Class générique avec variance (PECS: Producer Extends, Consumer Super)\npublic class GestionnaireDonnees<T> {\n    \n    public static void copierNombres(List<? extends Number> source, List<? super Number> destination) {\n        destination.addAll(source);\n    }\n    \n    // 3. Inspection par Réflexion au runtime\n    public static void inspecterObjet(Object obj) throws Exception {\n        Class<?> clazz = obj.getClass();\n        for (Field champ : clazz.getDeclaredFields()) {\n            champ.setAccessible(true);\n            if (champ.isAnnotationPresent(ValiderLongueur.class)) {\n                ValiderLongueur annot = champ.getAnnotation(ValiderLongueur.class);\n                String val = (String) champ.get(obj);\n                if (val != null && val.length() > annot.max()) {\n                    throw new IllegalStateException(\"Champ trop long : \" + champ.getName());\n                }\n            }\n        }\n    }\n}",
+        "best_practices": "Appliquer la règle PECS (**P**roducer **E**xtends, **C**onsumer **S**uper) pour concevoir des API génériques souples.",
+        "pitfalls": "Tenter d'instancier un type générique directement (`new T()`) ou vérifier son type au runtime (`obj instanceof T`), ce qui est impossible à cause de l'effacement de types (Type Erasure).",
+        "notes": "Les génériques Java sont vérifiés à la compilation puis effacés au bytecode JVM pour garantir la rétrocompatibilité."
+      },
+      "typescript": {
+        "minimal": "class Boite<T> { content!: T; }\ntype Extrait<T> = T extends Array<infer U> ? U : T;",
+        "complete": "function copierNombres<T extends number>(source: readonly T[]): T[] {\n    return [...source];\n}\n\n// TypeScript permet de la métaprogrammation poussée au compilateur (Type-Level Programming)\ntype PartialExceptId<T> = Partial<T> & { id: string };",
+        "best_practices": "Exploiter les types conditionnels et mapped types sans surcharger le compilateur.",
+        "pitfalls": "Toutes les annotations de type s'effacent en JS (pas d'introspection native basée sur les types TS au runtime sans reflect-metadata).",
+        "notes": "Système de types génériques structurel avec effacement complet à la compilation."
+      },
+      "javascript": {
+        "minimal": "// Pas de génériques statiques",
+        "complete": "function inspecterObjet(obj) {\n    for (let cle in obj) {\n        console.log(`Clé: ${cle}, Valeur: ${obj[cle]}`);\n    }\n}",
+        "best_practices": "Inspecter la structure des objets avec `Object.keys()` ou `Reflect`.",
+        "pitfalls": "Aucun contrôle de génériques à la compilation.",
+        "notes": "Inspection dynamique d'objets native (Proxy, Reflect)."
+      },
+      "python": {
+        "minimal": "from typing import TypeVar; T = TypeVar('T')",
+        "complete": "from typing import TypeVar, Generic, List\n\nT = TypeVar('T', bound=number) # Borné\n\nclass Boite(Generic[T]):\n    def __init__(self, contenu: T):\n        self.contenu = contenu\n\n# Introspection / Métaprogrammation dynamique\ndef inspecter(obj: object) -> None:\n    attrs = [a for a in dir(obj) if not a.startswith('__')]\n    print(\"Attributs :\", attrs)",
+        "best_practices": "Utiliser `typing.TypeVar` pour la généricité guidée par Mypy.",
+        "pitfalls": "Les génériques n'ont aucun effet de blocage runtime.",
+        "notes": "Génériques indicatifs pour les analyseurs statiques et introspection dynamique riche."
+      },
+      "csharp": {
+        "minimal": "public class Boite<T> { private T contenu; }",
+        "complete": "using System;\nusing System.Reflection;\n\npublic class Boite<T> where T : class {\n    private T _contenu;\n    \n    public static void Inspecter<U>(U obj) {\n        Type type = typeof(U); // Type réifié conservé au runtime !\n        Console.WriteLine($\"Type réel : {type.FullName}\");\n    }\n}",
+        "best_practices": "Utiliser la réification des types génériques .NET pour créer de nouvelles instances `new T()`.",
+        "pitfalls": "Incompatibilité de mentalité par rapport à l'effacement de types de Java.",
+        "notes": "Génériques conservés en mémoire au runtime (Reified Generics)."
+      },
+      "cpp": {
+        "minimal": "template<typename T> class Boite { T contenu; };",
+        "complete": "#include <iostream>\n#include <typeinfo>\n\ntemplate<typename T>\nclass Boite {\npublic:\n    T contenu;\n    void afficherType() {\n        std::cout << typeid(T).name() << std::endl;\n    }\n};",
+        "best_practices": "Privilégier les Concepts C++20 pour poser des contraintes claires sur les paramètres de templates.",
+        "pitfalls": "Instanciation de code distinct par le compilateur pour chaque type de template utilisé (Monomorphisation / instanciation lourde).",
+        "notes": "Templates générateurs de code à la compilation sans effacement."
+      },
+      "c": {
+        "minimal": "#define BOITE(T) struct { T contenu; }",
+        "complete": "#include <stdio.h>\n\n// Simulation de généricité par pointeurs nus void*\ntypedef struct {\n    void* donnee;\n    size_t taille_element;\n} BoiteGenerique;\n\nvoid initialiser(BoiteGenerique* b, void* val, size_t taille) {\n    b->donnee = val;\n    b->taille_element = taille;\n}",
+        "best_practices": "Cast rigoureux des pointeurs `void*` vers le type concret souhaité.",
+        "pitfalls": "Absence totale de contrôle de type : risques majeurs de corruption mémoire.",
+        "notes": "Contrôle manuel de la mémoire sans système de type générique."
+      },
+      "php": {
+        "minimal": "/** @template T */",
+        "complete": "<?php\n// Métaprogrammation via Reflection native et Attributes (PHP 8+)\n#[Attribute]\nclass ValiderLongueur {\n    public function __construct(public int $max) {}\n}\n\nclass User {\n    #[ValiderLongueur(10)]\n    public string $nom = \"Troplongnomutilisateur\";\n}",
+        "best_practices": "Utiliser les Attributes native de PHP 8 pour annoter les métadonnées.",
+        "pitfalls": "Les annotations génériques `@template` restent uniquement lisibles par les outils tiers.",
+        "notes": "Réflexion et Attributes natifs modernes."
+      },
+      "vba": {
+        "minimal": "' Pas de génériques ni d'annotations natifs",
+        "complete": "' Utilisation de Variant pour stocker n'importe quel type générique\nPublic Function StockerDonnee(val As Variant) As Variant\n    If IsObject(val) Then\n        Set StockerDonnee = val\n    Else\n        StockerDonnee = val\n    End If\nEnd Function",
+        "best_practices": "Différencier les affectations `Set` (objets) et simples (primitifs) lors des manipulations de `Variant`.",
+        "pitfalls": "Perte complète de tout contrôle de type statique.",
+        "notes": "Typage dynamique universel via `Variant`."
+      },
+      "vb": {
+        "minimal": "Public Class Boite(Of T) : Private contenu As T : End Class",
+        "complete": "Public Class Boite(Of T As Class)\n    Private _contenu As T\n    Public Sub Inspecter()\n        Console.WriteLine(GetType(T).FullName)\n    End Sub\nEnd Class",
+        "best_practices": "Utiliser les contraintes `Of T As Class` ou `Structure`.",
+        "pitfalls": "Tenter de faire des opérations arithmétiques directes sur des types génériques `T` non contraints.",
+        "notes": "Génériques .NET reifiés."
+      }
+    }
+  }
+]
