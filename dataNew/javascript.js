@@ -1,103 +1,110 @@
+// data/languages/javascript.js
 window.CompIde = window.CompIde || {};
 
 CompIde.javascriptData = {
   "base_hello_world": {
     "minimal": "console.log(\"Hello World!\");",
-    "complete": "function main() {\n    console.log(\"Hello World!\");\n}\n\nmain();",
-    "best_practices": "Utiliser console.log pour déboguer proprement dans la console du navigateur ou Node.js.",
-    "pitfalls": "Utiliser alert() qui bloque l'intégralité du thread d'exécution de la page web.",
-    "notes": "Langage de script interprété, historiquement conçu pour le web, aujourd'hui universel."
+    "complete": "function main() {\n    console.log(\"Hello World!\");\n}\nmain();",
+    "best_practices": "Utiliser console.log() au lieu d'alert() pour ne pas bloquer l'interface.",
+    "pitfalls": "Oublier l'environnement d'exécution (Navigateur vs Node.js).",
+    "notes": "Langage de script interprété à typage dynamique."
   },
   "base_variables_02": {
     "minimal": "let x = 42;\nconst y = 3.14;",
-    "complete": "const nom = \"WebIDE\";\nlet score = 0;\nscore += 10;\n\nconsole.log(`${nom} - Score: ${score}`);",
-    "best_practices": "Bannir définitivement le vieux mot-clé 'var'. Utiliser 'const' par défaut et 'let' uniquement si la valeur doit changer.",
-    "pitfalls": "Laisser des variables s'échapper dans la portée globale en oubliant de mettre const ou let devant.",
-    "notes": "Typage dynamique et faible. Les variables ne sont pas liées à un type, mais les valeurs le sont."
+    "complete": "const nom = \"WebIDE\";\nlet score = 0;\nscore += 10;\nconsole.log(`${nom} : ${score}`);",
+    "best_practices": "Privilégier 'const' par défaut et 'let' en cas de réassignation. Bannir 'var'.",
+    "pitfalls": "Créer des variables globales involontaires en omettant la déclaration.",
+    "notes": "Typage dynamique et faible avec portée de bloc."
   },
-  "ctrl_conditions_03": {
-    "minimal": "if (x === 42) {\n    console.log(\"Ok\");\n}",
-    "complete": "const valeur = \"42\";\n\nif (valeur === 42) {\n    console.log(\"Strictement égal (type + valeur)\");\n} else if (valeur == 42) {\n    console.log(\"Égal en valeur uniquement (conversion implicite)\");\n}\n\n// Opérateur ternaire\nconst statut = (valeur >= 18) ? \"Adulte\" : \"Mineur\";",
-    "best_practices": "Utiliser TOUJOURS la triple égalité `===` (et `!==`) pour éviter les pièges des conversions de type silencieuses de JavaScript.",
-    "pitfalls": "Se faire piéger par les valeurs falsy (comme `\"\"`, `0`, `null`, `undefined`, `NaN`) qui évaluent toutes à false dans une condition.",
-    "notes": "L'opérateur de coalescence des nuls (`??`) est très pratique pour attribuer une valeur par défaut : `const x = config ?? \"defaut\";`."
+  "ctrl_conditions_01": {
+    "minimal": "if (score > 10) { gagne(); }",
+    "complete": "const score = 75;\nif (score >= 90) {\n    console.log(\"Excellent\");\n} else if (score >= 50) {\n    console.log(\"Validé\");\n} else {\n    console.log(\"Échec\");\n}\nconst statut = score >= 50 ? \"Reçu\" : \"Ajourné\";",
+    "best_practices": "Toujours utiliser l'égalité stricte '===' au lieu de '=='.",
+    "pitfalls": "Se faire piéger par la conversion implicite des valeurs 'falsy' (0, '', null, undefined).",
+    "notes": "Supporte l'opérateur de coalescence des nuls (??)."
   },
-  "ctrl_boucles_04": {
-    "minimal": "for (let i = 0; i < 5; i++) {\n    console.log(i);\n}",
-    "complete": "const fruits = [\"Pomme\", \"Banane\", \"Orange\"];\n\n// For...of pour les valeurs d'un tableau\nfor (const fruit of fruits) {\n    console.log(fruit);\n}\n\n// For...in pour les clés / propriétés d'un objet\nconst config = { admin: true, version: \"1.0\" };\nfor (const cle in config) {\n    console.log(`${cle}: ${config[cle]}`);\n}",
-    "best_practices": "Utiliser `for...of` pour parcourir les tableaux et les méthodes fonctionnelles comme `.forEach()`, `.map()` ou `.filter()`.",
-    "pitfalls": "Utiliser `for...in` pour parcourir un tableau. Cela parcourt les index sous forme de chaînes de caractères et inclut les propriétés personnalisées du prototype.",
-    "notes": "Les boucles JavaScript modernes s'exécutent très rapidement grâce aux optimisations JIT (Just-In-Time) des moteurs comme V8."
+  "ctrl_loops_02": {
+    "minimal": "for (let i = 0; i < 10; i++) {}",
+    "complete": "const nombres = [10, 20, 30, 40];\nfor (const nb of nombres) {\n    console.log(nb);\n}",
+    "best_practices": "Utiliser 'for...of' pour les tableaux et réserver 'for...in' aux objets.",
+    "pitfalls": "Utiliser 'for...in' sur un tableau (parcourt les clés sous forme de chaînes).",
+    "notes": "Les tableaux proposent des méthodes itératives natives (.forEach, .map)."
   },
-  "func_declaration_05": {
-    "minimal": "const saluer = () => console.log(\"Hello\");",
-    "complete": "// Fonction classique (bénéficie du hoisting/levage)\nfunction additionner(a, b) {\n    return a + b;\n}\n\n// Fonction fléchée (Arrow function, syntaxe moderne)\nconst soustraire = (a, b) => a - b;\n\nconsole.log(additionner(5, 2));\nconsole.log(soustraire(5, 2));",
-    "best_practices": "Privilégier les fonctions fléchées `() => {}` pour les callbacks anonymes, car elles préservent naturellement le contexte de `this`.",
-    "pitfalls": "Oublier que les fonctions fléchées n'ont pas leur propre objet `arguments` ni de binding `this`.",
-    "notes": "En JS, les fonctions sont des 'citoyens de première classe' (First-Class Citizens) : elles peuvent être stockées dans des variables et passées en arguments."
+  "func_basics_01": {
+    "minimal": "function ajouter(a, b) { return a + b; }",
+    "complete": "function afficherMessage(msg, repet = 1) {\n    for(let i = 0; i < repet; i++) {\n        console.log(msg);\n    }\n}\nafficherMessage(\"Alerte\", 3);",
+    "best_practices": "Utiliser des valeurs de paramètres par défaut dans la signature.",
+    "pitfalls": "Javascript ne supporte pas la surcharge native de fonctions par signature.",
+    "notes": "Les fonctions sont des citoyens de première classe (First-Class Citizens)."
   },
-  "func_arguments_06": {
-    "minimal": "function config(port = 8080) { } // Valeur par défaut",
-    "complete": "function creerProfil(pseudo, role = \"Visiteur\", ...badges) {\n    return {\n        pseudo,\n        role,\n        nombreBadges: badges.length\n    };\n}\n\n// Appel avec paramètres nommés simulés via la déstructuration\nfunction afficherOption({ visible = true, couleur = \"rouge\" } = {}) {\n    console.log(visible, couleur);\n}",
-    "best_practices": "Utiliser l'opérateur de reste (Rest Parameter `...args`) plutôt que le vieil objet `arguments` pour récupérer une liste indéfinie de paramètres.",
-    "pitfalls": "Passer trop d'arguments à une fonction n'affiche pas d'erreur en JS brut, les paramètres superflus sont simplement ignorés.",
-    "notes": "L'astuce de déstructuration d'objet `{ param1, param2 }` en argument est le standard moderne pour simuler des paramètres nommés clairs."
+  "func_lambdas_02": {
+    "minimal": "const f = x => x * 2;",
+    "complete": "const mult = 3;\nconst v = [1, 2, 3];\nconst res = v.map(n => n * mult);\nconsole.log(res);",
+    "best_practices": "Privilégier les fonctions fléchées () => {} pour préserver le 'this' englobant.",
+    "pitfalls": "Oublier que les fonctions fléchées n'ont pas d'objet 'arguments' propre.",
+    "notes": "Permet une écriture très concise pour les callbacks."
   },
-  "data_structures_07": {
-    "minimal": "const arr = [1, 2, 3];\narr.push(4);",
-    "complete": "const liste = [\"Code\", \"Café\"];\n\nliste.push(\"Dodo\");      // Ajoute à la fin\nliste.unshift(\"Reveil\"); // Ajoute au début\n\nconst index = liste.indexOf(\"Café\");\nliste.splice(index, 1);  // Supprime 1 élément à partir de l'index\n\n// Itérations modernes non-mutables\nconst majuscules = liste.map(item => item.toUpperCase());\nconsole.log(majuscules);",
-    "best_practices": "Privilégier les méthodes fonctionnelles et immuables (`.map()`, `.filter()`, `.reduce()`) au lieu de modifier directement vos tableaux originaux.",
-    "pitfalls": "Penser que la méthode `.sort()` trie les nombres correctement. Par défaut, `.sort()` convertit tout en chaînes. `[10, 5].sort()` donne `[10, 5]`. Écrivez toujours `arr.sort((a, b) => a - b)`.",
-    "notes": "Les tableaux en JavaScript sont des objets dynamiques de haut niveau capables de contenir des types de données hétérogènes."
+  "mem_management_01": {
+    "minimal": "let obj = { data: 42 };\nobj = null; // Éligible au GC",
+    "complete": "function traiter() {\n    const r = { nom: \"Temporaire\" };\n    // 'r' sera automatiquement nettoyé par le GC après la sortie du bloc\n}\ntraiter();",
+    "best_practices": "Supprimer les références obsolètes ou les écouteurs d'événements inutiles.",
+    "pitfalls": "Créer de fausses fuites mémoire en conservant des références globales.",
+    "notes": "La gestion de la mémoire est 100% automatisée via un Garbage Collector (Mark-and-Sweep)."
   },
-  "data_structures_08": {
-    "minimal": "const dict = { cle: \"valeur\" };\ndict.nouvelle = 42;",
-    "complete": "const joueur = {\n    pseudo: \"Cloud\",\n    classe: \"Guerrier\",\n    competences: [\"Tranchage\", \"Esquive\"]\n};\n\n// Accès et modifications\njoueur.classe = \"Paladin\";\njoueur[\"hp\"] = 999; // Accès dynamique par chaîne\n\ndelete joueur.competences; // Suppression de clé\n\n// Vérification d'existence\nif (\"pseudo\" in joueur) {\n    console.log(`Le joueur s'appelle ${joueur.pseudo}`);\n}",
-    "best_practices": "Utiliser l'opérateur de chaînage optionnel `?.` (`joueur.arme?.degats`) pour éviter que le script ne plante si une sous-clé est absente.",
-    "pitfalls": "Utiliser un objet classique pour faire office de dictionnaire quand les clés sont générées dynamiquement par un utilisateur (risque d'écrasement de clés prototypes comme `__proto__`). Utilisez `new Map()` dans ce cas précis.",
-    "notes": "En JavaScript, les objets littéraux servent nativement de dictionnaires de structure clé-valeur."
+  "mem_references_02": {
+    "minimal": "let a = { v: 10 };\nlet b = a; // Même référence",
+    "complete": "function modifier(obj, val) {\n    obj.v += 10; // Objet modifiable par référence\n    val += 10;   // Primitif passé par valeur\n}\nlet o = { v: 10 }, x = 10;\nmodifier(o, x);\nconsole.log(o.v, x); // 20, 10",
+    "best_practices": "Cloner un objet ({...obj}) pour éviter les effets de bord inattendus.",
+    "pitfalls": "Penser qu'une assignation d'objet (=) crée une copie indépendante.",
+    "notes": "Primitifs passés par valeur, objets/tableaux passés par référence."
   },
-  "javascriptData": { ...CompIde.javascriptData },
-  "oop_classes_09": {
-    "minimal": "class Robot {\n    nom;\n    #clePrivee; // Propriété privée (ES2022)\n}",
-    "complete": "class Voiture {\n    // Propriété publique\n    marque;\n    // Propriété privée native\n    #vitesseMax;\n\n    constructor(marque, vMax) {\n        this.marque = marque;\n        this.#vitesseMax = vMax;\n    }\n\n    // Getter moderne\n    get infos() {\n        return `Marque : ${this.marque}`;\n    }\n}",
-    "best_practices": "Utiliser le préfixe `#` introduit par l'ES2022 pour déclarer de vraies variables privées inviolables depuis l'extérieur de la classe.",
-    "pitfalls": "Oublier que les variables d'instance doivent *toujours* être appelées avec `this.` à l'intérieur de la classe, sinon JS cherchera une variable globale ou locale à la fonction.",
-    "notes": "Sous le capot du mot-clé `class` (qui n'est qu'un sucre syntaxique), JavaScript fonctionne toujours via son système historique de prototypes."
+  "poo_classes_01": {
+    "minimal": "class Personne {\n    #age; // Champ privé\n}",
+    "complete": "class Personne {\n    #nom;\n    constructor(n) {\n        this.#nom = n;\n    }\n    get nom() { return this.#nom; }\n}\nconst p = new Personne(\"Alice\");\nconsole.log(p.nom);",
+    "best_practices": "Utiliser le préfixe privée '#' (ES2022) pour encapsuler les variables.",
+    "pitfalls": "Oublier d'utiliser 'this.' pour accéder aux variables membres.",
+    "notes": "Le mot-clé 'class' est un sucre syntaxique sur le système d'héritage prototypal."
   },
-  "oop_methods_10": {
-    "minimal": "const v = new Voiture(\"Tesla\");",
-    "complete": "class Voiture {\n    constructor(modele) {\n        this.modele = modele;\n        this.moteurDemarre = false;\n    }\n}\n\n// Instanciation obligatoire avec 'new'\nconst maF voiture = new Voiture(\"Model 3\");\nconsole.log(maVoiture.modele);",
-    "best_practices": "Ne pas surcharger le constructeur avec de la logique métier lourde ou des appels réseau. Utilisez-le uniquement pour initialiser les propriétés de l'objet.",
-    "pitfalls": "Appeler une classe sans le mot-clé `new` (ex: `const v = Voiture();`). Contrairement aux fonctions classiques, l'interpréteur lèvera immédiatement une erreur d'exécution `TypeError`.",
-    "notes": "L'absence de types stricts à l'écriture permet d'instancier des objets et de leur greffer des propriétés à la volée, bien que cela soit déconseillé pour la maintenabilité."
+  "poo_polymorphism_02": {
+    "minimal": "class Chien extends Animal {\n    crier() { console.log(\"Wouf\"); }\n}",
+    "complete": "class Animal {\n    crier() { console.log(\"...\"); }\n}\nclass Chien extends Animal {\n    crier() { console.log(\"Wouf!\"); }\n}\nconst a = new Chien();\na.crier();",
+    "best_practices": "Utiliser 'super' dans le constructeur enfant avant d'accéder à 'this'.",
+    "pitfalls": "Tenter d'implémenter un héritage multiple (non supporté par JavaScript).",
+    "notes": "Repose entièrement sur le Duck Typing et la chaîne de prototypes."
   },
-  "errors_try_catch_11": {
-    "minimal": "try {\n    chargerDonnees();\n} catch (error) {\n    console.error(error);\n}",
-    "complete": "async function recupererProfil() {\n    try {\n        const reponse = await fetch(\"https://api.test/user\");\n        const user = await reponse.json();\n    } catch (err) {\n        console.error(\"Échec du traitement :\", err.message);\n    } finally {\n        masquerEcranChargement();\n    }\n}",
-    "best_practices": "Ne jamais laisser un bloc `catch` complètement vide. Intercepter une erreur sans la tracer (via un `console.error`) rend les pannes de scripts totalement invisibles à l'écran.",
-    "pitfalls": "Oublier que `try/catch` est un mécanisme synchrone. Pour intercepter l'erreur d'une promesse asynchrone, il faut impérativement utiliser le mot-clé `await` devant l'appel à l'intérieur du bloc.",
-    "notes": "Depuis l'ES2019, la syntaxe permet d'omettre la variable d'erreur si elle n'est pas exploitée : `catch { // traitement sans variable }`."
+  "err_exceptions_01": {
+    "minimal": "try { throw new Error(\"Err\"); }\ncatch(e) { console.error(e); }",
+    "complete": "try {\n    throw new TypeError(\"Format invalide\");\n} catch (e) {\n    console.error(e.message);\n} finally {\n    console.log(\"Nettoyage systématique\");\n}",
+    "best_practices": "Instancier des objets d'erreur formels (new Error) avec une trace de pile.",
+    "pitfalls": "Laisser des blocs 'catch' vides sans traiter la panne.",
+    "notes": "Le bloc 'finally' s'exécute quelle que soit l'issue du bloc try/catch."
   },
-  "errors_throw_12": {
-    "minimal": "throw new Error(\"Opération interdite\");",
-    "complete": "function validerAge(age) {\n    if (typeof age !== \"number\") {\n        throw new TypeError(\"L'âge doit être un nombre numérique.\");\n    }\n    if (age < 0) {\n        throw new RangeError(\"L'âge ne peut pas être négatif.\");\n    }\n    return true;\n}",
-    "best_practices": "Instancier toujours un véritable objet d'erreur via `throw new Error(\"msg\")` plutôt que de jeter une simple chaîne brute `throw \"erreur\"`, afin de conserver la pile d'exécution (Stack Trace).",
-    "pitfalls": "Se mélanger les pinceaux dans les types d'erreurs standard. Utilisez `TypeError` pour un mauvais format de donnée et `RangeError` pour une valeur hors limites.",
-    "notes": "JavaScript permet techniquement de lever n'importe quel type de donnée (un nombre, un objet littéral) avec l'instruction `throw`."
+  "gen_generics_01": {
+    "minimal": "function identite(arg) { return arg; }",
+    "complete": "function premierElement(tableau) {\n    return tableau[0];\n}\nconsole.log(premierElement([1, 2, 3]));\nconsole.log(premierElement([\"A\", \"B\"]));",
+    "best_practices": "Utiliser JSDoc (`/** @param {T} arg */`) pour indiquer des types génériques aux IDE.",
+    "pitfalls": "Présumer qu'une fonction va valider le type des éléments à l'exécution.",
+    "notes": "Générique par nature grâce au typage dynamique."
   },
-  "async_await_13": {
-    "minimal": "const appeler = async () => await fetch('url');",
-    "complete": "function simulerRequete() {\n    return new Promise(resolve => setTimeout(() => resolve(\"Succès !\"), 2000));\n}\n\n// Déclaration obligatoire du mot-clé async\nasync function executerTache() {\n    console.log(\"Lancement...\");\n    \n    // Mise en pause du flux jusqu'à résolution de la Promesse\n    const resultat = await simulerRequete();\n    console.log(resultat);\n}\n\nexecuterTache();",
-    "best_practices": "Toujours envelopper vos appels `await` dans un bloc `try/catch` pour intercepter proprement les rejets de promesses (promesses échouées).",
-    "pitfalls": "Exécuter des requêtes indépendantes de manière séquentielle (ex: `await req1(); await req2();`). Si elles ne dépendent pas l'une de l'autre, lancez-les en parallèle avec `await Promise.all([req1(), req2()])`.",
-    "notes": "JavaScript est mono-thread. Le mécanisme d'async/await ne crée pas de threads en arrière-plan, il délègue les tâches bloquantes à la boucle d'événements (Event Loop) du navigateur ou de Node.js."
+  "conc_async_02": {
+    "minimal": "const res = await fetch(url);",
+    "complete": "function delai() {\n    return new Promise(resolve => setTimeout(() => resolve(42), 100));\n}\nasync function main() {\n    const res = await delai();\n    console.log(\"Reçu :\", res);\n}\nmain();",
+    "best_practices": "Envelopper les instructions 'await' dans des blocs try/catch.",
+    "pitfalls": "Exécuter séquentiellement des promesses indépendantes au lieu d'utiliser Promise.all().",
+    "notes": "Repose sur une boucle d'événements (Event Loop) mono-thread."
   },
-  "file_io_14": {
-    "minimal": "// Node.js (fs/promises)\nawait fs.writeFile('f.txt', 'Données');",
-    "complete": "// Exemple s'exécutant dans un environnement Node.js (syntaxe ESM)\nimport { writeFile, readFile } from 'fs/promises';\n\nasync function gererFichier() {\n    const chemin = './notes.txt';\n    try {\n        // Écriture asynchrone non-bloquante\n        await writeFile(chemin, 'Contenu textuel en JS', 'utf-8');\n        \n        // Lecture\n        const contenu = await readFile(chemin, 'utf-8');\n        console.log(contenu);\n    } catch (err) {\n        console.error(\"Erreur E/S :\", err.message);\n    }\n}\n\ngererFichier();",
-    "best_practices": "Toujours spécifier l'encodage (généralement `'utf-8'`) lors de la lecture d'un fichier texte, sinon Node.js retournera un objet brut de type `Buffer` au lieu d'une chaîne de caractères.",
-    "pitfalls": "Utiliser les versions synchrones de l'API (comme `writeFileSync`) dans une application serveur en production. Cela bloque l'unique thread de Node.js et paralyse le serveur pour tous les utilisateurs pendant la lecture/écriture.",
-    "notes": "Dans le navigateur web, l'accès direct au système de fichiers du disque est interdit pour des raisons de sécurité (sauf via l'API très restrictive 'File System Access API')."
+  "struct_maps_01": {
+    "minimal": "const map = new Map();\nmap.set(\"clé\", \"valeur\");",
+    "complete": "const prix = new Map([\n    [\"Café\", 1.50],\n    [\"Thé\", 1.80]\n]);\nprix.set(\"Croissant\", 1.20);\nif (prix.has(\"Café\")) {\n    console.log(prix.get(\"Café\") + \"€\");\n}",
+    "best_practices": "Préférer 'new Map()' aux objets littéraux si les clés sont dynamiques.",
+    "pitfalls": "Utiliser des objets basiques comme dictionnaire avec des clés risquant de polluer le prototype.",
+    "notes": "Un objet 'Map' préserve l'ordre d'insertion et accepte tout type pour les clés."
+  },
+  "struct_strings_02": {
+    "minimal": "const s = `Hello ${nom}`;",
+    "complete": "const str = \"JavaScript\";\nconst resultat = `Langage : ${str.toUpperCase()}`;\nconst mots = [\"A\", \"B\", \"C\"];\nconsole.log(mots.join(\"-\"));",
+    "best_practices": "Utiliser l'interpolation de chaînes via les Gabarits de littéraux (`...`).",
+    "pitfalls": "Créer des concaténations inefficaces avec '+' dans de très grandes boucles.",
+    "notes": "Les chaînes de caractères en JavaScript sont immuables."
   }
 };

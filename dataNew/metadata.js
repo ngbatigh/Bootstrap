@@ -1,3 +1,4 @@
+// data/metadata.js
 window.CompIde = window.CompIde || {};
 
 CompIde.metadata = [
@@ -7,7 +8,7 @@ CompIde.metadata = [
     "chapter": "1. Syntaxe de base",
     "category": "Initialisation",
     "name": "Point d'entrée et Hello World",
-    "description": "Comparaison de la structure minimale d'un programme et du point d'entrée requis pour l'exécution.",
+    "description": "Structure minimale d'un programme et point d'entrée requis pour l'exécution.",
     "related_concepts": []
   },
   {
@@ -16,7 +17,7 @@ CompIde.metadata = [
     "chapter": "1. Syntaxe de base",
     "category": "Variables",
     "name": "Déclaration et Initialisation",
-    "description": "Étude du système de typage (statique vs dynamique), de la portée des variables et de l'inférence de type.",
+    "description": "Système de typage, portée des variables et inférence de type.",
     "related_concepts": ["base_hello_world"]
   },
   {
@@ -25,7 +26,7 @@ CompIde.metadata = [
     "chapter": "2. Structures de contrôle",
     "category": "Conditions",
     "name": "Expressions Conditionnelles",
-    "description": "Comparaison des blocs conditionnels, des expressions ternaires et de l'évaluation court-circuit (Short-Circuit Evaluation).",
+    "description": "Blocs conditionnels, expressions ternaires et évaluation court-circuit.",
     "related_concepts": []
   },
   {
@@ -34,7 +35,7 @@ CompIde.metadata = [
     "chapter": "2. Structures de contrôle",
     "category": "Boucles",
     "name": "Itérations et Collections",
-    "description": "Analyse des boucles itératives (for/foreach) et du comportement face à la modification d'une collection en cours d'itération.",
+    "description": "Boucles itératives et comportement face à la modification d'une collection.",
     "related_concepts": ["ctrl_conditions_01"]
   },
   {
@@ -43,7 +44,7 @@ CompIde.metadata = [
     "chapter": "3. Fonctions et Modularité",
     "category": "Fonctions",
     "name": "Déclaration et Passage de Paramètres",
-    "description": "Étude de la signature des fonctions, des paramètres par défaut, nommés, et du nombre variable d'arguments.",
+    "description": "Signature des fonctions, paramètres par défaut, nommés et variadiques.",
     "related_concepts": []
   },
   {
@@ -52,25 +53,25 @@ CompIde.metadata = [
     "chapter": "3. Fonctions et Modularité",
     "category": "Lambda",
     "name": "Fonctions Anonymes et Fermetures",
-    "description": "Analyse des expressions lambdas et du mécanisme de capture des variables environnantes (Closures).",
+    "description": "Expressions lambdas et mécanisme de capture des variables environnantes (Closures).",
     "related_concepts": ["func_basics_01"]
   },
   {
     "id": "mem_management_01",
     "level": 4,
-    "chapter": "4. Gestion Mémoire et Pointeurs",
+    "chapter": "4. Gestion Mémoire",
     "category": "Mémoire",
     "name": "Allocation Pile vs Tas",
-    "description": "Comparaison de la gestion manuelle de la mémoire, du Garbage Collector (ramasse-miettes) et du compteur de références.",
+    "description": "Gestion de la mémoire, Garbage Collector, pointeurs intelligents et RAII.",
     "related_concepts": []
   },
   {
     "id": "mem_references_02",
     "level": 4,
-    "chapter": "4. Gestion Mémoire et Pointeurs",
+    "chapter": "4. Gestion Mémoire",
     "category": "Pointeurs",
     "name": "Pointeurs et Références",
-    "description": "Analyse profonde du passage par valeur, par adresse (pointeurs) et par référence selon la philosophie de chaque langage.",
+    "description": "Passage par valeur, par adresse (pointeurs) et par référence.",
     "related_concepts": ["mem_management_01"]
   },
   {
@@ -79,7 +80,7 @@ CompIde.metadata = [
     "chapter": "5. Programmation Orientée Objet",
     "category": "Classes",
     "name": "Classes et Encapsulation",
-    "description": "Étude de la structure des classes, des constructeurs, et des niveaux de visibilité (public, private, protected).",
+    "description": "Structure des classes, constructeurs et niveaux de visibilité.",
     "related_concepts": []
   },
   {
@@ -88,7 +89,7 @@ CompIde.metadata = [
     "chapter": "5. Programmation Orientée Objet",
     "category": "Polymorphisme",
     "name": "Héritage et Polymorphisme",
-    "description": "Comparaison de l'héritage multiple, des interfaces de contrats et de la résolution dynamique des méthodes au runtime.",
+    "description": "Héritage, interfaces, classes abstraites et résolution dynamique.",
     "related_concepts": ["poo_classes_01"]
   },
   {
@@ -97,7 +98,7 @@ CompIde.metadata = [
     "chapter": "6. Gestion des Erreurs",
     "category": "Exceptions",
     "name": "Le bloc Try-Catch-Finally",
-    "description": "Analyse du coût d'une exception, de la capture sélective et de la garantie de libération des ressources système.",
+    "description": "Propagation et capture des exceptions, libération des ressources.",
     "related_concepts": []
   },
   {
@@ -106,7 +107,7 @@ CompIde.metadata = [
     "chapter": "7. Généricité et Concurrence",
     "category": "Généricité",
     "name": "Programmation Générique",
-    "description": "Comparaison des mécanismes d'abstraction de types. Les templates C++, les Generics de C# et le typage dynamique intrinsèque de Python.",
+    "description": "Templates C++, Generics C# et typage dynamique.",
     "related_concepts": ["poo_polymorphism_02"]
   },
   {
@@ -115,7 +116,7 @@ CompIde.metadata = [
     "chapter": "7. Généricité et Concurrence",
     "category": "Concurrence",
     "name": "Asynchronisme (Async / Await)",
-    "description": "Analyse des modèles de programmation asynchrone non-bloquante face au modèle de threads et de promesses.",
+    "description": "Programmation asynchrone non-bloquante, threads et promesses.",
     "related_concepts": ["func_lambdas_02"]
   },
   {
@@ -124,7 +125,7 @@ CompIde.metadata = [
     "chapter": "8. Structures avancées",
     "category": "Collections",
     "name": "Tables Clés-Valeurs (Maps & Dicts)",
-    "description": "Comparaison des dictionnaires et dictionnaires ordonnés. Analyse de la complexité algorithmique d'accès (O(1) vs O(log n)).",
+    "description": "Dictionnaires, tables de hachage et complexité d'accès.",
     "related_concepts": ["ctrl_loops_02"]
   },
   {
@@ -133,7 +134,7 @@ CompIde.metadata = [
     "chapter": "8. Structures avancées",
     "category": "Algorithmes",
     "name": "Manipulation et Formatage de Chaînes",
-    "description": "Analyse de la sémantique des strings. Impact de l'immuabilité (C#, Python) vs mutabilité native (C++).",
+    "description": "Sémantique des chaînes, immuabilité vs mutabilité et concaténation.",
     "related_concepts": ["base_hello_world"]
   }
 ];

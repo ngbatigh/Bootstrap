@@ -1,109 +1,110 @@
+// data/languages/cpp.js
 window.CompIde = window.CompIde || {};
 
 CompIde.cppData = {
   "base_hello_world": {
     "minimal": "int main() {\n    std::cout << \"Hello World!\";\n}",
     "complete": "#include <iostream>\n\nint main() {\n    std::cout << \"Hello World!\\n\";\n    return 0;\n}",
-    "best_practices": "Toujours retourner 0 pour indiquer une exécution réussie au système d'exploitation.",
-    "pitfalls": "Oublier l'espace de noms std:: ou la directive using namespace std; provoquera une erreur de compilation.",
-    "notes": "C++ utilise un compilateur natif. Le point d'entrée doit impérativement s'appeler main."
+    "best_practices": "Préférer '\\n' à 'std::endl' dans les boucles pour éviter de forcer un flush inutile.",
+    "pitfalls": "Oublier l'espace de noms std:: ou l'inclusion <iostream>.",
+    "notes": "Si 'return 0;' est omis en main(), le compilateur C++ l'injecte implicitement."
   },
   "base_variables_02": {
-    "minimal": "int x = 42;\nauto y = 3.14; // Inférence",
-    "complete": "#include <iostream>\n#include <string>\n\nint main() {\n    int age = 25; \n    const double PI = 3.14159;\n    auto nom = \"CompIde\"; // Le compilateur devine std::string/const char*\n    \n    std::cout << nom << \" - Age: \" << age << \"\\n\";\n    return 0;\n}",
-    "best_practices": "Utiliser auto au maximum pour laisser le compilateur déduire le type, cela évite les conversions implicites lourdes.",
-    "pitfalls": "Déclarer une variable sans l'initialiser (`int x;`). En C++, elle contiendra n'importe quelle valeur résiduelle de la mémoire.",
-    "notes": "Typage statique et fort. Une fois compilé, le type ne peut plus jamais changer."
+    "minimal": "int x = 42;\nauto y = 3.14;",
+    "complete": "#include <iostream>\n#include <string>\n\nint main() {\n    int age = 25; \n    const double PI = 3.14159;\n    auto nom = \"CompIde\";\n    std::cout << nom << \" - Age: \" << age << \"\\n\";\n    return 0;\n}",
+    "best_practices": "Toujours initialiser les variables pour éviter une valeur mémoire résiduelle.",
+    "pitfalls": "Confondre l'initialisation par copie (int x = 5) et l'initialisation uniforme (int x{5}).",
+    "notes": "Le type est déduit à la compilation via 'auto' et demeure strictement fixe."
   },
   "ctrl_conditions_01": {
-    "minimal": "if (score > 10) { gagné(); }",
-    "complete": "#include <iostream>\n\nint main() {\n    int score = 75;\n    \n    // Bloc conditionnel classique\n    if (score >= 90) {\n        std::cout << \"Excellent\\n\";\n    } else if (score >= 50) {\n        std::cout << \"Validé\\n\";\n    } else {\n        std::cout << \"Échec\\n\";\n    }\n    \n    // Expression ternaire\n    std::string statut = (score >= 50) ? \"Reçu\" : \"Ajourné\";\n    return 0;\n}",
-    "best_practices": "Placer la condition la plus probable en premier dans un if/else pour maximiser l'efficacité des prédictions de branchement du processeur.",
-    "pitfalls": "Confondre l'opérateur d'égalité `==` avec l'assignation `=` dans un test conditionnel (`if(x = 5)`). C++ compile cela sans broncher !",
-    "notes": "C++ évalue les conditions de gauche à droite de manière courte-circuit (si le premier élément d'un 'OU' est vrai, le reste n'est pas lu)."
+    "minimal": "if (score > 10) { gagne(); }",
+    "complete": "#include <iostream>\n\nint main() {\n    int score = 75;\n    if (score >= 90) {\n        std::cout << \"Excellent\\n\";\n    } else if (score >= 50) {\n        std::cout << \"Validé\\n\";\n    } else {\n        std::cout << \"Échec\\n\";\n    }\n    std::string statut = (score >= 50) ? \"Reçu\" : \"Ajourné\";\n    return 0;\n}",
+    "best_practices": "Placer la condition la plus probable en premier pour optimiser la prédiction de branchement.",
+    "pitfalls": "Confondre l'opérateur d'égalité == et l'assignation = dans un test.",
+    "notes": "Évaluation court-circuit : s'arrête dès que le résultat logique global est garanti."
   },
   "ctrl_loops_02": {
     "minimal": "for(int i=0; i<10; ++i) {}",
-    "complete": "#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> nombres = {10, 20, 30, 40};\n    \n    // Boucle for basée sur une plage (Range-based for) introduite en C++11\n    for (const auto& nb : nombres) {\n        std::cout << nb << \" \";\n    }\n    std::cout << \"\\n\";\n    return 0;\n}",
-    "best_practices": "Dans une boucle sur une collection, utilisez toujours une référence constante (`const auto& element`) pour éviter de dupliquer chaque objet en mémoire à chaque itération.",
-    "pitfalls": "Ajouter ou supprimer des éléments d'un `std::vector` pendant que vous bouclez dessus. Cela invalide les itérateurs internes et provoque des crashs imprévisibles.",
-    "notes": "L'opérateur de pré-incrémentation (`++i`) est techniquement plus rapide que la post-incrémentation (`i++`) pour les itérateurs complexes."
+    "complete": "#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> nombres = {10, 20, 30, 40};\n    for (const auto& nb : nombres) {\n        std::cout << nb << \" \";\n    }\n    return 0;\n}",
+    "best_practices": "Utiliser 'const auto&' dans une boucle range-based pour éviter la copie d'objets.",
+    "pitfalls": "Modifier la taille du conteneur (ex: push_back) durant l'itération.",
+    "notes": "L'incrémentation préfixée (++i) évite une copie temporaire de l'itérateur."
   },
   "func_basics_01": {
     "minimal": "int ajouter(int a, int b) { return a + b; }",
-    "complete": "#include <iostream>\n\n// Déclaration avec valeur par défaut\nvoid afficherMessage(std::string msg, int repet = 1) {\n    for(int i = 0; i < repet; ++i) {\n        std::cout << msg << \"\\n\";\n    }\n}\n\nint main() {\n    afficherMessage(\"Bonjour C++\"); // Utilise la valeur par défaut\n    afficherMessage(\"Alerte\", 3);\n    return 0;\n}",
-    "best_practices": "Toujours déclarer les prototypes de vos fonctions dans des fichiers d'en-tête (.h) et leur implémentation dans les fichiers sources (.cpp).",
-    "pitfalls": "C++ ne supporte pas nativement les paramètres nommés à l'appel. Impossible d'écrire `afficherMessage(repet=3, msg=\"Test\")`.",
-    "notes": "Le polymorphisme de fonction (surcharge ou overloading) permet de créer plusieurs fonctions avec le même nom mais des paramètres différents."
+    "complete": "#include <iostream>\n\nvoid afficherMessage(std::string msg, int repet = 1) {\n    for(int i = 0; i < repet; ++i) {\n        std::cout << msg << \"\\n\";\n    }\n}\n\nint main() {\n    afficherMessage(\"Alerte\", 3);\n    return 0;\n}",
+    "best_practices": "Déclarer les prototypes dans les fichiers d'en-tête (.h) et le code dans les sources (.cpp).",
+    "pitfalls": "Placer des arguments par défaut avant des arguments obligatoires.",
+    "notes": "Supporte la surcharge (overloading) selon la signature des paramètres."
   },
   "func_lambdas_02": {
     "minimal": "auto f = [](int x) { return x * 2; };",
-    "complete": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nint main() {\n    int multiplicateur = 3;\n    std::vector<int> valeurs = {1, 2, 3};\n    \n    // Lambda avec capture par valeur [multiplicateur]\n    std::for_each(valeurs.begin(), valeurs.end(), [multiplicateur](int& n) {\n        n *= multiplicateur;\n    });\n    \n    return 0;\n}",
-    "best_practices": "Privilégier la capture explicite des variables (`[x]` ou `[&x]`) plutôt qu'une capture totale à l'aveugle (`[=]` ou `[&]`) qui peut capturer le pointeur `this` par mégarde.",
-    "pitfalls": "Capturer une variable par référence (`[&]`) dans une lambda stockée pour une exécution asynchrone différée. Si la variable d'origine meurt, la lambda pointe sur du vide.",
-    "notes": "Les expressions lambdas C++ sont converties par le compilateur en foncteurs (des objets de classes anonymes surchargeant l'opérateur parenthèses)."
+    "complete": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nint main() {\n    int mult = 3;\n    std::vector<int> v = {1, 2, 3};\n    std::for_each(v.begin(), v.end(), [mult](int& n) { n *= mult; });\n    return 0;\n}",
+    "best_practices": "Favoriser la capture explicite ([x]) à la capture totale ([=] ou [&]).",
+    "pitfalls": "Capturer une variable locale par référence [&] dans une lambda appelée de manière asynchrone.",
+    "notes": "Instancie en arrière-plan une classe anonyme surchargeant operator()."
   },
   "mem_management_01": {
-    "minimal": "int* p = new int(5);\ndelete p; // Obligatoire !",
-    "complete": "#include <iostream>\n#include <memory>\n\nclass Ressource {\npublic:\n    Ressource() { std::cout << \"Créée\\n\"; }\n    ~Ressource() { std::cout << \"Détruite d'office\\n\"; }\n};\n\nint main() {\n    // Utilisation moderne des pointeurs intelligents (Smart Pointers)\n    // RAII (Resource Acquisition Is Initialization) : plus besoin de 'delete'\n    std::unique_ptr<Ressource> res = std::make_unique<Ressource>();\n    \n    return 0; // La mémoire est libérée automatiquement ici\n}",
-    "best_practices": "Bannir absolument l'usage des mots-clés `new` et `delete` du code C++ moderne. Utiliser systématiquement `std::unique_ptr` ou `std::shared_ptr`.",
-    "pitfalls": "Créer une fuite de mémoire (Memory Leak) en perdant l'adresse d'un pointeur alloué par un `new` avant d'avoir appelé son `delete` correspondant.",
-    "notes": "C++ n'a pas de Garbage Collector. Il se base sur le cycle de vie de la pile pour nettoyer proprement les structures dès qu'elles sortent d'un bloc `{}`."
+    "minimal": "auto ptr = std::make_unique<int>(42);",
+    "complete": "#include <iostream>\n#include <memory>\n\nclass Ressource {\npublic:\n    Ressource() { std::cout << \"Init\\n\"; }\n    ~Ressource() { std::cout << \"Clean\\n\"; }\n};\n\nint main() {\n    std::unique_ptr<Ressource> res = std::make_unique<Ressource>();\n    return 0;\n}",
+    "best_practices": "Bannir new/delete au profit des pointeurs intelligents (std::unique_ptr, std::shared_ptr).",
+    "pitfalls": "Oublier de libérer un pointeur brut alloué dynamiquement (fuite mémoire).",
+    "notes": "Repose sur le motif RAII (Resource Acquisition Is Initialization)."
   },
   "mem_references_02": {
-    "minimal": "void swap(int& a, int& b);",
-    "complete": "#include <iostream>\n\n// Passage par valeur (Copie)\nvoid incrementerCopie(int x) { x++; }\n\n// Passage par référence (Alias direct)\nvoid incrementerRef(int& x) { x++; }\n\nint main() {\n    int compteur = 10;\n    incrementerCopie(compteur); // compteur vaut toujours 10\n    incrementerRef(compteur);   // compteur vaut maintenant 11\n    return 0;\n}",
-    "best_practices": "Pour protéger vos structures complexes contre les modifications tout en évitant la copie, passez-les en référence constante : `void traiter(const std::string& texte)`.",
-    "pitfalls": "Tenter de réassigner une référence pour qu'elle pointe vers une autre variable. Une fois initialisée, une référence ne peut plus se détacher de sa cible.",
-    "notes": "Sous le capot, le compilateur implémente souvent les références comme des pointeurs constants automatiques, mais de manière totalement transparente pour vous."
+    "minimal": "void inc(int& x) { x++; }",
+    "complete": "#include <iostream>\n\nvoid modifier(int* ptr, int& ref) {\n    if (ptr) *ptr += 10;\n    ref += 10;\n}\n\nint main() {\n    int a = 10, b = 20;\n    modifier(&a, b);\n    std::cout << a << \" \" << b;\n    return 0;\n}",
+    "best_practices": "Utiliser 'const T&' pour le passage d'objets lourds sans modification.",
+    "pitfalls": "Retourner une référence vers une variable locale détruite à la sortie.",
+    "notes": "Une référence ne peut être nulle ni réassignée après son initialisation."
   },
   "poo_classes_01": {
     "minimal": "class Personne {\nprivate:\n    int age;\n};",
-    "complete": "#include <iostream>\n#include <string>\n\nclass Personne {\nprivate:\n    std::string nom; // Encapsulé\n\npublic:\n    // Constructeur avec liste d'initialisation (Performance maximale)\n    Personne(std::string n) : nom(n) {}\n\n    std::string getNom() const { return nom; }\n};\n\nint main() {\n    Personne p(\"Arthur\");\n    std::cout << p.getNom() << \"\\n\";\n    return 0;\n}",
-    "best_practices": "Toujours privilégier la liste d'initialisation `Constructeur() : variable(valeur)` plutôt que d'assigner les membres à l'intérieur des accolades du constructeur.",
-    "pitfalls": "Oublier que par défaut, les membres d'une `class` en C++ sont strictement privés. C'est l'inverse pour une `struct` qui est publique par défaut.",
-    "notes": "Ajouter le mot-clé `const` à la fin d'une méthode garantit qu'elle ne modifiera aucun attribut de l'objet, sécurisant vos lectures de données."
+    "complete": "#include <iostream>\n#include <string>\n\nclass Personne {\nprivate:\n    std::string nom;\npublic:\n    Personne(std::string n) : nom(n) {}\n    std::string getNom() const { return nom; }\n};\n\nint main() {\n    Personne p(\"Alice\");\n    std::cout << p.getNom() << \"\\n\";\n    return 0;\n}",
+    "best_practices": "Utiliser les listes d'initialisation dans les constructeurs (: nom(n)).",
+    "pitfalls": "Oublier le point-virgule terminal ';' à la fin de la déclaration de classe.",
+    "notes": "Par défaut, les membres d'une 'class' sont private, ceux d'une 'struct' sont public."
   },
   "poo_polymorphism_02": {
-    "minimal": "class Animal {\n    virtual void crier() = 0; // Pure\n};",
-    "complete": "#include <iostream>\n\nclass Animal {\npublic:\n    // Destructeur virtuel indispensable pour l'héritage !\n    virtual ~Animal() = default;\n    virtual void crier() const { std::cout << \"...\\n\"; }\n};\n\nclass Chien : public Animal {\npublic:\n    void crier() const override { std::cout << \"Wouf!\\n\"; }\n};\n\nint main() {\n    Animal* monAnimal = new Chien();\n    monAnimal->crier(); // Appelle Wouf! grâce au polymorphisme\n    delete monAnimal;\n    return 0;\n}",
-    "best_practices": "Ajouter systématiquement le mot-clé `override` lors de la redéfinition d'une méthode virtuelle. Cela force le compilateur à valider que la signature concorde à 100%.",
-    "pitfalls": "Oublier de rendre le destructeur de la classe parente `virtual`. Sans cela, détruire un pointeur parent pointant sur un enfant ne détruira pas l'enfant, créant une fuite de mémoire.",
-    "notes": "Le polymorphisme C++ passe par une table de pointeurs de fonctions virtuelles appelée la 'vtable', induisant un micro-coût à l'exécution."
+    "minimal": "class Animal {\n    virtual void crier() = 0;\n};",
+    "complete": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual ~Animal() = default;\n    virtual void crier() const { std::cout << \"...\\n\"; }\n};\n\nclass Chien : public Animal {\npublic:\n    void crier() const override { std::cout << \"Wouf!\\n\"; }\n};\n\nint main() {\n    Animal* a = new Chien();\n    a->crier();\n    delete a;\n    return 0;\n}",
+    "best_practices": "Ajouter systématiquement le spécificateur 'override' lors d'une redéfinition.",
+    "pitfalls": "Oublier de rendre le destructeur de la classe de base virtuel (virtual ~Animal).",
+    "notes": "La résolution dynamique passe par une table de fonctions virtuelles (vtable)."
   },
   "err_exceptions_01": {
-    "minimal": "try { throw std::runtime_error(\"Erreur\"); }\ncatch(const std::exception& e) {}",
-    "complete": "#include <iostream>\n#include <stdexcept>\n\nint main() {\n    try {\n        int age = -5;\n        if (age < 0) {\n            throw std::invalid_argument(\"L'âge ne peut pas être négatif.\");\n        }\n    } catch (const std::invalid_argument& e) {\n        std::cerr << \"Erreur argument : \" << e.what() << \"\\n\";\n    } catch (const std::exception& e) {\n        std::cerr << \"Erreur générale : \" << e.what() << \"\\n\";\n    }\n    // C++ n'a pas de bloc 'finally' natif !\n    return 0;\n}",
-    "best_practices": "Pour pallier l'absence du bloc `finally` en C++, utilisez le mécanisme RAII. La destruction automatique des variables de la pile lors de la remontée d'exception nettoie vos fichiers et connexions.",
-    "pitfalls": "Attraper les exceptions par valeur (`catch (std::exception e)`). Cela provoque un phénomène de 'slicing' (coupure) qui détruit le type réel de l'exception et ses informations spécifiques. Attrapez-les par référence constante.",
-    "notes": "Lancer une exception en C++ implique un processus lourd appelé le stack unwinding (déroulement de la pile), à réserver uniquement aux cas d'erreurs exceptionnels."
+    "minimal": "try { throw std::runtime_error(\"Err\"); }\ncatch(const std::exception& e) {}",
+    "complete": "#include <iostream>\n#include <stdexcept>\n\nint main() {\n    try {\n        throw std::invalid_argument(\"Valeur incorrecte\");\n    } catch (const std::invalid_argument& e) {\n        std::cerr << e.what() << \"\\n\";\n    } catch (const std::exception& e) {\n        std::cerr << \"Erreur : \" << e.what() << \"\\n\";\n    }\n    return 0;\n}",
+    "best_practices": "Attraper les exceptions par référence constante (const std::exception& e).",
+    "pitfalls": "Lancer des types primitifs bruts comme 'throw 404;' au lieu d'objets d'exception.",
+    "notes": "Pas de bloc 'finally' natif : le nettoyage s'appuie entièrement sur le RAII."
   },
   "gen_generics_01": {
-    "minimal": "template <typename T>\nT maximum(T a, T b) { return (a > b) ? a : b; }",
-    "complete": "#include <iostream>\n\ntemplate <typename T>\nclass Boite {\nprivate:\n    T contenu;\npublic:\n    Boite(T c) : contenu(c) {}\n    T getContenu() const { return contenu; }\n};\n\nint main() {\n    Boite<int> boiteInt(123);\n    Boite<std::string> boiteStr(\"Hello C++\");\n    \n    std::cout << boiteInt.getContenu() << \" et \" << boiteStr.getContenu() << \"\\n\";\n    return 0;\n}",
-    "best_practices": "Déclarer et implémenter l'intégralité de vos classes et fonctions templates dans les fichiers d'en-tête (.h ou .hpp) pour que le compilateur ait la définition complète lors de l'instanciation.",
-    "pitfalls": "Générer une explosion de la taille du binaire (code bloat) car le compilateur duplique physiquement le code machine pour chaque type unique utilisé.",
-    "notes": "Les templates C++ sont évalués à la compilation et permettent la métaprogrammation (calculs complexes effectués par le compilateur)."
+    "minimal": "template <typename T>\nT maxVal(T a, T b) { return (a > b) ? a : b; }",
+    "complete": "#include <iostream>\n\ntemplate <typename T>\nclass Boite {\nprivate:\n    T contenu;\npublic:\n    Boite(T c) : contenu(c) {}\n    T getContenu() const { return contenu; }\n};\n\nint main() {\n    Boite<int> b(100);\n    std::cout << b.getContenu() << \"\\n\";\n    return 0;\n}",
+    "best_practices": "Placer l'implémentation des templates dans les fichiers d'en-tête (.h).",
+    "pitfalls": "Générer une augmentation de la taille du binaire due à la duplication du code (code bloat).",
+    "notes": "Les templates sont évalués à la compilation et permettent la métaprogrammation."
   },
   "conc_async_02": {
-    "minimal": "std::future<int> f = std::async([](){ return 42; });\nint res = f.get(); // Bloquant",
-    "complete": "#include <iostream>\n#include <future>\n#include <thread>\n\nint appelerServeur() {\n    std::this_thread::sleep_for(std::chrono::milliseconds(500));\n    return 200;\n}\n\nint main() {\n    std::cout << \"Lancement...\\n\";\n    std::future<int> resultatFuture = std::async(std::launch::async, appelerServeur);\n    std::cout << \"Le thread principal continue...\\n\";\n    \n    int codeStatut = resultatFuture.get();\n    std::cout << \"Réponse reçue : \" << codeStatut << \"\\n\";\n    return 0; \n}",
-    "best_practices": "Toujours spécifier le flag `std::launch::async` lors de l'appel à `std::async`. Sans lui, le runtime peut choisir de différer l'exécution de manière synchrone.",
-    "pitfalls": "Détruire l'objet `std::future` renvoyé sans stocker sa valeur. Son destructeur est bloquant par spécification, rendant votre code synchrone par accident.",
-    "notes": "Depuis C++20, le langage intgre les coroutines natives (`co_await`, `co_return`), mais elles nécessitent une tuyauterie complexe ou l'usage d'une bibliothèque tierce."
+    "minimal": "auto f = std::async(std::launch::async, [](){ return 42; });",
+    "complete": "#include <iostream>\n#include <future>\n#include <thread>\n\nint calcul() {\n    std::this_thread::sleep_for(std::chrono::milliseconds(100));\n    return 42;\n}\n\nint main() {\n    std::future<int> f = std::async(std::launch::async, calcul);\n    std::cout << \"Résultat : \" << f.get() << \"\\n\";\n    return 0;\n}",
+    "best_practices": "Spécifier le paramètre 'std::launch::async' pour garantir une exécution parallèle.",
+    "pitfalls": "Ignorer l'objet std::future retourné, ce qui rend l'appel synchrone.",
+    "notes": "C++20 intègre des coroutines (co_await, co_return) bas niveau."
   },
   "struct_maps_01": {
-    "minimal": "std::map<std::string, int> m1; // Arbre ordonné\nstd::unordered_map<std::string, int> m2; // Table hachage",
-    "complete": "#include <iostream>\n#include <unordered_map>\n#include <string>\n\nint main() {\n    std::unordered_map<std::string, double> prix = {\n        {\"Café\", 1.50},\n        {\"Thé\", 1.80}\n    };\n    prix[\"Croissant\"] = 1.20;\n\n    auto it = prix.find(\"Café\");\n    if (it != prix.end()) {\n        std::cout << \"Le prix du Café est : \" << it->second << \"€\\n\";\n    }\n    return 0;\n}",
-    "best_practices": "Préférer `std::unordered_map` par défaut pour d'excellentes performances en temps constant O(1). Réserver `std::map` uniquement si vous avez besoin que vos clés soient triées.",
-    "pitfalls": "Utiliser l'opérateur crochet `prix[\"CléInconnue\"]` pour vérifier la présence d'une clé. Si elle n'existe pas, C++ l'insère automatiquement avec sa valeur par défaut.",
-    "notes": "`std::map` maintient l'ordre grâce à une structure d'arbre bicolore (Red-Black Tree), ce qui induit un accès en $O(\log n)$."
+    "minimal": "std::unordered_map<std::string, int> map;",
+    "complete": "#include <iostream>\n#include <unordered_map>\n#include <string>\n\nint main() {\n    std::unordered_map<std::string, double> prix = {{\"Café\", 1.50}};\n    prix[\"Thé\"] = 1.80;\n    auto it = prix.find(\"Café\");\n    if (it != prix.end()) {\n        std::cout << it->second << \"€\\n\";\n    }\n    return 0;\n}",
+    "best_practices": "Préférer std::unordered_map pour un accès en O(1) moyen.",
+    "pitfalls": "Accéder à une clé absente via l'opérateur [] force son insération par défaut.",
+    "notes": "std::map repose sur un arbre bicolore et conserve un ordre en $O(\log n)$."
   },
   "struct_strings_02": {
-    "minimal": "std::string s = \"Hello\";\ns += \" World\"; // Mutable en place !",
-    "complete": "#include <iostream>\n#include <string>\n#include <sstream>\n\nint main() {\n    std::string phrase = \"Texte\";\n    phrase[0] = 't'; // Modification directe en mémoire sans réallocation\n\n    std::stringstream ss;\n    for(int i = 0; i < 3; ++i) {\n        ss << \"Item \" << i << \" \";\n    }\n    \n    std::string resultat = ss.str();\n    std::cout << resultat << \"\\n\";\n    return 0;\n}",
-    "best_practices": "Passer systématiquement vos chaînes volumineuses par référence constante (`const std::string&`) pour s'épargner une copie octet par octet inutile.",
-    "pitfalls": "Concaténer des littéraux de chaîne bruts avec l'opérateur `+` comme `\"A\" + \"B\"`. Ce sont des pointeurs `const char*` bruts, l'addition y est interdite.",
-    "notes": "Depuis C++17, le type léger `std::string_view` permet de manipuler des portions de chaînes sans allouer ni copier la moindre donnée en mémoire."
+    "minimal": "std::string s = \"Hello\";\ns += \" World\";",
+    "complete": "#include <iostream>\n#include <string>\n#include <sstream>\n\nint main() {\n    std::string str = \"C++\";\n    str[0] = 'c';\n    std::stringstream ss;\n    ss << str << \" 2026\";\n    std::cout << ss.str() << \"\\n\";\n    return 0;\n}",
+    "best_practices": "Utiliser std::string_view (C++17) pour manipuler des sous-chaînes sans copie.",
+    "pitfalls": "Tenter d'additionner des littéraux bruts (\"A\" + \"B\").",
+    "notes": "Les chaînes std::string sont mutables nativement sur le tas."
   }
 };

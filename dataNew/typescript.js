@@ -1,102 +1,110 @@
+// data/languages/typescript.js
 window.CompIde = window.CompIde || {};
 
 CompIde.typescriptData = {
   "base_hello_world": {
     "minimal": "console.log(\"Hello World!\");",
-    "complete": "const message: string = \"Hello World!\";\nconsole.log(message);",
-    "best_practices": "Laisser TypeScript compiler le code vers du JavaScript standard lisible par tous les navigateurs.",
-    "pitfalls": "Croire que TypeScript s'exécute nativement. Il nécessite une phase de transpilation (tsc).",
-    "notes": "Surcouche (superset) typée de JavaScript créée par Microsoft."
+    "complete": "function main(): void {\n    console.log(\"Hello World!\");\n}\nmain();",
+    "best_practices": "Annoter les types de retour de fonction explicites.",
+    "pitfalls": "Oublier l'étape de compilation vers JavaScript (transpilation).",
+    "notes": "Surcouche typée de JavaScript développée par Microsoft."
   },
   "base_variables_02": {
-    "minimal": "let x: number = 42;\nlet y = 3.14; // Inférence",
-    "complete": "const joueur: string = \"Link\";\nlet rubis: number = 50;\nlet estVivant: boolean = true;\n\nconsole.log(`${joueur} a ${rubis} rubis.`);",
-    "best_practices": "Profiter de l'inférence de type automatique au lieu de typer manuellement chaque variable évidente.",
-    "pitfalls": "Abuser du type `any` qui désactive complètement les vérifications de sécurité de TypeScript et revient à du JS brut.",
-    "notes": "Typage statique optionnel à la compilation. Disparaît totalement une fois converti en JavaScript."
+    "minimal": "let x: number = 42;\nconst y: string = \"TS\";",
+    "complete": "const nom: string = \"WebIDE\";\nlet score: number = 0;\nscore += 10;\nconsole.log(`${nom} - ${score}`);",
+    "best_practices": "Laisser l'inférence de type agir quand l'initialisation est évidente.",
+    "pitfalls": "Abuser du type 'any' qui désactive la vérification statique.",
+    "notes": "Analyse de type statique uniquement à la compilation."
   },
-  "ctrl_conditions_03": {
-    "minimal": "if (role === \"admin\") {\n    ouvrirConsole();\n}",
-    "complete": "type Role = \"admin\" | \"user\" | \"guest\";\nconst userRole: Role = \"user\";\n\nswitch (userRole) {\n    case \"admin\": console.log(\"Accès total\"); break;\n    case \"user\": console.log(\"Accès limité\"); break;\n    case \"guest\": console.log(\"Lecture seule\"); break;\n    default:\n        const _exhaustiveCheck: never = userRole;\n        throw new Error(\"Rôle non géré\");\n}",
-    "best_practices": "Exploiter le filtrage de types (Type Guarding) dans vos blocs conditionnels : TypeScript comprend le code et adapte le type de la variable à l'intérieur du bloc.",
-    "pitfalls": "Penser qu'un switch valide les types à l'exécution. Si une donnée externe corrompue contourne le compilateur, le switch a besoin d'un 'default'.",
-    "notes": "Le pattern de vérification exhaustive avec le type `never` (voir code complet) permet de forcer une erreur de compilation si on oublie de traiter un nouveau cas."
+  "ctrl_conditions_01": {
+    "minimal": "if (score > 10) { gagne(); }",
+    "complete": "const score: number = 75;\nif (score >= 90) console.log(\"Excellent\");\nelse if (score >= 50) console.log(\"Validé\");\nelse console.log(\"Échec\");",
+    "best_practices": "Utiliser la réduction de types (Type Narrowing) dans les garde-fous.",
+    "pitfalls": "Utiliser l'égalité non-stricte '=='.",
+    "notes": "Identique à JavaScript à l'exécution."
   },
-  "ctrl_boucles_04": {
-    "minimal": "for (let i: number = 0; i < 5; i++) {\n    console.log(i);\n}",
-    "complete": "interface Commande { id: number; prix: number; }\nconst panier: Commande[] = [{ id: 1, prix: 10 }, { id: 2, prix: 25 }];\n\nfor (const item of panier) {\n    console.log(`Commande #${item.id} : ${item.prix}€`);\n}",
-    "best_practices": "Profiter du typage strict à l'intérieur des boucles : l'élément extrait d'un tableau est automatiquement typé par l'inférence.",
-    "pitfalls": "Déclarer le type de l'index manuellement dans un `for (let i = 0...)`. L'inférence s'en charge parfaitement, ajouter `: number` alourdit inutilement le code.",
-    "notes": "Exactement comme en JavaScript à l'exécution, mais sécurisé dès l'écriture grâce à l'analyseur statique."
+  "ctrl_loops_02": {
+    "minimal": "for (const item of liste) {}",
+    "complete": "const nombres: number[] = [10, 20, 30];\nfor (const nb of nombres) {\n    console.log(nb);\n}",
+    "best_practices": "Typer les tableaux explicitement (`type[]`).",
+    "pitfalls": "Incompatibilité de types lors de l'insertion d'éléments.",
+    "notes": "Génère du code JS standard sans surcoût."
   },
-  "func_declaration_05": {
-    "minimal": "function saluer(): void {\n    console.log(\"Hi\");\n}",
-    "complete": "interface User { id: number; nom: string; }\n\n// Déclaration avec types de paramètres et type de retour\nfunction extraireNom(utilisateur: User): string {\n    return utilisateur.nom;\n}\n\nconst client: User = { id: 101, nom: \"Alice\" };\nconsole.log(extraireNom(client));",
-    "best_practices": "Toujours typer explicitement les arguments de fonction. Le type de retour peut souvent être déduit par inférence, mais le spécifier sécurise l'architecture.",
-    "pitfalls": "Déclarer une fonction qui ne retourne jamais rien (boucle infinie ou throw) avec le type `void`. Le vrai type approprié est `never`.",
-    "notes": "TypeScript apporte la sécurité des contrats d'interface aux fonctions JavaScript dès l'étape d'écriture."
+  "func_basics_01": {
+    "minimal": "function ajouter(a: number, b: number): number { return a + b; }",
+    "complete": "function afficher(msg: string, repet: number = 1): void {\n    for(let i = 0; i < repet; i++) console.log(msg);\n}\nafficher(\"Alerte\", 3);",
+    "best_practices": "Définir des paramètres optionnels avec le symbole '?' (ex: repet?: number).",
+    "pitfalls": "Mélanger paramètres optionnels et paramètres par défaut sans ordre strict.",
+    "notes": "Permet les surcharges de signatures avant le bloc de fonction."
   },
-  "func_arguments_06": {
-    "minimal": "function envoyer(msg: string, urgent?: boolean) { } // Optionnel",
-    "complete": "// Paramètre optionnel (?), valeur par défaut et paramètre de reste typé\nfunction genererRapport(\n    titre: string, \n    format: \"pdf\" | \"csv\" = \"pdf\", \n    options?: { imprimer: boolean }\n): string {\n    return `Rapport ${titre} au format ${format}`;\n}\n\ngenererRapport(\"Ventes\"); // Valide\ngenererRapport(\"Stats\", \"csv\"); // Valide",
-    "best_practices": "Placer obligatoirement tous les paramètres optionnels (`?`) après les paramètres obligatoires dans la signature de la fonction.",
-    "pitfalls": "Fournir une valeur par défaut à un paramètre tout en le marquant comme optionnel (`param?: string = \"defaut\"`). C'est redondant et invalide.",
-    "notes": "À la compilation, les valeurs par défaut sont traduites en vérifications classiques JavaScript (`param !== undefined ? param : defaut`)."
+  "func_lambdas_02": {
+    "minimal": "const f = (x: number): number => x * 2;",
+    "complete": "const mult: number = 3;\nconst v: number[] = [1, 2, 3];\nconst res: number[] = v.map((n: number) => n * mult);",
+    "best_practices": "Laisser TypeScript déduire les types des paramètres de callbacks.",
+    "pitfalls": "Oublier de typer le retour d'une lambda complexe.",
+    "notes": "Conserve le comportement des closures JS."
   },
-  "data_structures_07": {
-    "minimal": "const notes: number[] = [12, 15];",
-    "complete": "const utilisateurs: string[] = [\"Dan\", \"Sam\"];\n\n// Tableaux en lecture seule (immuables)\nconst configuration: readonly number[] = [80, 443];\n\n// Les Tuples (tableaux à structure fixe de types)\nlet reponseServeur: [number, string] = [200, \"OK\"];",
-    "best_practices": "Utiliser le modificateur `readonly` pour verrouiller vos tableaux de configuration afin d'empêcher toute modification accidentelle (`.push`, `.pop`) dans le code.",
-    "pitfalls": "Confondre un Tableau classique `string[]` et un Tuple `[string, number]`. Le tuple applique une contrainte d'ordre et de taille stricte sur les types.",
-    "notes": "TypeScript analyse les opérations sur les tableaux pour s'assurer que vous ne tentez pas d'insérer un type invalide (ex: pousser un booléen dans un tableau de chaînes)."
+  "mem_management_01": {
+    "minimal": "let obj: { data?: number } | null = { data: 42 };\nobj = null;",
+    "complete": "function traiter(): void {\n    const r = { nom: \"Temp\" };\n}\ntraiter();",
+    "best_practices": "Libérer les références inutiles pour faciliter le passage du GC.",
+    "pitfalls": "Conserver des références fortes dans des structures de données.",
+    "notes": "Même gestion mémoire que JavaScript."
   },
-  "data_structures_08": {
-    "minimal": "const scores: Record<string, number> = {};",
-    "complete": "// Définition d'un dictionnaire typé strict via Record ou Signature d'index\ninterface Catalogue {\n    [idProduit: string]: number; // Clé string, valeur number\n}\n\nconst prixFleurs: Catalogue = {\n    \"rose\": 2.50,\n    \"tulipe\": 1.80\n};\n\nprixFleurs[\"orchidee\"] = 15.00; // Valide\n// prixFleurs[\"cactus\"] = \"Cher\"; // ERREUR de compilation, la valeur doit être un nombre",
-    "best_practices": "Utiliser l'utilitaire de type `Record<CléType, ValeurType>` pour écrire rapidement des dictionnaires propres en ligne sans déclarer d'interface complexe.",
-    "pitfalls": "Oublier que même si TypeScript valide les clés lors de la compilation, l'accès à une clé inexistante (`prixFleurs[\"inconnu\"]`) retournera `undefined` à l'exécution sans lever d'erreur. Activez `noUncheckedIndexedAccess` dans le tsconfig pour contrer cela.",
-    "notes": "TypeScript permet d'utiliser des types d'Unions comme clés de dictionnaire limitées (`Record<\"gagne\" | \"perdu\", number>`)."
+  "mem_references_02": {
+    "minimal": "let a: { v: number } = { v: 10 };",
+    "complete": "interface Donnee { v: number; }\nfunction modif(d: Donnee): void {\n    d.v += 10;\n}\nconst obj: Donnee = { v: 10 };\nmodif(obj);",
+    "best_practices": "Utiliser Readonly<T> pour empêcher la modification de l'objet.",
+    "pitfalls": "Considérer qu'une interface crée une copie d'un objet.",
+    "notes": "Les types et interfaces disparaissent complètement après transpilation."
   },
-  "oop_classes_09": {
-    "minimal": "class Hero {\n    public nom: string;\n    private id: number;\n}",
-    "complete": "class Serveur {\n    public nom: string;\n    private ip: string;\n    protected status: boolean = false;\n\n    constructor(nom: string, ip: string) {\n        this.nom = nom;\n        this.ip = ip;\n    }\n\n    public obtenirIP(): string {\n        return this.ip;\n    }\n}",
-    "best_practices": "Déclarer explicitement les modificateurs d'accès (`public`, `private`, `protected`) sur vos propriétés pour verrouiller l'usage de votre API au sein de l'équipe.",
-    "pitfalls": "Croire que le mot-clé `private` de TypeScript protège la donnée à l'exécution. C'est uniquement une protection à la compilation. Le code transpilé final redevient du JS ordinaire où tout est public (sauf usage du `#` natif).",
-    "notes": "TypeScript enrichit considérablement les classes JS en intégrant les notions d'interfaces (`implements`) et de classes abstraites (`abstract`)."
+  "poo_classes_01": {
+    "minimal": "class Personne {\n    private age: number;\n}",
+    "complete": "class Personne {\n    constructor(private nom: string) {}\n    public getNom(): string { return this.nom; }\n}\nconst p = new Personne(\"Alice\");\nconsole.log(p.getNom());",
+    "best_practices": "Utiliser l'initialisation raccourcie dans le constructeur (`constructor(public nom: string)`).",
+    "pitfalls": "Croire que le mot-clé 'private' de TS est inviolable au runtime (préférer `#`).",
+    "notes": "Ajoute des modificateurs d'accès statiques (public, private, protected)."
   },
-  "oop_methods_10": {
-    "minimal": "constructor(public nom: string, private prix: number) {} // Raccourci",
-    "complete": "class Capsule {\n    // Syntaxe ultra-courte de TS : Parameter Properties\n    // Crée, tape et assigne automatiquement l'attribut d'un coup !\n    constructor(public identifiant: string, private codeSecret: number) {}\n}\n\nconst maCapsule = new Capsule(\"A-42\", 9876);\nconsole.log(maCapsule.identifiant);",
-    "best_practices": "Abuser du raccourci de syntaxe dans le constructeur (`constructor(public x: string)`) : cela évite d'avoir à déclarer les champs en haut de la classe puis de faire les `this.x = x` répétitifs.",
-    "pitfalls": "Tenter d'utiliser la surcharge multiple de constructeurs avec des corps de fonctions différents comme en C#. En TS/JS, il ne peut y avoir qu'un seul constructeur physique.",
-    "notes": "TypeScript vérifie strictement à la compilation que toutes les propriétés déclarées sont bien initialisées soit par défaut, soit dans le constructeur."
+  "poo_polymorphism_02": {
+    "minimal": "interface Animal { crier(): void; }",
+    "complete": "interface Animal {\n    crier(): void;\n}\nclass Chien implements Animal {\n    crier(): void { console.log(\"Wouf!\"); }\n}\nconst a: Animal = new Chien();\na.crier();",
+    "best_practices": "Utiliser des interfaces pour définir des contrats structurels.",
+    "pitfalls": "Confondre l'héritage de classes (extends) et le contrat d'interface (implements).",
+    "notes": "Typage structurel : deux types compatibles par leur forme sont équivalents."
   },
-  "errors_try_catch_11": {
-    "minimal": "try {\n    action();\n} catch (error) {\n    if (error instanceof Error) console.error(error.message);\n}",
-    "complete": "try {\n    JSON.parse(\"{ mauvais_format }\");\n} catch (error: unknown) {\n    // En TS, l'erreur attrapée est obligatoirement de type 'unknown'\n    if (error instanceof Error) {\n        console.error(\"Erreur d'analyse : \" + error.message);\n    } else {\n        console.error(\"Une erreur inconnue est survenue\");\n    }\n}",
-    "best_practices": "Toujours typer vos blocs catch en `unknown` (c'est le comportement par défaut sécurisé) et utiliser des protections de type (`instanceof Error`) avant de lire des propriétés comme `.message`.",
-    "pitfalls": "Forcer le type de l'erreur interceptée en écrivant `catch (error: any)`. Cela désactive les vérifications du compilateur et réintroduit des risques de plantage silencieux.",
-    "notes": "TypeScript ne dispose pas d'un système de 'Checked Exceptions' à la compilation comme Java. Il est impossible de savoir via la signature d'une fonction si elle va lever une exception."
+  "err_exceptions_01": {
+    "minimal": "try {} catch(e: unknown) {}",
+    "complete": "try {\n    throw new Error(\"Échec\");\n} catch (e: unknown) {\n    if (e instanceof Error) console.error(e.message);\n}",
+    "best_practices": "Typer l'exception attrapée en 'unknown' puis vérifier avec 'instanceof'.",
+    "pitfalls": "Présumer que le type attrapé dans catch est toujours de type Error.",
+    "notes": "Le bloc try/catch suit exactement les règles de JavaScript."
   },
-  "errors_throw_12": {
-    "minimal": "throw new Error(\"Données corrompues\");",
-    "complete": "class ErreurValidation extends Error {\n    constructor(public champ: string, message: string) {\n        super(message);\n        this.name = \"ErreurValidation\";\n    }\n}\n\nfunction verifierChamp(texte: string) {\n    if (!texte) {\n        throw new ErreurValidation(\"email\", \"L'adresse email est requise.\");\n    }\n}",
-    "best_practices": "Lors de la création d'une classe d'erreur personnalisée héritant de `Error`, ne pas oublier d'appeler `super(message)` dès la première ligne du constructeur.",
-    "pitfalls": "Croire que déclarer une classe d'erreur personnalisée suffit à TypeScript pour la filtrer directement dans le catch (ex: `catch (e: ErreurValidation)` est interdit par la syntaxe). Le tri se fait obligatoirement dans le corps du catch via `if (e instanceof ErreurValidation)`.",
-    "notes": "Lever des exceptions typées permet de structurer proprement les couches applicatives d'un projet d'envergure."
+  "gen_generics_01": {
+    "minimal": "function id<T>(arg: T): T { return arg; }",
+    "complete": "class Boite<T> {\n    constructor(public contenu: T) {}\n}\nconst b = new Boite<number>(100);\nconsole.log(b.contenu);",
+    "best_practices": "Restreindre les génériques à l'aide de contraintes (`<T extends Structure>`).",
+    "pitfalls": "Multiplier inutilement des paramètres génériques complexes.",
+    "notes": "Vérification des génériques effectuée uniquement à la compilation."
   },
-  "async_await_13": {
-    "minimal": "async function getData(): Promise<string> { return \"ok\"; }",
-    "complete": "interface Meteo {\n    temperature: number;\n    ville: string;\n}\n\n// Une fonction async retourne TOUJOURS une Promesse typée\nasync function obtenirMeteo(ville: string): Promise<Meteo> {\n    const reponse = await fetch(`https://api.meteo.test/${ville}`);\n    const donnees: Meteo = await reponse.json();\n    return donnees;\n}\n\n// Appel\nobtenirMeteo(\"Paris\").then(res => console.log(res.temperature));",
-    "best_practices": "Déclarer explicitement le type de retour d'une fonction asynchrone sous la forme `Promise<MonType>` pour clarifier les contrats de vos fonctions graphiques ou API.",
-    "pitfalls": "Oublier d'utiliser le mot-clé `async` sur la fonction parent alors que vous utilisez un `await` à l'intérieur. Le compilateur TypeScript lèvera instantanément une erreur de syntaxe.",
-    "notes": "TypeScript compile parfaitement la syntaxe async/await même si vous ciblez une vieille version d'ECMAScript (comme ES5), en générant des machines à états complexes (Generators) sous le capot."
+  "conc_async_02": {
+    "minimal": "const res: Response = await fetch(url);",
+    "complete": "async function charger(): Promise<number> {\n    return 42;\n}\nasync function main(): Promise<void> {\n    const v = await charger();\n    console.log(v);\n}\nmain();",
+    "best_practices": "Typer systématiquement le retour des fonctions asynchrones avec `Promise<T>`.",
+    "pitfalls": "Oublier de gérer les pannes avec try/catch sur les tâches asynchrones.",
+    "notes": "Transpilé en promesses ou machines à états JS selon la cible."
   },
-  "file_io_14": {
-    "minimal": "import * as fs from 'fs/promises';\nawait fs.writeFile('t.txt', 'data');",
-    "complete": "import { writeFile, readFile } from 'fs/promises';\n\nasync function stockerConfiguration(config: Record<string, any>): Promise<void> {\n    const fichier = './config.json';\n    const chaineJson = JSON.stringify(config, null, 2);\n    \n    await writeFile(fichier, chaineJson, 'utf-8');\n}\n\nasync function lireConfiguration(): Promise<Record<string, any>> {\n    const brut = await readFile('./config.json', 'utf-8');\n    return JSON.parse(brut); // Retourne l'objet typé dynamiquement\n}",
-    "best_practices": "Installer les définitions de types système via `npm install @types/node --save-dev` pour que TypeScript connaisse et auto-complète nativement l'ensemble des modules de fichiers (`fs`).",
-    "pitfalls": "Penser que `JSON.parse` valide vos types d'interfaces TypeScript automatiquement. Si le fichier JSON est corrompu ou modifié manuellement sur le disque, l'application plantera au runtime.",
-    "notes": "L'utilisation combinée du module `fs/promises` et de TypeScript offre l'un des environnements d'écriture de scripts de fichiers les plus confortables de l'industrie."
+  "struct_maps_01": {
+    "minimal": "const map = new Map<string, number>();",
+    "complete": "const prix = new Map<string, number>();\nprix.set(\"Café\", 1.50);\nconsole.log(prix.get(\"Café\"));",
+    "best_practices": "Spécifier les types de la clé et de la valeur lors de l'instanciation de la Map.",
+    "pitfalls": "Accéder à une clé absente d'une Map sans vérifier le retour 'undefined'.",
+    "notes": "Sécurité de typage accrue au niveau des clés et des valeurs insérées."
+  },
+  "struct_strings_02": {
+    "minimal": "const s: string = `Hello ${nom}`;",
+    "complete": "const nom: string = \"TypeScript\";\nconst msg: string = `Langage : ${nom.toUpperCase()}`;\nconsole.log(msg);",
+    "best_practices": "Utiliser les types littéraux de chaînes pour des valeurs strictes.",
+    "pitfalls": "Concaténation manuelle avec '+' au lieu de l'interpolation.",
+    "notes": "Les chaînes bénéficient de toutes les méthodes natives de JavaScript."
   }
 };
