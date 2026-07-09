@@ -1,100 +1,107 @@
 {
   "base_hello_world": {
-    "minimal": "int main() {\n    printf(\"Hello World!\");\n}",
+    "minimal": "int main() {\n    printf(\"Hello World!\");\n    return 0;\n}",
     "complete": "#include <stdio.h>\n\nint main() {\n    printf(\"Hello World!\\n\");\n    return 0;\n}",
-    "best_practices": "Toujours inclure <stdio.h> pour printf et retourner 0 à la fin du main.",
-    "pitfalls": "Oublier le saut de ligne \\n à la fin, ce qui peut bloquer l'affichage dans certains terminaux (problème de buffer).",
-    "notes": "Le C est le grand ancêtre. Pas de chaînes de caractères natives (string), juste des tableaux de char."
+    "best_practices": "Inclure toujours stdio.h et retourner 0 en fin de main.",
+    "pitfalls": "Oublier le retour à la ligne '\\n' lors du flush de sortie stdout.",
+    "notes": "Langage compilé impératif procédural de bas niveau."
   },
   "base_variables_02": {
-    "minimal": "int x = 42;\nfloat y = 3.14;",
-    "complete": "#include <stdio.h>\n\nint main() {\n    int age = 25;\n    const double PI = 3.14159;\n    char lettre = 'A';\n    \n    printf(\"Lettre: %c, Age: %d\\n\", lettre, age);\n    return 0;\n}",
-    "best_practices": "Toujours initialiser vos variables à la déclaration, sinon elles contiennent des valeurs résiduelles aléatoires de la mémoire.",
-    "pitfalls": "Utiliser un mauvais spécificateur de format dans printf (ex: %d pour un float), ce qui corrompt l'affichage.",
-    "notes": "Typage statique, explicite et bas niveau. Pas d'inférence de type (auto) en C classique."
+    "minimal": "int x = 42;\nfloat y = 3.14f;",
+    "complete": "#include <stdio.h>\n\nint main() {\n    int age = 25;\n    const double PI = 3.14159;\n    printf(\"Age: %d - PI: %.2f\\n\", age, PI);\n    return 0;\n}",
+    "best_practices": "Initialiser chaque variable dès sa déclaration.",
+    "pitfalls": "Lire une variable non initialisée (valeur poubelle en mémoire).",
+    "notes": "Pas de typage implicite automatique (pas de mot-clé 'auto')."
   },
-  "ctrl_conditions_03": {
-    "minimal": "if (x > 0) {\n    printf(\"Positif\");\n} else {\n    printf(\"Négatif ou nul\");\n}",
-    "complete": "#include <stdio.h>\n\nint main() {\n    int score = 85;\n    \n    if (score >= 90) {\n        printf(\"Excellent\\n\");\n    } else if (score >= 70) {\n        printf(\"Bien\\n\");\n    } else {\n        printf(\"À améliorer\\n\");\n    }\n    \n    char code = 'B';\n    switch(code) {\n        case 'A': printf(\"Action A\\n\"); break;\n        case 'B': printf(\"Action B\\n\"); break;\n        default: printf(\"Inconnu\\n\");\n    }\n    return 0;\n}",
-    "best_practices": "Mettre systématiquement des accolades `{ }` même s'il n'y a qu'une seule ligne d'instruction, pour éviter les bugs lors de modifications futures.",
-    "pitfalls": "Oublier le 'break;' à la fin d'un 'case' dans un switch. Sans lui, le code continue de s'exécuter dans les cases suivants (effet de cascade destructeur).",
-    "notes": "En C classique (avant C99), le type booléen natif n'existe pas. `0` équivaut à FAUX, et n'importe quelle valeur différente de `0` équivaut à VRAI."
+  "ctrl_conditions_01": {
+    "minimal": "if (score > 10) { gagne(); }",
+    "complete": "#include <stdio.h>\n\nint main() {\n    int score = 75;\n    if (score >= 90) {\n        printf(\"Excellent\\n\");\n    } else if (score >= 50) {\n        printf(\"Validé\\n\");\n    } else {\n        printf(\"Échec\\n\");\n    }\n    return 0;\n}",
+    "best_practices": "Garder la logique d'embranchement la plus simple possible.",
+    "pitfalls": "En C, tout entier non-nul est évalué à vrai (true), 0 est faux (false).",
+    "notes": "Pas de type booléen natif avant la norme C99 (<stdbool.h>)."
   },
-  "ctrl_boucles_04": {
-    "minimal": "for (int i = 0; i < 5; i++) {\n    printf(\"%d \", i);\n}",
-    "complete": "#include <stdio.h>\n\nint main() {\n    // Boucle For\n    for (int i = 1; i <= 3; i++) {\n        printf(\"Tour %d\\n\", i);\n    }\n    \n    // Boucle While\n    int compteur = 0;\n    while (compteur < 3) {\n        printf(\"Compteur: %d\\n\", compteur);\n        compteur++;\n    }\n    return 0;\n}",
-    "best_practices": "Privilégier la boucle 'for' quand le nombre d'itérations est connu à l'avance, et 'while' quand la condition dépend d'un calcul dynamique.",
-    "pitfalls": "Créer une boucle infinie en oubliant d'incrémenter la variable de contrôle (ex: oublier le compteur++ dans un while).",
-    "notes": "L'instruction `int i = 0` à l'intérieur du `for` nécessite un compilateur compatible C99 ou supérieur. En C89, il fallait déclarer `int i;` tout en haut de la fonction."
+  "ctrl_loops_02": {
+    "minimal": "for(int i = 0; i < 10; i++) {}",
+    "complete": "#include <stdio.h>\n\nint main() {\n    int arr[4] = {10, 20, 30, 40};\n    for (int i = 0; i < 4; i++) {\n        printf(\"%d \", arr[i]);\n    }\n    return 0;\n}",
+    "best_practices": "Déclarer l'index 'i' dans la boucle 'for' (C99+).",
+    "pitfalls": "Déborder du tableau en lisant l'élément arr[4] (Undefined Behavior).",
+    "notes": "Pas de boucle style 'foreach' native sur les tableaux."
   },
-  "func_declaration_05": {
-    "minimal": "void saluer() {\n    printf(\"Hello\");\n}",
-    "complete": "#include <stdio.h>\n\n// 1. Prototype (Déclaration)\nint addition(int a, int b);\n\nint main() {\n    int resultat = addition(5, 7); // 3. Appel\n    printf(\"Résultat: %d\\n\", resultat);\n    return 0;\n}\n\n// 2. Définition\nint addition(int a, int b) {\n    return a + b;\n}",
-    "best_practices": "Toujours déclarer les prototypes de vos fonctions en haut du fichier (ou dans un fichier .h) si elles sont définies après le `main()`, pour que le compilateur connaisse leur signature.",
-    "pitfalls": "Tenter de retourner un tableau local depuis une fonction. Le tableau étant détruit à la fin de la fonction, vous récupérerez un pointeur vers une zone mémoire corrompue.",
-    "notes": "Le C ne supporte pas la surcharge de fonctions (impossible d'avoir deux fonctions avec le même nom mais des paramètres différents)."
+  "func_basics_01": {
+    "minimal": "int ajouter(int a, int b) { return a + b; }",
+    "complete": "#include <stdio.h>\n\nvoid afficher(const char* msg) {\n    printf(\"%s\\n\", msg);\n}\n\nint main() {\n    afficher(\"Alerte\");\n    return 0;\n}",
+    "best_practices": "Mettre les prototypes de fonctions avant la fonction main().",
+    "pitfalls": "Absence de paramètres par défaut ou d'arguments nommés.",
+    "notes": "Tout passage de paramètre se fait strictement par valeur."
   },
-  "func_arguments_06": {
-    "minimal": "void modifier(int *x) {\n    *x = 10; // Passage par pointeur\n}",
-    "complete": "#include <stdio.h>\n\n// Passage par valeur (copie)\nvoid incrementerValeur(int n) {\n    n++;\n}\n\n// Passage par adresse/pointeur (modification directe)\nvoid incrementerPointeur(int *n) {\n    (*n)++;\n}\n\nint main() {\n    int nombre = 5;\n    incrementerValeur(nombre);   // nombre reste 5\n    incrementerPointeur(&nombre); // nombre devient 6\n    return 0;\n}",
-    "best_practices": "Utiliser le mot-clé `const` pour les paramètres de types complexes (comme les structures) passés par pointeur si la fonction ne doit pas les modifier (`const MaStructure *s`).",
-    "pitfalls": "Oublier les parenthèses autour de l'étoile lors de la manipulation d'un pointeur (ex: `*n++` au lieu de `(*n)++`), ce qui incrémente l'adresse mémoire au lieu de la valeur.",
-    "notes": "Le C fait *toujours* du passage par valeur. Pour modifier une variable externe, on passe la *valeur de son adresse* (un pointeur)."
+  "func_lambdas_02": {
+    "minimal": "// Pas de lambdas natives en C.",
+    "complete": "#include <stdio.h>\n\nvoid executer(int (*func)(int), int v) {\n    printf(\"Résultat : %d\\n\", func(v));\n}\n\nint doubler(int x) { return x * 2; }\n\nint main() {\n    executer(doubler, 5); // Passage d'un pointeur de fonction\n    return 0;\n}",
+    "best_practices": "Utiliser des pointeurs de fonction pour simuler des comportements dynamiques.",
+    "pitfalls": "Tenter de capturer un contexte local comme dans une closure.",
+    "notes": "Le C gère le comportement dynamique via les pointeurs de fonctions."
   },
-  "data_structures_07": {
-    "minimal": "int notes[5] = {12, 14, 15, 9, 18};",
-    "complete": "#include <stdio.h>\n\nint main() {\n    // Taille fixe obligatoire à la compilation\n    int grille[3] = {10, 20, 30};\n    \n    // Modification et accès\n    grille[1] = 25;\n    \n    // Calcul de la taille d'un tableau\n    int taille = sizeof(grille) / sizeof(grille[0]);\n    \n    for(int i = 0; i < taille; i++) {\n        printf(\"Index %d : %d\\n\", i, grille[i]);\n    }\n    return 0;\n}",
-    "best_practices": "Toujours calculer ou stocker manuellement la taille d'un tableau. En C, un tableau passé à une fonction 'perd' sa taille et devient un simple pointeur (Array Decay).",
-    "pitfalls": "Le dépassement de tampon (Buffer Overflow). Lire ou écrire à `grille[5]` alors que le tableau fait 3 éléments ne lèvera pas d'exception mais corrompra la mémoire ou fera crasher le programme (Segmentation Fault).",
-    "notes": "Pas de listes dynamiques natives en C. Pour redimensionner, il faut gérer la mémoire manuellement avec `malloc()`, `realloc()` et `free()`."
+  "mem_management_01": {
+    "minimal": "int* p = malloc(sizeof(int));\nfree(p);",
+    "complete": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int* p = malloc(sizeof(int));\n    if (p == NULL) return 1;\n    *p = 42;\n    printf(\"%d\\n\", *p);\n    free(p); // Libération manuelle stricte\n    return 0;\n}",
+    "best_practices": "Toujours vérifier si malloc() retourne NULL avant d'utiliser la mémoire.",
+    "pitfalls": "Utiliser de la mémoire après l'avoir libérée (Use-After-Free).",
+    "notes": "Gestion de la mémoire 100% manuelle."
   },
-  "data_structures_08": {
-    "minimal": "// Pas de dictionnaire natif. On utilise des structures.\nstruct Paire { char* cle; int valeur; };",
-    "complete": "#include <stdio.h>\n#include <string.h>\n\ntypedef struct {\n    char cle[20];\n    int valeur;\n} Element;\n\nint main() {\n    // Simulation très rudimentaire d'une Map avec un tableau de structures\n    Element dico[2] = {\n        {\"score\", 150},\n        {\"vies\", 3}\n    };\n    \n    // Recherche séquentielle (O(n))\n    for(int i = 0; i < 2; i++) {\n        if(strcmp(dico[i].cle, \"vies\") == 0) {\n            printf(\"Nombre de vies : %d\\n\", dico[i].valeur);\n        }\n    }\n    return 0;\n}",
-    "best_practices": "Pour de vrais projets nécessitant des dictionnaires, ne réinventez pas la roue : utilisez des bibliothèques externes éprouvées (comme glib) qui implémentent des tables de hachage robustes.",
-    "pitfalls": "Comparer des clés textuelles avec `if (dico[i].cle == \"vies\")`. En C, cela compare les adresses des pointeurs, pas le texte. Utilisez toujours `strcmp()`.",
-    "notes": "Le C n'intègre aucune structure de type clé-valeur dans sa bibliothèque standard (stdlib)."
+  "mem_references_02": {
+    "minimal": "void inc(int* ptr) { (*ptr)++; }",
+    "complete": "#include <stdio.h>\n\nvoid modifier(int* ptr) {\n    if (ptr != NULL) *ptr += 10;\n}\n\nint main() {\n    int x = 10;\n    modifier(&x);\n    printf(\"%d\\n\", x); // 20\n    return 0;\n}",
+    "best_practices": "Passer des pointeurs 'const' pour la lecture seule.",
+    "pitfalls": "Le C ne possède pas de 'références' (au sens C++ ou C#), uniquement des pointeurs.",
+    "notes": "Pour modifier une variable dans une fonction, on passe son adresse mémoire (&)."
   },
-  "oop_classes_09": {
-    "minimal": "typedef struct {\n    char nom[50];\n    int hp;\n} Personnage;",
-    "complete": "#include <stdio.h>\n#include <string.h>\n\n// Le C n'a pas de classes, on simule l'état avec une structure (struct)\ntypedef struct {\n    char nom[30];\n    int niveau;\n    int pointsDeVie;\n} Joueur;\n\n// On simule une méthode en passant un pointeur de la structure en paramètre\nvoid afficherJoueur(const Joueur *j) {\n    printf(\"Joueur : %s (Niv %d) - HP: %d\\n\", j->nom, j->niveau, j->pointsDeVie);\n}",
-    "best_practices": "Passer les structures complexes par pointeur constant (`const Joueur *`) pour éviter la copie lourde de données en mémoire tout en garantissant que la fonction ne modifiera pas l'objet.",
-    "pitfalls": "Tenter d'utiliser des mots-clés comme `public` ou `private`. En C, tous les champs d'une structure sont publics par défaut et accessibles directement.",
-    "notes": "Le C n'est pas un langage POO. Pour faire de la vraie encapsulation, il faut masquer la structure dans un fichier d'en-tête (Opaque Pointer)."
+  "poo_classes_01": {
+    "minimal": "typedef struct {\n    int age;\n} Personne;",
+    "complete": "#include <stdio.h>\n\ntypedef struct {\n    char nom[50];\n    int age;\n} Personne;\n\nint main() {\n    Personne p = {\"Alice\", 25};\n    printf(\"%s\\n\", p.nom);\n    return 0;\n}",
+    "best_practices": "Utiliser typedef pour alléger l'écriture des structures.",
+    "pitfalls": "Aucune encapsulation : tous les membres d'une struct sont publics.",
+    "notes": "Le C n'a pas de classes ni de méthodes membres."
   },
-  "oop_methods_10": {
-    "minimal": "// Pas de constructeur. On utilise une fonction d'initialisation\nJoueur creerJoueur(char* nom);",
-    "complete": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef struct { char nom[30]; int hp; } Joueur;\n\n// Fonction faisant office de constructeur (Factory)\nJoueur* initialiserJoueur(const char* nomInitial) {\n    Joueur *nouveau = malloc(sizeof(Joueur));\n    if (nouveau != NULL) {\n        strncpy(nouveau->nom, nomInitial, sizeof(nouveau->nom) - 1);\n        nouveau->hp = 100;\n    }\n    return nouveau;\n}\n\nint main() {\n    // Instanciation sur le tas (Heap Allocation)\n    Joueur *j1 = initialiserJoueur(\"Thor\");\n    \n    printf(\"Créé : %s\\n\", j1->nom);\n    \n    // Obligation de libérer la mémoire (Destructeur manuel)\n    free(j1);\n    return 0;\n}",
-    "best_practices": "Toujours vérifier si le pointeur retourné par `malloc()` n'est pas `NULL` avant de manipuler votre \"objet\", pour éviter un crash.",
-    "pitfalls": "Oublier de libérer la mémoire avec `free()`. Contrairement aux langages dotés d'un ramasse-miettes (Garbage Collector), le C accumulera les fuites de mémoire (Memory Leaks).",
-    "notes": "L'absence du mot-clé `new` force à choisir explicitement entre l'allocation sur la pile (Automatique : `Joueur j;`) ou sur le tas (Dynamique : `malloc`)."
+  "poo_polymorphism_02": {
+    "minimal": "// Struct avec pointeurs de fonctions pour simuler du polymorphisme.",
+    "complete": "#include <stdio.h>\n\ntypedef struct {\n    void (*crier)(void);\n} Animal;\n\nvoid crierChien() { printf(\"Wouf!\\n\"); }\n\nint main() {\n    Animal chien = { crierChien };\n    chien.crier();\n    return 0;\n}",
+    "best_practices": "Simuler des tables virtuelles via des tableaux de pointeurs de fonctions.",
+    "pitfalls": "Problèmes fréquents de trancodage manuel de types (casts invalides).",
+    "notes": "Pas d'héritage natif en C."
   },
-  "errors_try_catch_11": {
-    "minimal": "// Pas de Try/Catch. On vérifie les valeurs de retour.\nif (ptr == NULL) { /* gestion */ }",
-    "complete": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    FILE *fichier = fopen(\"config.txt\", \"r\");\n    \n    // En C, la gestion d'erreur se fait par anticipation / examen des retours\n    if (fichier == NULL) {\n        perror(\"Erreur lors de l'ouverture du fichier\");\n        return EXIT_FAILURE;\n    }\n    \n    // Utilisation du fichier...\n    fclose(fichier);\n    return EXIT_SUCCESS;\n}",
-    "best_practices": "Toujours tester le retour des fonctions système (comme `malloc` ou `fopen`) immédiatement après leur appel avant de manipuler les pointeurs.",
-    "pitfalls": "Ignorer un code d'erreur renvoyé par une fonction. Contrairement aux exceptions, le programme continuera de s'exécuter à l'aveugle jusqu'au crash (Segmentation Fault).",
-    "notes": "Le langage C standard ne possède aucun mécanisme natif de `try-catch`. Certains développeurs simulent ce comportement en utilisant les fonctions bas niveau `setjmp()` et `longjmp()`."
+  "err_exceptions_01": {
+    "minimal": "if (err) { return -1; }",
+    "complete": "#include <stdio.h>\n\nint diviser(int a, int b, int* res) {\n    if (b == 0) return -1; // Code d'erreur\n    *res = a / b;\n    return 0; // Succès\n}\n\nint main() {\n    int r;\n    if (diviser(10, 0, &r) != 0) {\n        printf(\"Erreur : division par zéro\\n\");\n    }\n    return 0;\n}",
+    "best_practices": "Traiter les codes d'erreurs retournés par chaque fonction.",
+    "pitfalls": "Ignorer le code de retour d'une fonction critique.",
+    "notes": "Pas de mécanisme d'exceptions nativement (try/catch)."
   },
-  "errors_throw_12": {
-    "minimal": "return -1; // Code d'erreur standard",
-    "complete": "#include <stdio.h>\n#include <errno.h>\n\nint diviser(int a, int b, int *resultat) {\n    if (b == 0) {\n        return -1; // On retourne un code d'erreur\n    }\n    *resultat = a / b;\n    return 0; // Succès\n}\n\nint main() {\n    int res;\n    if (diviser(10, 0, &res) != 0) {\n        fprintf(stderr, \"Erreur : Division par zéro !\\n\");\n    }\n    return 0;\n}",
-    "best_practices": "Adopter une convention claire pour vos fonctions : renvoyer `0` pour un succès, et un code négatif ou un ID d'erreur spécifique en cas de problème.",
-    "pitfalls": "Retourner une valeur de calcul qui se confond avec un code d'erreur. Si votre fonction peut légitimement renvoyer `-1`, séparez le code d'erreur du résultat en utilisant un pointeur pour le résultat (comme dans l'exemple complet).",
-    "notes": "La bibliothèque standard de C fournit la variable globale `errno` (déclarée dans `<errno.h>`) pour identifier la cause exacte des pannes du système."
+  "gen_generics_01": {
+    "minimal": "#define MAX(a, b) ((a) > (b) ? (a) : (b))",
+    "complete": "#include <stdio.h>\n\n#define IMPRIMER(val, fmt) printf(fmt \"\\n\", val)\n\nint main() {\n    IMPRIMER(42, \"%d\");\n    IMPRIMER(3.14, \"%.2f\");\n    return 0;\n}",
+    "best_practices": "Entourer les arguments de macros avec des parenthèses.",
+    "pitfalls": "Les macros du préprocesseur ne vérifient aucun type.",
+    "notes": "Généricité limitée aux macros ou aux pointeurs `void*`."
   },
-  "async_await_13": {
-    "minimal": "// Pas d'async/await natif. Usage des threads POSIX.\npthread_t thread;\npthread_create(&thread, NULL, maFonction, NULL);",
-    "complete": "#include <stdio.h>\n#include <stdlib.h>\n#include <pthread.h>\n#include <unistd.h>\n\nvoid* tacheFond(void* arg) {\n    printf(\"Début de la tâche de fond...\\n\");\n    sleep(2); // Simule un travail de 2 secondes\n    printf(\"Tâche de fond terminée !\\n\");\n    return NULL;\n}\n\nint main() {\n    pthread_t threadId;\n    \n    // Création d'un thread parallèle\n    if (pthread_create(&threadId, NULL, tacheFond, NULL) != 0) {\n        perror(\"Échec de création du thread\");\n        return EXIT_FAILURE;\n    }\n    \n    printf(\"Le programme principal continue en parallèle...\\n\");\n    \n    // Attente de la fin du thread (équivalent d'un await brut)\n    pthread_join(threadId, NULL);\n    printf(\"Tout est fini.\\n\");\n    return EXIT_SUCCESS;\n}",
-    "best_practices": "Toujours appeler `pthread_join()` ou détacher le thread avec `pthread_detach()` pour éviter de créer des 'threads zombies' qui gaspillent les ressources système.",
-    "pitfalls": "Tenter de modifier une même variable globale depuis deux threads différents sans utiliser de verrou (`pthread_mutex_t`). Cela provoque une situation de compétition (Race Condition) et corrompt vos données.",
-    "notes": "L'API `pthread.h` (POSIX Threads) est le standard sous Linux/macOS. Sous Windows, il faut utiliser l'API Win32 (`CreateThread`) ou une bibliothèque de compatibilité."
+  "conc_async_02": {
+    "minimal": "// Gestion multithread avec <pthread.h>",
+    "complete": "#include <stdio.h>\n#include <pthread.h>\n\nvoid* calcul(void* arg) {\n    printf(\"Thread exécuté\\n\");\n    return NULL;\n}\n\nint main() {\n    pthread_t thread;\n    pthread_create(&thread, NULL, calcul, NULL);\n    pthread_join(thread, NULL);\n    return 0;\n}",
+    "best_practices": "Penser à toujours 'joindre' les threads pour libérer leurs ressources.",
+    "pitfalls": "Problèmes de concurrence d'accès à la mémoire (Race Conditions).",
+    "notes": "Repose sur l'API POSIX pthreads."
   },
-  "file_io_14": {
-    "minimal": "FILE *f = fopen(\"log.txt\", \"w\");\nfputs(\"Hi\", f);\nfclose(f);",
-    "complete": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    FILE *fichier = fopen(\"donnees.txt\", \"w+\");\n    if (fichier == NULL) {\n        return EXIT_FAILURE;\n    }\n    \n    // Écriture\n    fprintf(fichier, \"Ligne %d : %s\\n\", 1, \"Bonjour le C\");\n    \n    // Retour au début pour lire\n    rewind(fichier);\n    \n    // Lecture ligne par ligne\n    char tampon[100];\n    while (fgets(tampon, sizeof(tampon), fichier) != NULL) {\n        printf(\"Lu : %s\", tampon);\n    }\n    \n    fclose(fichier);\n    return EXIT_SUCCESS;\n}",
-    "best_practices": "Toujours fermer vos fichiers avec `fclose()` dès que vous n'en avez plus besoin pour libérer le descripteur de fichier maintenu par le système d'exploitation.",
-    "pitfalls": "Utiliser la fonction `gets()` ou ne pas limiter la taille dans `fscanf()`. Utilisez toujours `fgets()` qui permet de spécifier la taille maximale du tampon et évite les Buffer Overflows.",
-    "notes": "Le mode `w+` écrase le fichier s'il existe déjà. Pour ajouter du contenu à la fin sans effacer, utilisez le mode `a` (Append)."
+  "struct_maps_01": {
+    "minimal": "// Implémentation manuelle de table de hachage requise.",
+    "complete": "#include <stdio.h>\n\ntypedef struct {\n    char* cle;\n    int valeur;\n} Entree;\n\nint main() {\n    Entree dictionnaire[1] = {{\"Café\", 1}};\n    printf(\"%s: %d\\n\", dictionnaire[0].cle, dictionnaire[0].valeur);\n    return 0;\n}",
+    "best_practices": "Utiliser une bibliothèque externe éprouvée pour les tables de hachage.",
+    "pitfalls": "Gérer soi-même les collisions de hachage de manière naïve.",
+    "notes": "Aucune structure de map/dictionnaire dans la bibliothèque standard C."
+  },
+  "struct_strings_02": {
+    "minimal": "char str[] = \"Hello\";",
+    "complete": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char s[20] = \"C\";\n    strcat(s, \" Language\"); // Concaténation\n    printf(\"%s (Taille: %lu)\\n\", s, strlen(s));\n    return 0;\n}",
+    "best_practices": "Utiliser strncpy/strncat pour éviter de dépasser la taille de mémoire allouée.",
+    "pitfalls": "Oublier l'octet de fin de chaîne nul ('\\0').",
+    "notes": "Les chaînes C sont de simples tableaux de caractères terminés par '\\0'."
   }
 }

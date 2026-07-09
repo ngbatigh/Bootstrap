@@ -1,100 +1,107 @@
 {
   "base_hello_world": {
     "minimal": "Console.WriteLine(\"Hello World!\")",
-    "complete": "Module Program\n    Sub Main()\n        Console.WriteLine(\"Hello World!\")\n    End Sub\nEnd Module",
-    "best_practices": "Respecter la capitalisation standard de l'écosystème .NET même si VB est insensible à la casse.",
-    "pitfalls": "Oublier la structure de fermeture comme End Sub ou End Module.",
-    "notes": "Visual Basic .NET partage le même moteur d'exécution (CLR) que le C#."
+    "complete": "Imports System\n\nModule Program\n    Sub Main()\n        Console.WriteLine(\"Hello World!\")\n    End Sub\nEnd Module",
+    "best_practices": "Organiser le code dans des Modules ou des Classes formelles.",
+    "pitfalls": "Ne pas tenir compte de l'insensibilité à la casse lors de l'interopérabilité.",
+    "notes": "Langage de l'écosystème .NET, insensible à la casse."
   },
   "base_variables_02": {
     "minimal": "Dim x As Integer = 42\nDim y = 3.14",
-    "complete": "Module Program\n    Sub Main()\n        Dim pseudo As String = \"VBMaster\"\n        Dim score As Integer = 500\n        Dim estActif As Boolean = True\n        Console.WriteLine(\"{0} - Score: {1}\", pseudo, score)\n    End Sub\nEnd Module",
-    "best_practices": "Toujours activer Option Explicit et Option Strict en haut du fichier pour forcer un typage propre et sécurisé.",
-    "pitfalls": "Laisser Option Strict à OFF, ce qui autorise des conversions implicites dangereuses et masquées.",
-    "notes": "Syntaxe verbeuse, inspirée du langage naturel. Totalement insensible à la casse."
+    "complete": "Imports System\n\nModule Program\n    Sub Main()\n        Dim age As Integer = 25\n        Const PI As Double = 3.14159\n        Dim nom = \"CompIde\"\n        Console.WriteLine($\"{nom} - Age: {age}\")\n    End Sub\nEnd Module",
+    "best_practices": "Activer Option Strict On pour bloquer les conversions de type implicites risquées.",
+    "pitfalls": "Oublier de spécifier la clause Option Explicit On (autorise des variables non déclarées).",
+    "notes": "Bénéficie du typage fort et statique fourni par le framework .NET."
   },
-  "ctrl_conditions_03": {
-    "minimal": "If x > 10 Then\n    Console.WriteLine(\"Grand\")\nEnd If",
-    "complete": "Dim note As Integer = 75\nIf note >= 90 Then\n    Console.WriteLine(\"A\")\nElseIf note >= 70 Then\n    Console.WriteLine(\"B\")\nElse\n    Console.WriteLine(\"C\")\nEnd If\nDim code As String = \"OK\"\nSelect Case code\n    Case \"OK\", \"SUCCESS\"\n        Console.WriteLine(\"Validé\")\n    Case Else\n        Console.WriteLine(\"Erreur\")\nEnd Select",
-    "best_practices": "Utiliser 'ElseIf' en un seul mot. Écrire 'Else If' en deux mots crée une structure imbriquée qui nécessite un 'End If' supplémentaire.",
-    "pitfalls": "Oublier le mot-clé 'Then' à la fin de la ligne du If ou du ElseIf.",
-    "notes": "La structure 'Select Case' en VB.NET gère nativement les plages de valeurs (`Case 1 To 10`) et les expressions (`Case Is > 5`)."
+  "ctrl_conditions_01": {
+    "minimal": "If score > 10 Then Gagner()",
+    "complete": "Imports System\n\nModule Program\n    Sub Main()\n        Dim score As Integer = 75\n        If score >= 90 Then\n            Console.WriteLine(\"Excellent\")\n        ElseIf score >= 50 Then\n            Console.WriteLine(\"Validé\")\n        Else\n            Console.WriteLine(\"Échec\")\n        End If\n    End Sub\nEnd Module",
+    "best_practices": "Utiliser Select Case pour remplacer les blocs d'instructions If complexes.",
+    "pitfalls": "Écrire 'Else If' au lieu du mot-clé unifié 'ElseIf'.",
+    "notes": "Utilise l'opérateur If() pour simuler l'instruction ternaire."
   },
-  "ctrl_boucles_04": {
-    "minimal": "For i As Integer = 0 To 4\n    Console.WriteLine(i)\nNext",
-    "complete": "Dim liste() As String = {\"A\", \"B\", \"C\"}\nFor Each lettre As String In liste\n    Console.WriteLine(lettre)\nNext\nDim c As Integer = 0\nWhile c < 3\n    Console.WriteLine(c)\n    c += 1\nEnd While",
-    "best_practices": "Toujours préciser le nom de la variable après le mot-clé 'Next' (ex: `Next i`) dans les longues boucles imbriquées.",
-    "pitfalls": "Attention à la borne supérieure du 'For i = 0 To 4' : en VB, la boucle s'exécute 5 fois (la borne supérieure est INCLUSE).",
-    "notes": "VB.NET propose également la boucle `Do ... Loop Until` ou `Do While ... Loop`."
+  "ctrl_loops_02": {
+    "minimal": "For Each x In liste : Next",
+    "complete": "Imports System\nImports System.Collections.Generic\n\nModule Program\n    Sub Main()\n        Dim nombres As New List(Of Integer) From {10, 20, 30}\n        For Each nb As Integer In nombres\n            Console.WriteLine(nb)\n        Next\n    End Sub\nEnd Module",
+    "best_practices": "Utiliser 'For Each' pour l'itération sécurisée sur les collections.",
+    "pitfalls": "Utiliser 'For i = 0 To liste.Count' au lieu de 'liste.Count - 1'.",
+    "notes": "Les bornes de la boucle 'For i = A To B' sont inclusives."
   },
-  "func_declaration_05": {
-    "minimal": "Function Somme(a As Integer, b As Integer) As Integer\n    Return a + b\nEnd Function",
-    "complete": "Module Outils\n    Public Sub AfficherMessage(msg As String)\n        Console.WriteLine(\"LOG: \" & msg)\n    End Sub\n    Public Function CalculerCarre(nombre As Integer) As Integer\n        Return nombre * nombre\n    End Function\nEnd Module",
-    "best_practices": "Utiliser le mot-clé `Return` de manière explicite pour renvoyer le résultat.",
-    "pitfalls": "Confondre `Sub` et `Function`. Tenter de récupérer le résultat d'une procédure `Sub` lèvera une erreur de compilation.",
-    "notes": "Contrairement à VB6/VBA, VB.NET intègre pleinement la surcharge de méthodes via le mot-clé `Overloads`."
+  "func_basics_01": {
+    "minimal": "Function Ajouter(a As Integer, b As Integer) As Integer\n    Return a + b\nEnd Function",
+    "complete": "Imports System\n\nModule Program\n    Sub Afficher(msg As String, Optional repet As Integer = 1)\n        For i As Integer = 1 To repet\n            Console.WriteLine(msg)\n        Next\n    End Sub\n    Sub Main()\n        Afficher(\"Alerte\", 3)\n    End Sub\nEnd Module",
+    "best_practices": "Différencier clairement les méthodes Sub (sans retour) et Function (avec retour).",
+    "pitfalls": "Ommettre le type de retour d'une fonction.",
+    "notes": "Prend en charge les paramètres optionnels via le mot-clé 'Optional'."
   },
-  "func_arguments_06": {
-    "minimal": "Sub Traiter(Optional valeur As Integer = 0)",
-    "complete": "Module App\n    Public Sub AjusterParametres(\n        ByVal id As Integer, \n        ByRef compteur As Integer, \n        Optional ByVal prefixe As String = \"ID_\"\n    )\n        compteur += 1\n        Console.WriteLine(prefixe & id)\n    End Sub\nEnd Module",
-    "best_practices": "Toujours expliciter le mode de passage des arguments via `ByVal` (copie sécurisée) ou `ByRef` (pointeur modifiable).",
-    "pitfalls": "Oublier de fournir une valeur par défaut obligatoire lors de la déclaration d'un paramètre marqué `Optional`.",
-    "notes": "VB.NET gère parfaitement l'appel de fonctions avec paramètres nommés : `AjusterParametres(id:=42, compteur:=c)`."
+  "func_lambdas_02": {
+    "minimal": "Dim f = Function(x As Integer) x * 2",
+    "complete": "Imports System\nImports System.Collections.Generic\nImports System.Linq\n\nModule Program\n    Sub Main()\n        Dim v As New List(Of Integer) From {1, 2, 3}\n        Dim res = v.Select(Function(n) n * 3).ToList()\n    End Sub\nEnd Module",
+    "best_practices": "Utiliser des expressions lambdas mono-lignes pour la concision.",
+    "pitfalls": "Mélanger la syntaxe des lambdas Sub et des lambdas Function.",
+    "notes": "Se convertit directement en délégués managés .NET."
   },
-  "data_structures_07": {
-    "minimal": "Dim liste As New List(Of String) FROM {\"A\", \"B\"}",
-    "complete": "Imports System.Collections.Generic\nModule Program\n    Sub Main()\n        Dim stack As New List(Of Integer)()\n        stack.Add(10)\n        stack.Add(20)\n        stack(1) = 25\n        stack.RemoveAt(0)\n        Console.WriteLine(\"Nombre : \" & stack.Count)\n    End Sub\nEnd Module",
-    "best_practices": "Privilégier la classe générique `List(Of T)` plutôt que le vieux tableau statique ou l'ancienne classe `ArrayList` non typée.",
-    "pitfalls": "Se faire piéger par le redimensionnement des tableaux statiques avec `ReDim`. Utiliser `ReDim` efface toutes les données existantes.",
-    "notes": "L'accès aux éléments d'une liste ou d'un tableau se fait avec des parenthèses `liste(0)` en VB."
+  "mem_management_01": {
+    "minimal": "Using writer As New StreamWriter(\"f.txt\")\nEnd Using",
+    "complete": "Imports System.IO\n\nModule Program\n    Sub Main()\n        Using writer As New StreamWriter(\"log.txt\")\n            writer.WriteLine(\"Data\")\n        End Using\n    End Sub\nEnd Module",
+    "best_practices": "Utiliser le bloc Using sur toutes les ressources qui implémentent IDisposable.",
+    "pitfalls": "Compter sur le destructeur 'Finalize' au lieu d'un nettoyage immédiat.",
+    "notes": "Gestion automatisée déléguée au Garbage Collector du .NET."
   },
-  "data_structures_08": {
-    "minimal": "Dim dict As New Dictionary(Of String, String)()",
-    "complete": "Imports System.Collections.Generic\nModule Program\n    Sub Main()\n        Dim capitales As New Dictionary(Of String, String)()\n        capitales.Add(\"France\", \"Paris\")\n        capitales(\"Italie\") = \"Rome\"\n        If capitales.ContainsKey(\"France\") Then\n            Console.WriteLine(capitales(\"France\"))\n        End If\n    End Sub\nEnd Module",
-    "best_practices": "Utiliser `capitales.TryGetValue(cle, valeurRecuperee)` pour tester la présence d'une clé et extraire sa valeur en une seule opération.",
-    "pitfalls": "Tenter d'ajouter une clé déjà existante avec la méthode `.Add()`. Cela lève une exception `ArgumentException`.",
-    "notes": "Le `Dictionary` de VB.NET s'appuie sur l'infrastructure ultra-performante du Framework .NET."
+  "mem_references_02": {
+    "minimal": "Sub Modifier(ByRef x As Integer) : x += 10 : End Sub",
+    "complete": "Imports System\n\nModule Program\n    Sub Incrementer(ByRef val As Integer)\n        val += 10\n    End Sub\n    Sub Main()\n        Dim x As Integer = 10\n        Incrementer(x)\n        Console.WriteLine(x) ' 20\n    End Sub\nEnd Module",
+    "best_practices": "Utiliser 'ByVal' par défaut (sécurité) et réservé 'ByRef' aux cas nécessaires.",
+    "pitfalls": "Passer un argument 'ByRef' par inadvertance à une méthode modifiant le paramètre.",
+    "notes": "Différence explicite marquée via les mots-clés ByVal et ByRef dans la signature."
   },
-  "oop_classes_09": {
-    "minimal": "Public Class Client\n    Private _nom As String\nEnd Class",
-    "complete": "Public Class Personne\n    Private _nom As String\n    Public Property Nom() As String\n        Get\n            Return _nom\n        End Get\n        Set(ByVal value As String)\n            If value <> \"\" Then _nom = value\n        End Set\n    End Property\n    Public Property Age As Integer\nEnd Class",
-    "best_practices": "Utiliser les propriétés auto-implémentées (`Public Property Score As Integer`) lorsque vous n'avez pas de logique de validation particulière.",
-    "pitfalls": "Ne pas respecter les conventions de nommage : l'usage veut qu'on préfixe l'attribut privé par un underscore (`_nom`).",
-    "notes": "VB.NET est un vrai langage orienté objet qui compile en langage intermédiaire (IL) à l'instar de C#."
+  "poo_classes_01": {
+    "minimal": "Public Class Personne\n    Public Property Nom As String\nEnd Class",
+    "complete": "Imports System\n\nPublic Class Personne\n    Public Property Nom As String\n    Public Sub New(nom As String)\n        Me.Nom = nom\n    End Sub\nEnd Class\n\nModule Program\n    Sub Main()\n        Dim p As New Personne(\"Alice\")\n        Console.WriteLine(p.Nom)\n    End Sub\nEnd Module",
+    "best_practices": "S'appuyer sur les propriétés auto-implémentées pour purifier la syntaxe.",
+    "pitfalls": "Nommer le constructeur par le nom de la classe au lieu de 'New'.",
+    "notes": "Constructeurs obligatoirement nommés 'Sub New()'."
   },
-  "oop_methods_10": {
-    "minimal": "Public Sub New(nom As String)\n    Me.Nom = nom\nEnd Sub",
-    "complete": "Public Class Compte\n    Public Property Titulaire As String\n    Public Sub New(ByVal nom As String)\n        Me.Titulaire = nom\n    End Sub\nEnd Class\nModule Executeur\n    Sub Main()\n        Dim monCompte As New Compte(\"Bob\")\n        Console.WriteLine(monCompte.Titulaire)\n    End Sub\nEnd Module",
-    "best_practices": "Utiliser le mot-clé `Me` (équivalent de `this`) pour cibler explicitement les membres de l'instance.",
-    "pitfalls": "Créer une fonction nommée d'après la classe pour faire le constructeur. En VB, seul `Sub New` fait office de constructeur valide.",
-    "notes": "VB.NET propose l'initialisation d'objets en bloc compact : `Dim c As New Compte With {.Titulaire = \"Alice\"}`."
+  "poo_polymorphism_02": {
+    "minimal": "Public Class Chien : Inherits Animal\n    Public Overrides Sub Crier() : End Sub\nEnd Class",
+    "complete": "Imports System\n\nPublic MustInherit Class Animal\n    Public MustOverride Sub Crier()\nEnd Class\nPublic Class Chien : Inherits Animal\n    Public Overrides Sub Crier()\n        Console.WriteLine(\"Wouf!\")\n    End Sub\nEnd Class",
+    "best_practices": "Ajouter la directive Overrides lors d'une redéfinition.",
+    "pitfalls": "Oublier le mot-clé Overridable sur la méthode parente que l'on souhaite dériver.",
+    "notes": "Utilise les mots-clés explicités MustInherit (abstrait) et Inherits (héritage)."
   },
-  "errors_try_catch_11": {
-    "minimal": "Try\n    Calculer()\nCatch ex As Exception\n    Console.WriteLine(ex.Message)\nEnd Try",
-    "complete": "Try\n    Dim denominateur As Integer = 0\n    Dim x = 10 / denominateur\nCatch ex As DivideByZeroException\n    Console.WriteLine(\"Division par zéro détectée.\")\nCatch ex As Exception When ex.InnerException IsNot Nothing\n    Console.WriteLine(\"Erreur imbriquée.\")\nFinally\n    Console.WriteLine(\"Nettoyage effectué.\")\nEnd Try",
-    "best_practices": "Placer les blocs `Catch` du plus spécifique au plus général pour intercepter les anomalies au bon niveau.",
-    "pitfalls": "Utiliser l'ancien mot-clé VB6 `On Error Resume Next`. Cette instruction masque toutes les erreurs.",
-    "notes": "Le bloc `Finally` s'exécute quoi qu'il arrive, même si `Return` ou `Exit Sub` est appelé dans le Try ou le Catch."
+  "err_exceptions_01": {
+    "minimal": "Try : Catch ex As Exception : Finally : End Try",
+    "complete": "Imports System\n\nModule Program\n    Sub Main()\n        Try\n            Throw New ArgumentException(\"Erreur\")\n        Catch ex As ArgumentException\n            Console.WriteLine(ex.Message)\n        Finally\n            Console.WriteLine(\"Nettoyage\")\n        End Try\n    End Sub\nEnd Module",
+    "best_practices": "Organiser les blocs Catch du plus spécifique au plus général.",
+    "pitfalls": "Utiliser l'ancienne instruction de gestion d'erreur 'On Error GoTo'.",
+    "notes": "Totalement intégré à la hiérarchie d'exceptions .NET."
   },
-  "errors_throw_12": {
-    "minimal": "Throw New ArgumentException(\"Donnée invalide\")",
-    "complete": "Public Sub MettreAJourAge(ByVal nvAge As Integer)\n    If nvAge < 0 OrElse nvAge > 120 Then\n        Throw New ArgumentOutOfRangeException(\"nvAge\", \"L'âge doit être entre 0 et 120.\")\n    End If\nEnd Sub",
-    "best_practices": "Utiliser l'opérateur logique court-circuit `OrElse` (plutôt que `Or`) dans vos conditions de garde.",
-    "pitfalls": "Ré-émettre une exception attrapée en écrivant `Throw ex`. Cela réinitialise la pile d'exécution. Écrivez simplement `Throw`.",
-    "notes": "Le mot-clé pour instancier et envoyer l'erreur est `Throw New` combiné."
+  "gen_generics_01": {
+    "minimal": "Public Class Boite(Of T)\n    Public Property Val As T\nEnd Class",
+    "complete": "Imports System\n\nPublic Class Boite(Of T)\n    Public Property Contenu As T\n    Public Sub New(val As T)\n        Me.Contenu = val\n    End Sub\nEnd Class\n\nModule Program\n    Sub Main()\n        Dim b As New Boite(Of Integer)(100)\n        Console.WriteLine(b.Contenu)\n    End Sub\nEnd Module",
+    "best_practices": "Appliquer des contraintes strictes à l'aide de la clause 'As' (`Of T As Class`).",
+    "pitfalls": "Tenter d'utiliser des génériques sans la notation 'Of T'.",
+    "notes": "Les génériques VB.NET partagent les mêmes caractéristiques que C#."
   },
-  "async_await_13": {
-    "minimal": "Async Function TraiterAsync() As Task\n    Await Task.Delay(1000)\nEnd Function",
-    "complete": "Imports System.Threading.Tasks\nModule ModuleAsync\n    Public Async Function TelechargerPageAsync(url As String) As Task(Of Integer)\n        Dim resultat As String = \"\"\n        Await Task.Delay(2000)\n        Return resultat.Length\n    End Function\nEnd Module",
-    "best_practices": "Ajouter systématiquement le suffixe 'Async' au nom de vos méthodes asynchrones.",
-    "pitfalls": "Déclarer une méthode asynchrone avec `Async Sub` au lieu de `Async Function ... As Task`.",
-    "notes": "Le modèle de programmation asynchrone basé sur les tâches (TAP) utilise les objets `Task` et `Task(Of T)`."
+  "conc_async_02": {
+    "minimal": "Async Function RunAsync() As Task(Of Integer)\n    Await Task.Delay(100)\n    Return 42\nEnd Function",
+    "complete": "Imports System\nImports System.Threading.Tasks\n\nModule Program\n    Async Function Main() As Task\n        Await Task.Delay(100)\n        Console.WriteLine(\"Terminé\")\n    End Function\nEnd Module",
+    "best_practices": "Toujours suffixer le nom des fonctions asynchrones par 'Async'.",
+    "pitfalls": "Utiliser 'Async Sub' sauf pour la gestion des événements d'interface graphique.",
+    "notes": "Intègre la syntaxe Async/Await traduite en machine à états."
   },
-  "file_io_14": {
-    "minimal": "IO.File.WriteAllText(\"c:\\log.txt\", \"Ok\")",
-    "complete": "Imports System.IO\nModule ModuleFichiers\n    Sub Main()\n        Dim chemin As String = \"rapport.txt\"\n        File.WriteAllText(chemin, \"Contenu généré par VB.NET\")\n        If File.Exists(chemin) Then\n            Dim lignes() As String = File.ReadAllLines(chemin)\n            For Each ligne As String In lignes\n                Console.WriteLine(\"Ligne : \" & ligne)\n            Next\n        End If\n    End Sub\nEnd Module",
-    "best_practices": "Utiliser les méthodes statiques de `System.IO.File` pour les opérations simples de fichiers.",
-    "pitfalls": "Tenter de manipuler un fichier ouvert dans une application externe sans gérer l'exception `IOException`.",
-    "notes": "VB.NET dispose de l'espace de noms `My.Computer.FileSystem` qui encapsule ces opérations."
+  "struct_maps_01": {
+    "minimal": "Dim map As New Dictionary(Of String, Integer)",
+    "complete": "Imports System\nImports System.Collections.Generic\n\nModule Program\n    Sub Main()\n        Dim prix As New Dictionary(Of String, Double) From {{\"Café\", 1.50}}\n        Dim val As Double\n        If prix.TryGetValue(\"Café\", val) Then\n            Console.WriteLine($\"{val}€\")\n        End If\n    End Sub\nEnd Module",
+    "best_practices": "Préférer TryGetValue() pour interroger une clé en sécurité.",
+    "pitfalls": "Accéder directement à une clé absente déclenche une KeyNotFoundException.",
+    "notes": "Table de hachage fournissant des performances d'accès en O(1)."
+  },
+  "struct_strings_02": {
+    "minimal": "Dim s As String = $\"Hello {nom}\"",
+    "complete": "Imports System\nImports System.Text\n\nModule Program\n    Sub Main()\n        Dim nom As String = \"VB.NET\"\n        Dim msg As String = $\"Langage : {nom}\"\n        Dim sb As New StringBuilder()\n        sb.Append(\"A\").Append(\"B\")\n        Console.WriteLine(sb.ToString())\n    End Sub\nEnd Module",
+    "best_practices": "Employer StringBuilder pour l'assemblage de chaînes complexes.",
+    "pitfalls": "Utiliser le symbole '&' ou '+' indistinctement sans vérifier le type de variable.",
+    "notes": "L'opérateur traditionnel de concaténation en VB est le symbole '&'."
   }
 }

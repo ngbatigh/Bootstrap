@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Générateur JSON et Concepts</title>
+</head>
+<body>
+    <h1>Outil de Migration JS -> JSON</h1>
+    <p>Ouvrez cette page, puis cliquez sur chaque bouton pour télécharger le fichier généré, puis écrasez le fichier dans <code>data/</code>.</p>
+    
+    <!-- On charge d'abord tous les fichiers existants -->
+    <script src="../data/metadata.js"></script>
+    <script src="../data/c.js"></script>
+    <script src="../data/cpp.js"></script>
+    <script src="../data/csharp.js"></script>
+    <script src="../data/java.js"></script>
+    <script src="../data/javascript.js"></script>
+    <script src="../data/typescript.js"></script>
+    <script src="../data/php.js"></script>
+    <script src="../data/python.js"></script>
+    <script src="../data/vb.js"></script>
+    <script src="../data/vba.js"></script>
+
+    <div id="buttons"></div>
+
+    <script>
+        function downloadFile(filename, content) {
+            const blob = new Blob([content], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function createDownloadBtn(label, filename, dataObj) {
+            const btn = document.createElement('button');
+            btn.textContent = `Télécharger ${filename}`;
+            btn.onclick = () => {
+                downloadFile(filename, JSON.stringify(dataObj, null, 2));
+            };
+            document.getElementById('buttons').appendChild(btn);
+            document.getElementById('buttons').appendChild(document.createElement('br'));
+        }
+
+        setTimeout(() => {
+            if (!window.CompIde) {
+                alert("Erreur: Les fichiers JS n'ont pas pu être chargés.");
+                return;
+            }
+
+            // Migration JS vers JSON
+            createDownloadBtn("Metadata", "metadata.json", CompIde.metadata);
+            createDownloadBtn("C", "c.json", CompIde.cData);
+            createDownloadBtn("C++", "cpp.json", CompIde.cppData);
+            createDownloadBtn("C#", "csharp.json", CompIde.csharpData);
+            createDownloadBtn("Java", "java.json", CompIde.javaData);
+            createDownloadBtn("JavaScript", "javascript.json", CompIde.javascriptData);
+            createDownloadBtn("TypeScript", "typescript.json", CompIde.typescriptData);
+            createDownloadBtn("PHP", "php.json", CompIde.phpData);
+            createDownloadBtn("Python", "python.json", CompIde.pythonData);
+            createDownloadBtn("VB.NET", "vb.json", CompIde.vbData);
+            createDownloadBtn("VBA", "vba.json", CompIde.vbaData);
+
+            document.getElementById('buttons').appendChild(document.createElement('hr'));
+
+            // Outil pour générer concepts.js unifié
+            const buildBtn = document.createElement('button');
+            buildBtn.textContent = "Générer data/concepts.js unifié";
+            buildBtn.style.fontWeight = "bold";
+            buildBtn.style.padding = "10px";
+            buildBtn.onclick = () => {
+                const unifiedData = CompIde.metadata.map(concept => {
+                    return {
+                        ...concept,
+                        languages: {
+                            c: CompIde.cData[concept.id] || {},
+                            cpp: CompIde.cppData[concept.id] || {},
+                            csharp: CompIde.csharpData[concept.id] || {},
+                            java: CompIde.javaData[concept.id] || {},
+                            javascript: CompIde.javascriptData[concept.id] || {},
+                            typescript: CompIde.typescriptData[concept.id] || {},
+                            php: CompIde.phpData[concept.id] || {},
+                            python: CompIde.pythonData[concept.id] || {},
+                            vb: CompIde.vbData[concept.id] || {},
+                            vba: CompIde.vbaData[concept.id] || {}
+                        }
+                    };
+                });
+
+                const content = `window.CompIde = window.CompIde || {};\nCompIde.data = ${JSON.stringify(unifiedData, null, 2)};`;
+                downloadFile("concepts.js", content);
+            };
+            document.getElementById('buttons').appendChild(buildBtn);
+
+        }, 500);
+    </script>
+</body>
+</html>
