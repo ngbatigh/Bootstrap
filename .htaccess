@@ -1,0 +1,32 @@
+# =========================================================================
+# CONFIGURATION SERVEUR POUR DEPLOIEMENT PRODUCTION (Apache)
+# =========================================================================
+
+# 1. Empêcher l'exploration des dossiers (Directory Listing)
+# Empêche de lister publiquement le contenu des dossiers comme /data ou /js
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # 2. Forcer la redirection vers HTTPS (Optionnel mais recommandé)
+    # Décommentez les deux lignes ci-dessous si votre serveur ne force pas le HTTPS
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # 4. Protection supplémentaire pour les fichiers de données brutes
+    # Empêche l'accès direct aux fichiers JSON via URL. 
+    # PHP pourra toujours les lire en local.
+    RewriteRule ^data/.*\.json$ - [F,L]
+</IfModule>
+
+<IfModule mod_deflate.c>
+    # 3. Activer la compression GZIP/Deflate pour réduire le temps de chargement
+    # Cible spécifiquement le JSON de l'API, le HTML, CSS et JS
+    AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/x-javascript application/javascript application/json
+</IfModule>
+
+# Protection du fichier .htaccess lui-même
+<Files .htaccess>
+    Require all denied
+</Files>

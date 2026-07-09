@@ -1,9 +1,14 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Empêcher la mise en cache pour le développement
-header('Cache-Control: no-cache, must-revalidate');
-header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+// --- DÉPLOIEMENT PRODUCTION : Optimisation du Cache ---
+// Désactivation des en-têtes "no-cache" du développement 
+// pour permettre au navigateur de mettre en cache les données
+// header('Cache-Control: no-cache, must-revalidate');
+// header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+
+// Autorise la mise en cache (1 heure)
+header('Cache-Control: public, max-age=3600');
 
 $dataDir = __DIR__ . '/data/';
 $languages = ['c', 'cpp', 'csharp', 'java', 'javascript', 'php', 'python', 'typescript', 'vb', 'vba'];
